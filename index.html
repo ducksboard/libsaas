@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Libsaas : It's like an ORM for SaaS!" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Libsaas</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/ducksboard/libsaas">View on GitHub</a>
+
+          <h1 id="project_title">Libsaas</h1>
+          <h2 id="project_tagline">It's like an ORM for SaaS!</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/ducksboard/libsaas/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/ducksboard/libsaas/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>This is libsaas, a library to take the pain out of using SaaS APIs.</p>
+
+<p>It provides an abstraction layer on top of various APIs, taking care of
+constructing the URLs, serializing parameters and authentication. You just call
+Python methods and receive Python objects.</p>
+
+<div class="highlight">
+<pre><span class="kn">from</span> <span class="nn">libsaas.services</span> <span class="kn">import</span> <span class="n">zendesk</span>
+
+<span class="n">service</span> <span class="o">=</span> <span class="n">zendesk</span><span class="o">.</span><span class="n">Zendesk</span><span class="p">(</span><span class="s">'myapp'</span><span class="p">,</span> <span class="s">'myuser'</span><span class="p">,</span> <span class="s">'s3cr3t'</span><span class="p">)</span>
+<span class="n">joe</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">users</span><span class="p">()</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">'joe@example.org'</span><span class="p">)[</span><span class="s">'users'</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">joes_tickets</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">user</span><span class="p">(</span><span class="n">joe</span><span class="p">[</span><span class="s">'id'</span><span class="p">])</span><span class="o">.</span><span class="n">tickets_requested</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">ticket</span> <span class="ow">in</span> <span class="n">joes_tickets</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">ticket</span><span class="p">[</span><span class="s">'description'</span><span class="p">])</span>
+</pre>
+</div>
+
+
+<p>Check out more examples in the <a href="http://docs.libsaas.net/usage/">usage docs</a>. It's like an ORM for SaaS!</p>
+
+<p>Libsaas is built by <a href="http://ducksboard.com/">Ducksboard</a> and distributed under the MIT license. You can
+file bugs in the <a href="https://github.com/ducksboard/libsaas/issues">issue tracker</a>, browse the <a href="http://docs.libsaas.net/">documentation</a> or help out by constributing support for new services.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Libsaas maintained by <a href="https://github.com/ducksboard">ducksboard</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-31978254-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+
+  </body>
+</html>
