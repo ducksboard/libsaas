@@ -1,0 +1,6 @@
+include LICENSE
+include MANIFEST.in
+graft doc
+prune doc/generated
+prune doc/_build
+recursive-include test *.py

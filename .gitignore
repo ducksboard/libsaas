@@ -1,3 +1,6 @@
 *.pyc
+build
+dist
+MANIFEST
 doc/generated
 doc/_build
