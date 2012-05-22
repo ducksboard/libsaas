@@ -12,4 +12,4 @@ constributing support for new services.
 
 .. _Ducksboard: http://ducksboard.com/
 .. _issue tracker: https://github.com/ducksboard/libsaas/issues
-.. _documentation: https://docs.libsaas.net/
+.. _documentation: http://docs.libsaas.net/
