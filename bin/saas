@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-
+"""
+Script for the saas command line tool.
+"""
 import os
 import sys
 
