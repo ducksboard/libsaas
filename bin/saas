@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+
+import os
+import sys
+
+
+# check if we're running uninstalled
+here = os.path.dirname(os.path.abspath(__file__))
+if os.path.isdir(os.path.join(here, '..', 'libsaas')):
+    sys.path.insert(0, os.path.join(here, '..'))
+
+from libsaas.scripts import saas
+saas.run(sys.argv)
