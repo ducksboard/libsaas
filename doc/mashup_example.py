@@ -8,7 +8,7 @@ mc = mailchimp.Mailchimp('8ac789caf98879caf897a678fa76daf-us2')
 
 # get tickets solved yesterday
 yesterday = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
-tickets = zd.search('updated>{0} status:solved type:ticket')
+tickets = zd.search('updated>{0} status:solved type:ticket'.format(yesterday))
 
 # get emails of users who requested those tickets
 user_ids = [ticket['requester_id'] for ticket in tickets['results']]
