@@ -11,7 +11,9 @@ from libsaas import http
 def parse_json(body, code, headers):
     if not 200 <= code < 300:
         raise http.HTTPError(body, code, headers)
-    return json.loads(body)
+
+    # JSON mandates the use of UTF-8, so assume the body is decodable
+    return json.loads(body.decode('utf-8'))
 
 
 def parse_empty(body, code, headers):

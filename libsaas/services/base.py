@@ -63,7 +63,7 @@ def resource(*klasses):
 
 def methods_with_attribute(cls, attribute):
     return [name for name, method in
-            inspect.getmembers(cls, (lambda obj: inspect.ismethod(obj) and
+            inspect.getmembers(cls, (lambda obj: inspect.isroutine(obj) and
                                      getattr(obj, attribute, False)))]
 
 

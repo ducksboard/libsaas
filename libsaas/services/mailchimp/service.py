@@ -493,7 +493,11 @@ class Mailchimp(base.Resource):
 def add_docstrings():
     for method_name in Mailchimp.list_methods():
         method = getattr(Mailchimp, method_name)
-        method.__func__.__doc__ = """
+        # in Python 2 method will be an instancemethod, and its __doc__
+        # attribute will be unwritable. Reliably get the function object.
+        function = getattr(method, '__func__', method)
+        # set the docstring
+        function.__doc__ = """
 Call Mailchimp's {0} method.
 
 Upstream documentation: http://apidocs.mailchimp.com/api/rtfm/{1}.func.php

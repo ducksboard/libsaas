@@ -28,8 +28,8 @@ def get_params(param_names, param_store):
 
     which will extract parameters from the called method's environment.
     """
-    return {name: serialize_param(param_store[name]) for name in param_names
-            if param_store.get(name) is not None}
+    return dict((name, serialize_param(param_store[name])) for name in param_names
+                if param_store.get(name) is not None)
 
 
 def parse_boolean(body, code, headers):

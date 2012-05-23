@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from libsaas.services import github
 
 # use basic authentication to create a token for libsaas

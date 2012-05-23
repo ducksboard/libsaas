@@ -22,7 +22,7 @@ def _title(title, char):
 def method_path(resource, method):
     return '.'.join((resource.__module__,
                      resource.__name__,
-                     method.__func__.__name__))
+                     method.__name__))
 
 
 def walk_resource(resource, rst):

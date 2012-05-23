@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath('../libsaas/services'))
 
 if not os.path.isdir('generated'):
     os.mkdir('generated')
-execfile('generate_doc.py')
+exec(compile(open('generate_doc.py').read(), 'generate_doc.py', 'exec'))
 
 # -- General configuration -----------------------------------------------------
 
@@ -49,8 +49,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'libsaas'
-copyright = u'2012, Ducksboard'
+project = 'libsaas'
+copyright = '2012, Ducksboard'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -192,8 +192,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'libsaas.tex', u'libsaas Documentation',
-   u'Ducksboard', 'manual'),
+  ('index', 'libsaas.tex', 'libsaas Documentation',
+   'Ducksboard', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -222,8 +222,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'libsaas', u'libsaas Documentation',
-     [u'Ducksboard'], 1)
+    ('index', 'libsaas', 'libsaas Documentation',
+     ['Ducksboard'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -236,8 +236,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'libsaas', u'libsaas Documentation',
-   u'Ducksboard', 'libsaas', 'One line description of project.',
+  ('index', 'libsaas', 'libsaas Documentation',
+   'Ducksboard', 'libsaas', 'One line description of project.',
    'Miscellaneous'),
 ]
 

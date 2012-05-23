@@ -1,11 +1,16 @@
 import logging
-import urllib2
+
 try:
-    from urllib.parse import urlencode
-except ImportError:
+    # Python 2.x
+    import urllib2 as urllib_request
     from urllib import urlencode
+except ImportError:
+    # Python 3.x
+    from urllib import request as urllib_request
+    from urllib.parse import urlencode
 
 from libsaas import http
+
 from . import base
 
 __all__ = ['urllib2_executor']
@@ -14,7 +19,7 @@ __all__ = ['urllib2_executor']
 logger = logging.getLogger('libsaas.executor.urllib2_executor')
 
 
-class RequestWithMethod(urllib2.Request):
+class RequestWithMethod(urllib_request.Request):
 
     def set_method(self, method):
         self.method = method
@@ -40,7 +45,7 @@ def encode_data(request):
     return urlencode(request.params)
 
 
-class ErrorSwallower(urllib2.HTTPErrorProcessor):
+class ErrorSwallower(urllib_request.HTTPErrorProcessor):
 
     def http_response(self, request, response):
         return response
@@ -68,7 +73,7 @@ def urllib2_executor(request, parser):
     req = RequestWithMethod(uri, data, request.headers)
     req.set_method(request.method)
 
-    opener = urllib2.build_opener(ErrorSwallower)
+    opener = urllib_request.build_opener(ErrorSwallower)
     resp = opener.open(req)
 
     body = resp.read()

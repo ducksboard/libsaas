@@ -9,20 +9,20 @@ class GithubTestCase(unittest.TestCase):
 
     def setUp(self):
         self.executor = test_executor.use()
-        self.executor.set_response('{}', 200, {})
+        self.executor.set_response(b'{}', 200, {})
 
         self.service = github.GitHub('my-token')
 
     def expect(self, method=None, uri=None, params=None, headers=None):
         if method:
-            self.assertEquals(method, self.executor.request.method)
+            self.assertEqual(method, self.executor.request.method)
         if uri:
-            self.assertEquals(self.executor.request.uri,
+            self.assertEqual(self.executor.request.uri,
                               'https://api.github.com' + uri)
         if params:
-            self.assertEquals(self.executor.request.params, params)
+            self.assertEqual(self.executor.request.params, params)
         if headers:
-            self.assertEquals(self.executor.request.headers, headers)
+            self.assertEqual(self.executor.request.headers, headers)
 
     def test_auth(self):
         service = github.GitHub('a-token')
@@ -61,16 +61,16 @@ class GithubTestCase(unittest.TestCase):
         self.service.gist('12345678').unstar()
         self.expect('DELETE', '/gists/12345678/star')
 
-        self.executor.set_response('', 204, {})
+        self.executor.set_response(b'', 204, {})
         res = self.service.gist('12345678').is_starred()
         self.expect('GET', '/gists/12345678/star')
         self.assertTrue(res)
 
-        self.executor.set_response('', 404, {})
+        self.executor.set_response(b'', 404, {})
         res = self.service.gist('12345678').is_starred()
         self.assertFalse(res)
 
-        self.executor.set_response('{}', 200, {})
+        self.executor.set_response(b'{}', 200, {})
         self.service.gist('12345678').fork()
         self.expect('POST', '/gists/12345678/fork')
 
@@ -269,7 +269,7 @@ class GithubTestCase(unittest.TestCase):
         self.service.repo('myuser', 'myrepo').collaborators().remove('foo')
         self.expect('DELETE', '/repos/myuser/myrepo/collaborators/foo')
 
-        self.executor.set_response('', 204, {})
+        self.executor.set_response(b'', 204, {})
         res = (self.service.repo('myuser', 'myrepo').collaborators()
          .is_collaborator('foo'))
         self.expect('GET', '/repos/myuser/myrepo/collaborators/foo')
@@ -382,12 +382,12 @@ class GithubTestCase(unittest.TestCase):
         self.service.user().unfollow('name')
         self.expect('DELETE', '/user/following/name')
 
-        self.executor.set_response('', 204, {})
+        self.executor.set_response(b'', 204, {})
         res = self.service.user().follows('name')
         self.expect('GET', '/user/following/name')
         self.assertTrue(res)
 
-        self.executor.set_response('', 404, {})
+        self.executor.set_response(b'', 404, {})
         res = self.service.user().follows('name')
         self.expect('GET', '/user/following/name')
         self.assertFalse(res)

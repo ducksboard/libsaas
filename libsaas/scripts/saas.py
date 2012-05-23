@@ -1,12 +1,13 @@
 """
 Implementation for the saas script distributed with libsaas.
 """
+import collections
 import inspect
 import json
 import logging
 import optparse
 import pprint
-from itertools import chain, izip, repeat
+from itertools import chain, repeat
 
 from libsaas.services import base
 
@@ -23,7 +24,7 @@ def extract_action(instance, parser, args):
             parser.error('no such resource %s' % args[0])
         if getattr(resource, 'is_apimethod', False):
             return resource, args[1:]
-        if not callable(resource):
+        if not isinstance(resource, collections.Callable):
             parser.error('no such resource %s' % args[0])
 
         # consume one token
@@ -41,7 +42,7 @@ def extract_action(instance, parser, args):
         # produce a new resource by passing the consumed arguments to the
         # resource
         consumed, args = args[:to_consume], args[to_consume:]
-        resource = resource(*map(try_interpret_arg, consumed))
+        resource = resource(*list(map(try_interpret_arg, consumed)))
 
     parser.error('not enough arguments')
 
@@ -57,7 +58,8 @@ def parse_args(args):
     usage = ('usage: %prog service [service params] [general params] '
              '[resource|param, ...] method [param, ...]')
     parser = optparse.OptionParser(usage=usage)
-    parser.add_option('--verbose', '-v', dest='verbose', action='count')
+    parser.add_option('--verbose', '-v', dest='verbose',
+                      action='count', default=0)
     parser.add_option('--executor', '-x', dest='executor', action='store')
 
     if len(args) < 2:
@@ -87,7 +89,7 @@ def parse_args(args):
     # got the service class, inspect its __init__ method to extract the keyword
     # arguments
     argspec = inspect.getargspec(klass.__init__)
-    for argname, default in izip(reversed(argspec.args),
+    for argname, default in zip(reversed(argspec.args),
                                  chain(reversed(argspec.defaults or ()),
                                        repeat(None))):
         if argname == 'self':
@@ -127,7 +129,7 @@ def parse_args(args):
     # instantiate the class, get the resource
     instance = klass(**options.__dict__)
     action, args = extract_action(instance, parser, args[2:])
-    pprint.pprint(action(*map(try_interpret_arg, args)))
+    pprint.pprint(action(*list(map(try_interpret_arg, args))))
 
 
 def run(args):

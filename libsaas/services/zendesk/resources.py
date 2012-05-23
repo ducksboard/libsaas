@@ -3,8 +3,8 @@ from libsaas.services import base
 
 
 def get_params(param_names, param_store):
-    return {name: param_store[name] for name in param_names
-            if param_store.get(name) is not None}
+    return dict((name, param_store[name]) for name in param_names
+                if param_store.get(name) is not None)
 
 
 class ZendeskResource(base.RESTResource):
