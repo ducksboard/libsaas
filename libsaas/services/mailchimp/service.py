@@ -106,7 +106,7 @@ class Mailchimp(base.Resource):
         return self.method_call(locals())
 
     @base.apimethod
-    def campaignsDelete(self, cid):
+    def campaignDelete(self, cid):
         return self.method_call(locals())
 
     @base.apimethod
