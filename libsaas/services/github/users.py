@@ -15,6 +15,7 @@ class UserRepos(resource.GitHubResource):
 
         :var type: What type of repos to fetch. For details of allowed values,
             see http://developer.github.com/v3/repos/#list-user-repositories.
+        :vartype type: str
         """
         params = base.get_params(('page', 'per_page'), locals())
         params['type'] = type
