@@ -30,18 +30,24 @@ def serialize_param(val):
     return val
 
 
-def get_params(param_names, param_store):
+def get_params(param_names, param_store, serialize_param=serialize_param):
     """
     Return a dictionary suitable to be used as params in a libsaas.http.Request
     object.
 
-    Arguments are a tuple of parameter names and a dictionary mapping those
-    names to parameter values. This is useful for constructs like
+    Arguments are a tuple of parameter names, a dictionary mapping those names
+    to parameter values and an optional custom parameter serialization
+    function. This is useful for constructs like
 
     def apifunc(self, p1, p2, p3=None):
         params = get_params(('p1', 'p2', 'p3'), locals())
 
     which will extract parameters from the called method's environment.
+
+    The serialization function can be used for instance when the service
+    expects boolean values to be represented as '0' and '1' instead of 'true'
+    and 'false' or when it accepts types that can be mapped to Python types and
+    mandates a specific way of encoding them as strings.
     """
     return dict((name, serialize_param(param_store[name])) for name in param_names
                 if param_store.get(name) is not None)
