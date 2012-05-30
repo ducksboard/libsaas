@@ -13,3 +13,5 @@ constributing support for new services.
 .. _Ducksboard: http://ducksboard.com/
 .. _issue tracker: https://github.com/ducksboard/libsaas/issues
 .. _documentation: http://docs.libsaas.net/
+
+.. image:: https://secure.travis-ci.org/ducksboard/libsaas.png?branch=master

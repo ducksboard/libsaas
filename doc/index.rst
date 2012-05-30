@@ -31,3 +31,5 @@ Indices and tables
 
 * :ref:`genindex`
 * :ref:`search`
+
+.. image:: https://secure.travis-ci.org/ducksboard/libsaas.png?branch=master
