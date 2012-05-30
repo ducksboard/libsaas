@@ -2,11 +2,6 @@ from libsaas import http, parsers
 from libsaas.services import base
 
 
-def get_params(param_names, param_store):
-    return dict((name, param_store[name]) for name in param_names
-                if param_store.get(name) is not None)
-
-
 class ZendeskResource(base.RESTResource):
 
     path = None
@@ -25,7 +20,7 @@ class ZendeskResource(base.RESTResource):
             maximum is 100. If left as `None`, 100 objects are returned.
         :vartype per_page: int
         """
-        params = get_params(('page', 'per_page'), locals())
+        params = base.get_params(('page', 'per_page'), locals())
         request = http.Request('GET', self.get_url(), params)
 
         return request, parsers.parse_json
@@ -45,7 +40,7 @@ class Tickets(TicketsBase):
         method.
         """
         url = '{0}/{1}'.format(self.get_url(), 'recent')
-        params = get_params(('page', 'per_page'), locals())
+        params = base.get_params(('page', 'per_page'), locals())
 
         return http.Request('GET', url, params), parsers.parse_json
 
@@ -59,7 +54,7 @@ class Ticket(TicketsBase):
         Fetch the collaborators on a ticket.
         """
         url = '{0}/{1}'.format(self.get_url(), 'collaborators')
-        params = get_params(('page', 'per_page'), locals())
+        params = base.get_params(('page', 'per_page'), locals())
 
         return http.Request('GET', url, params), parsers.parse_json
 
@@ -86,7 +81,7 @@ class Users(UsersBase):
         :vartype query: str
         """
         url = '{0}/{1}'.format(self.get_url(), 'search')
-        params = get_params(('query', 'page', 'per_page'), locals())
+        params = base.get_params(('query', 'page', 'per_page'), locals())
 
         return http.Request('GET', url, params), parsers.parse_json
 
@@ -152,7 +147,7 @@ class SatisfactionRatings(SatisfactionRatingsBase):
         Fetch ratings provided by customers.
         """
         url = '{0}/{1}'.format(self.get_url(), 'received')
-        params = get_params(('page', 'per_page'), locals())
+        params = base.get_params(('page', 'per_page'), locals())
 
         return http.Request('GET', url, params), parsers.parse_json
 

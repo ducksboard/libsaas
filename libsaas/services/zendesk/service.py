@@ -108,7 +108,7 @@ class Zendesk(base.Resource):
         :vartype sort_by: str
         """
         url = '{0}/{1}'.format(self.get_url(), 'search')
-        params = resources.get_params(('query', 'sort_order', 'sort_by',
-                                       'page', 'per_page'), locals())
+        params = base.get_params(('query', 'sort_order', 'sort_by',
+                                  'page', 'per_page'), locals())
 
         return http.Request('GET', url, params), parsers.parse_json
