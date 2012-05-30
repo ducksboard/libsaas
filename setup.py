@@ -20,7 +20,7 @@ constributing support for new services.
 .. _documentation: http://docs.libsaas.net/
 """
 import os
-from distutils.core import setup
+from distutils.core import setup, Command
 
 from libsaas import __versionstr__
 
@@ -53,6 +53,19 @@ def find_modules(top):
     yield top
 
 
+class Test(Command):
+    description = "run the automated test suite"
+    user_options = []
+
+    def initialize_options(self): pass
+
+    def finalize_options(self): pass
+
+    def run(self):
+        from test.test_libsaas import main
+        main()
+
+
 setup(name="libsaas",
       version=__versionstr__,
       description="Abstraction library for SaaS APIs",
@@ -76,4 +89,5 @@ setup(name="libsaas",
       maintainer_email="libsaas@ducksboard.com",
       url="http://libsaas.net/",
       packages=list(find_modules("libsaas")),
-      scripts=["bin/saas"])
+      scripts=["bin/saas"],
+      cmdclass={'test': Test})
