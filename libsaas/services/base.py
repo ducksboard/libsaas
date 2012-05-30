@@ -44,13 +44,20 @@ def get_params(param_names, param_store, serialize_param=serialize_param):
 
     which will extract parameters from the called method's environment.
 
+    As an additional convenience, if param_names is None, all parameters from
+    the param store will be considered, except for 'self'. This allows for even
+    shorter code in the common situation.
+
     The serialization function can be used for instance when the service
     expects boolean values to be represented as '0' and '1' instead of 'true'
     and 'false' or when it accepts types that can be mapped to Python types and
     mandates a specific way of encoding them as strings.
     """
-    return dict((name, serialize_param(param_store[name])) for name in param_names
-                if param_store.get(name) is not None)
+    if param_names is None:
+        param_names = [name for name in param_store.keys() if name != 'self']
+
+    return dict((name, serialize_param(param_store[name]))
+                for name in param_names if param_store.get(name) is not None)
 
 
 class MethodNotSupported(NotImplementedError):
