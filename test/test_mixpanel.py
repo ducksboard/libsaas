@@ -33,7 +33,7 @@ class MixpanelTestCase(unittest.TestCase):
             self.executor.request.params.pop('expire', None)
             if 'api_key' in self.executor.request.params:
                 params['api_key'] = 'api-key'
-            self.assertEquals(self.executor.request.params, params)
+            self.assertEqual(self.executor.request.params, params)
 
     def test_track(self):
         ret = self.service.track('login', {'user': 'foo'}, ip=True)
@@ -143,3 +143,21 @@ class MixpanelTestCase(unittest.TestCase):
         self.assertRaises(exc, self.service.funnels().list)
         self.assertRaises(exc, self.service.export,
                           '2011-01-01', '2012-01-01', ['login', 'logout'])
+
+    def test_unicode(self):
+        # return the lambda Unicode character
+        self.executor.set_response(b'{"lambda": "\xce\xbb"}', 200, {})
+        # and send a capital lambda in the request
+        self.service.export('2011-01-01', '2012-01-01', [b'\xce\x9b'])
+
+        self.expect('export/',
+                    {'from_date': '2011-01-01', 'to_date': '2012-01-01',
+                     'event': r'["\u039b"]'}, 'data')
+
+        # try a unicode event name
+        self.executor.set_response(b'1', 200, {})
+        self.service.track(b'\xce\xbb')
+        data = json.dumps({'event': b'\xce\xbb'.decode('utf-8'),
+                           'properties': {'token': 'my-token'}})
+        data = base64.b64encode(data.encode('utf-8'))
+        self.expect('track/', {'data': data,'ip': '0', 'test': '0'}, 'api')

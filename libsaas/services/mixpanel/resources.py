@@ -1,6 +1,6 @@
 import json
 
-from libsaas import http, parsers
+from libsaas import http, parsers, port
 from libsaas.services import base
 
 
@@ -30,7 +30,7 @@ def serialize_param(val):
     if isinstance(val, bool):
         return '1' if val else '0'
     if isinstance(val, list):
-        return json.dumps(val)
+        return json.dumps([port.to_u(v) for v in val])
     return val
 
 

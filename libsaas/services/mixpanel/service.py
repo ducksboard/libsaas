@@ -4,7 +4,7 @@ import hashlib
 import json
 import time
 
-from libsaas import http
+from libsaas import http, port
 from libsaas.services import base
 
 from . import resources
@@ -78,10 +78,13 @@ class Mixpanel(base.Resource):
             properties = {}
         properties['token'] = self.token
 
+        properites = dict((port.to_u(key), port.to_u(value))for
+                          key, value in properties.items())
+
         params = base.get_params(('ip', 'test'), locals(),
                                  resources.serialize_param)
 
-        data = {'event': event, 'properties': properties}
+        data = {'event': port.to_u(event), 'properties': properties}
         params['data'] = base64.b64encode(json.dumps(data).encode('utf-8'))
 
         request = http.Request('GET', 'http://api.mixpanel.com/track/', params)
