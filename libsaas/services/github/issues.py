@@ -20,7 +20,7 @@ class Issues(resource.GitHubResource):
         http://developer.github.com/v3/issues/#list-issues.
         """
         url = self.get_url()
-        params = resource.get_params(
+        params = base.get_params(
             ('filter', 'state', 'labels', 'sort', 'direction',
              'since', 'page', 'per_page'), locals())
 
@@ -136,7 +136,7 @@ class RepoIssues(RepoIssuesBase):
         http://developer.github.com/v3/issues/#list-issues-for-a-repository
         """
         url = self.get_url()
-        params = resource.get_params(
+        params = base.get_params(
             ('milestone', 'state', 'assignee', 'mentioned', 'labels', 'sort',
              'direction', 'since', 'page', 'per_page'), locals())
 

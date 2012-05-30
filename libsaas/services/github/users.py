@@ -16,7 +16,7 @@ class UserRepos(resource.GitHubResource):
         :var type: What type of repos to fetch. For details of allowed values,
             see http://developer.github.com/v3/repos/#list-user-repositories.
         """
-        params = resource.get_params(('page', 'per_page'), locals())
+        params = base.get_params(('page', 'per_page'), locals())
         params['type'] = type
         request = http.Request('GET', self.get_url(), params)
 
@@ -77,7 +77,7 @@ class UsersBase(resource.GitHubResource):
         Fetch the followers of this user.
         """
         url = '{0}/{1}'.format(self.get_url(), 'followers')
-        params = resource.get_params(('page', 'per_page'), locals())
+        params = base.get_params(('page', 'per_page'), locals())
 
         return http.Request('GET', url, params), parsers.parse_json
 
@@ -87,7 +87,7 @@ class UsersBase(resource.GitHubResource):
         Fetch users that this user is following.
         """
         url = '{0}/{1}'.format(self.get_url(), 'following')
-        params = resource.get_params(('page', 'per_page'), locals())
+        params = base.get_params(('page', 'per_page'), locals())
 
         return http.Request('GET', url, params), parsers.parse_json
 

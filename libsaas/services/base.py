@@ -24,6 +24,29 @@ def wrap(wrapper, wrapped):
     return update_wrapper(wrapper, wrapped)
 
 
+def serialize_param(val):
+    if isinstance(val, bool):
+        return 'true' if val else 'false'
+    return val
+
+
+def get_params(param_names, param_store):
+    """
+    Return a dictionary suitable to be used as params in a libsaas.http.Request
+    object.
+
+    Arguments are a tuple of parameter names and a dictionary mapping those
+    names to parameter values. This is useful for constructs like
+
+    def apifunc(self, p1, p2, p3=None):
+        params = get_params(('p1', 'p2', 'p3'), locals())
+
+    which will extract parameters from the called method's environment.
+    """
+    return dict((name, serialize_param(param_store[name])) for name in param_names
+                if param_store.get(name) is not None)
+
+
 class MethodNotSupported(NotImplementedError):
     """
     This resource does not implement the method.

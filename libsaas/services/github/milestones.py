@@ -38,7 +38,7 @@ class Milestones(MilestonesBase):
         http://developer.github.com/v3/issues/milestones/#list-milestones-for-a-repository.
         """
         url = self.get_url()
-        params = resource.get_params(
+        params = base.get_params(
             ('state', 'sort', 'direction', 'page', 'per_page'), locals())
 
         return http.Request('GET', url, params), parsers.parse_json

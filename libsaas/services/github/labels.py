@@ -33,7 +33,7 @@ class IssueLabelsBase(LabelsBase):
     @base.apimethod
     def get(self, page=None, per_page=None):
         self.require_collection()
-        params = resource.get_params(('page', 'per_page'), locals())
+        params = base.get_params(('page', 'per_page'), locals())
         request = http.Request('GET', self.get_url(), params)
 
         return request, parsers.parse_json

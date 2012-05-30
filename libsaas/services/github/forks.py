@@ -23,7 +23,7 @@ class Forks(resource.GitHubResource):
         :var per_page: The amount of results per page.
         :vartype per_page: int
         """
-        params = resource.get_params(('sort', 'page', 'per_page'), locals())
+        params = base.get_params(('sort', 'page', 'per_page'), locals())
         request = http.Request('GET', self.get_url(), params)
 
         return request, parsers.parse_json
