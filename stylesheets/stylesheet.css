@@ -321,6 +321,17 @@ Full-Width Styles
   text-shadow: #111 0px 0px 10px;
 }
 
+
+#travis_status {
+  position: absolute;
+  width: 89px;
+  z-index: 10;
+  bottom: -25px;
+  left: 10px;
+  height: 13px;
+  background: url('https://secure.travis-ci.org/ducksboard/libsaas.png?branch=master') no-repeat;
+}
+
 #downloads {
   position: absolute;
   width: 210px;
