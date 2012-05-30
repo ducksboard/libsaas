@@ -17,7 +17,7 @@ class Repos(resource.GitHubResource):
         :var type: What type of repos to fetch. For details of allowed values,
             see http://developer.github.com/v3/repos/#list-user-repositories.
         """
-        params = resource.get_params(('page', 'per_page'), locals())
+        params = base.get_params(('page', 'per_page'), locals())
         params['type'] = type
         request = http.Request('GET', self.get_url(), params)
 
@@ -33,7 +33,7 @@ class RepoCollaborators(base.Resource):
 
     @base.apimethod
     def get(self, page=None, per_page=None):
-        params = resource.get_params(('page', 'per_page'), locals())
+        params = base.get_params(('page', 'per_page'), locals())
         request = http.Request('GET', self.get_url(), params)
 
         return request, parsers.parse_json

@@ -23,7 +23,7 @@ class RepoCommitsComment(RepoCommitsCommentsBase):
             `html` or `full`. For details on formats, see
             http://developer.github.com/v3/mime/#comment-body-properties.
         """
-        params = resource.get_params(('format', ), locals())
+        params = base.get_params(('format', ), locals())
 
         return http.Request('GET', self.get_url(), params), parsers.parse_json
 
@@ -40,7 +40,7 @@ class RepoCommitsComments(RepoCommitsCommentsBase):
             http://developer.github.com/v3/mime/#comment-body-properties.
         """
         url = self.get_url()
-        params = resource.get_params(('page', 'per_page'), locals())
+        params = base.get_params(('page', 'per_page'), locals())
         headers = resource.mimetype_accept(format)
 
         return http.Request('GET', url, params, headers), parsers.parse_json
@@ -75,7 +75,7 @@ class RepoCommits(base.HierarchicalResource):
             file path.
         :vartype path: str
         """
-        params = resource.get_params(
+        params = base.get_params(
             ('sha', 'path', 'page', 'per_page'), locals())
         url = '{0}/{1}'.format(self.parent.get_url(), self.path)
 

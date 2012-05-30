@@ -17,7 +17,7 @@ class GistComments(GistCommentsBase):
     @base.apimethod
     def get(self, format=None, page=None, per_page=None):
         url = self.get_url()
-        params = resource.get_params(('page', 'per_page'), locals())
+        params = base.get_params(('page', 'per_page'), locals())
         headers = resource.mimetype_accept(format)
 
         return http.Request('GET', url, params, headers), parsers.parse_json
@@ -28,7 +28,7 @@ class GistComment(GistCommentsBase):
     @base.apimethod
     def get(self, format=None, page=None, per_page=None):
         url = self.get_url()
-        params = resource.get_params(('page', 'per_page'), locals())
+        params = base.get_params(('page', 'per_page'), locals())
         headers = resource.mimetype_accept(format)
 
         return http.Request('GET', url, params, headers), parsers.parse_json
@@ -44,7 +44,7 @@ class Gists(resource.GitHubResource):
         Fetch public gists. The parameters are the same as for `get`.
         """
         url = '{0}/public'.format(self.get_url())
-        params = resource.get_params(('page', 'per_page'), locals())
+        params = base.get_params(('page', 'per_page'), locals())
 
         return http.Request('GET', url, params), parsers.parse_json
 
@@ -55,7 +55,7 @@ class Gists(resource.GitHubResource):
         same as for `get`.
         """
         url = '{0}/starred'.format(self.get_url())
-        params = resource.get_params(('page', 'per_page'), locals())
+        params = base.get_params(('page', 'per_page'), locals())
 
         return http.Request('GET', url, params), parsers.parse_json
 
