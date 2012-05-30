@@ -13,6 +13,7 @@ import sys
 sys.path.insert(0, os.path.abspath('..'))
 
 from libsaas import services
+from libsaas.services import base
 
 
 def _title(title, char):
@@ -41,9 +42,13 @@ def walk_resource(resource, rst):
         rst.write('.. automethod:: {0}\n'.format(path))
 
 
+def is_resource(klass):
+    return inspect.isclass(klass) and issubclass(klass, base.Resource)
+
+
 def process_package(importer, modname):
     module = importer.find_module(modname).load_module(modname)
-    klass = inspect.getmembers(module, inspect.isclass)[0][1]
+    klass = inspect.getmembers(module, is_resource)[0][1]
 
     rst = open(os.path.join('generated', '{0}.rst'.format(modname)), 'w')
 
