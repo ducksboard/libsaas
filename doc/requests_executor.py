@@ -2,7 +2,7 @@ import libsaas
 from libsaas.executors import requests_executor
 from libsaas.services import github
 
-# use the Requests executor with a custom timeline and make it always send a
+# use the Requests executor with a custom timeout and make it always send a
 # user agent string
 uastring = 'libsaas {0}'.format(libsaas.__versionstr__)
 
