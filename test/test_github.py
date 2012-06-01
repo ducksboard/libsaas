@@ -417,3 +417,16 @@ class GithubTestCase(unittest.TestCase):
 
         self.service.authorization(1).delete()
         self.expect('DELETE', '/authorizations/1')
+
+    def test_unicode(self):
+        # try an unicode name
+        self.service.repo('myuser', b'\xce\xbb'.decode('utf-8')).get()
+        self.expect('GET', '/repos/myuser/%CE%BB')
+
+        # try an binary name (that's not valid Unicode)
+        self.service.repo('myuser', b'\xa4\xff').get()
+        self.expect('GET', '/repos/myuser/%A4%FF')
+
+        # try a unicode parameter
+        self.service.gists().comment('123').update(b'\xce\xbb'.decode('utf-8'))
+        self.expect('PATCH', '/gists/comments/123', r'{"body": "\u03bb"}')
