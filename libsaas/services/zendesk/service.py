@@ -1,6 +1,6 @@
 import json
 
-from libsaas import http, parsers
+from libsaas import http, parsers, port
 
 from libsaas.filters import auth
 from libsaas.services import base
@@ -26,8 +26,9 @@ class Zendesk(base.Resource):
         :var password: The password of the authenticated agent.
         :vartype password: str
         """
-        tmpl = 'https://{0}.zendesk.com/api/v2'
-        self.apiroot = tmpl.format(subdomain)
+        tmpl = '{0}.zendesk.com/api/v2'
+        self.apiroot = http.quote_any(tmpl.format(port.to_u(subdomain)))
+        self.apiroot = 'https://' + self.apiroot
 
         self.add_filter(auth.BasicAuth(username, password))
         self.add_filter(self.use_json)
