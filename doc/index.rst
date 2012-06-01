@@ -24,6 +24,7 @@ help us make using APIs less painful!
     :maxdepth: 2
 
     usage
+    unicode
     generated/services
 
 Indices and tables

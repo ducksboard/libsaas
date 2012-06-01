@@ -1,4 +1,4 @@
-from libsaas import http, parsers
+from libsaas import http, parsers, port
 from libsaas.services import base
 
 from . import resource
@@ -84,8 +84,8 @@ class Repo(resource.GitHubResource):
 
     def __init__(self, parent, user, repo):
         self.parent = parent
-        self.user = user
-        self.repo = repo
+        self.user = http.quote_any(user)
+        self.repo = http.quote_any(repo)
 
     def get_url(self):
         return '{0}/repos/{1}/{2}'.format(self.parent.get_url(),

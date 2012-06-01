@@ -1,6 +1,7 @@
 """
 HTTP utilities.
 """
+from libsaas import port
 
 URLENCODE_METHODS = ('GET', 'HEAD', 'OPTIONS')
 
@@ -23,6 +24,20 @@ class Request(object):
     Everything that's needed to make a HTTP request.
     """
     def __init__(self, method, uri, params=None, headers=None):
+        """
+        :var method: the HTTP method
+        :vartype method: str using only ASCII characters
+
+        :var uri: the URI, without query parameters
+        :vartype uri: str using only ASCII characters
+
+        :var params: query parameters or body
+        :vartype params: dict or string, keys and values can be text, binary or
+            integer and the executor will encode and quote them
+
+        :var headers: HTTP headers :vartype headers: dict of str to str, both
+            keys and values using only ASCII characters
+        """
         self.method = method
         self.uri = uri
         self.params = params if params is not None else {}
@@ -41,3 +56,21 @@ class Request(object):
 
     def __ne__(self, other):
         return not self == other
+
+
+
+def quote_any(val):
+    """
+    Percent quite any value, be it binary, text or integer.
+    """
+    return port.quote(port.to_b(val))
+
+
+def urlencode_any(d):
+    """
+    Encode a dictionary consisting of a mixture of bytes, text and integers
+    into a str object that only uses ASCII characters.
+    """
+    as_bytes = dict((port.to_b(key), port.to_b(value))
+                    for key, value in d.items())
+    return port.urlencode(as_bytes)

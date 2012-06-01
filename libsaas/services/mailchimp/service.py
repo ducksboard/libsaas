@@ -1,7 +1,7 @@
 import inspect
 from itertools import chain
 
-from libsaas import http, parsers
+from libsaas import http, parsers, port
 from libsaas.services import base
 
 
@@ -30,21 +30,23 @@ def serialize(prefix, value):
         # serializing a dictionary, use prefix[key] as the prefix, recurse for
         # all dict items and flatten the result
         return chain.from_iterable(
-            (serialize('{0}[{1}]'.format(prefix, key), val) for
+            (serialize('{0}[{1}]'.format(port.to_u(prefix),
+                                         port.to_u(key)), val)for
              key, val in value.items()))
     elif isinstance(value, list):
         # serializing a list, use prefix[i] as the prefix, recurse for
         # all items and flatten the result
         return chain.from_iterable(
-            (serialize('{0}[{1}]'.format(prefix, num), val) for
+            (serialize('{0}[{1}]'.format(port.to_u(prefix),
+                                         port.to_u(num)), val) for
              num, val in enumerate(value)))
     elif isinstance(value, bool):
         # serializing a boolean, take the prefix as-is and serialize the value
         # to string
-        return ((prefix, 'true' if value else 'false'), )
+        return ((port.to_u(prefix), 'true' if value else 'false'), )
     else:
         # anything else, just use the prefix and value as-is
-        return ((prefix, value), )
+        return ((port.to_u(prefix), port.to_u(value)), )
 
 
 class Mailchimp(base.Resource):
@@ -58,10 +60,11 @@ class Mailchimp(base.Resource):
             `8ac789caf98879caf897a678fa76daf-us2`.
         :vartype api_key: str
         """
-        self.api_key, dc = api_key.split('-')
+        self.api_key, dc = port.to_u(api_key).split('-')
 
-        tmpl = 'https://{0}.api.mailchimp.com/1.3/'
-        self.apiroot = tmpl.format(dc)
+        tmpl = '{0}.api.mailchimp.com/1.3/'
+        self.apiroot = http.quote_any(tmpl.format(dc))
+        self.apiroot = 'https://' + self.apiroot
 
         self.add_filter(self.add_api_root)
         self.add_filter(self.add_params)
