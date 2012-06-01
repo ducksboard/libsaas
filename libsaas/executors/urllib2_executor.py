@@ -1,15 +1,6 @@
 import logging
 
-try:
-    # Python 2.x
-    import urllib2 as urllib_request
-    from urllib import urlencode
-except ImportError:
-    # Python 3.x
-    from urllib import request as urllib_request
-    from urllib.parse import urlencode
-
-from libsaas import http
+from libsaas import http, port
 
 from . import base
 
@@ -19,7 +10,7 @@ __all__ = ['urllib2_executor']
 logger = logging.getLogger('libsaas.executor.urllib2_executor')
 
 
-class RequestWithMethod(urllib_request.Request):
+class RequestWithMethod(port.urllib_request.Request):
 
     def set_method(self, method):
         self.method = method
@@ -32,20 +23,20 @@ def encode_uri(request):
     if not request.params:
         return request.uri
 
-    return request.uri + '?' + urlencode(request.params)
+    return request.uri + '?' + http.urlencode_any(request.params)
 
 
 def encode_data(request):
     if not request.params:
-        return ''
+        return b''
 
     if not isinstance(request.params, dict):
-        return request.params
+        return port.to_b(request.params)
 
-    return urlencode(request.params)
+    return http.urlencode_any(request.params)
 
 
-class ErrorSwallower(urllib_request.HTTPErrorProcessor):
+class ErrorSwallower(port.urllib_request.HTTPErrorProcessor):
 
     def http_response(self, request, response):
         return response
@@ -73,7 +64,7 @@ def urllib2_executor(request, parser):
     req = RequestWithMethod(uri, data, request.headers)
     req.set_method(request.method)
 
-    opener = urllib_request.build_opener(ErrorSwallower)
+    opener = port.urllib_request.build_opener(ErrorSwallower)
     resp = opener.open(req)
 
     body = resp.read()
