@@ -1,6 +1,7 @@
 """
 HTTP utilities.
 """
+from libsaas import port
 
 URLENCODE_METHODS = ('GET', 'HEAD', 'OPTIONS')
 
@@ -55,3 +56,21 @@ class Request(object):
 
     def __ne__(self, other):
         return not self == other
+
+
+
+def quote_any(val):
+    """
+    Percent quite any value, be it binary, text or integer.
+    """
+    return port.quote(port.to_b(val))
+
+
+def urlencode_any(d):
+    """
+    Encode a dictionary consisting of a mixture of bytes, text and integers
+    into a str object that only uses ASCII characters.
+    """
+    as_bytes = dict((port.to_b(key), port.to_b(value))
+                    for key, value in d.items())
+    return port.urlencode(as_bytes)
