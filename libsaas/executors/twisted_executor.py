@@ -1,17 +1,12 @@
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
 import logging
-try:
-    from urllib.parse import urlencode
-except ImportError:
-    from urllib import urlencode
 
 from twisted.internet import defer, protocol, reactor
 from twisted.web import client, http, http_headers
 from twisted.web.iweb import IBodyProducer
 from zope.interface import implements
+
+from libsaas import port
+from libsaas import http as  our_http
 
 from . import base
 
@@ -19,9 +14,6 @@ __all__ = ['TwistedExecutor']
 
 
 logger = logging.getLogger('libsaas.executor.twisted_executor')
-
-
-URLENCODE_METHODS = ('GET', 'DELETE', 'HEAD', 'OPTIONS')
 
 
 class StringBodyProducer(object):
@@ -60,7 +52,7 @@ class HTTPResponseProtocol(protocol.Protocol):
     """
     def __init__(self, parser, tolerant=False):
         self.parser = parser
-        self.buffer = StringIO()
+        self.buffer = port.StringIO()
         self.ok_reasons = [client.ResponseDone]
         if tolerant:
             self.ok_reasons.append(http.PotentialDataLoss)
@@ -116,7 +108,7 @@ class TwistedExecutor(object):
         uri = request.uri
         producer = None
 
-        if request.method.upper() in URLENCODE_METHODS:
+        if request.method.upper() in http.URLENCODE_METHODS:
             uri = self.encode_uri(request)
         else:
             producer = self.body_producer(request.params)
@@ -136,7 +128,7 @@ class TwistedExecutor(object):
         if not request.params:
             return request.uri
 
-        return request.uri + '?' + urlencode(request.params)
+        return request.uri + '?' + our_http.urlencode_any(request.params)
 
     def body_producer(self, params):
         if not params:
@@ -144,7 +136,7 @@ class TwistedExecutor(object):
 
         payload = params
         if isinstance(params, dict):
-           payload = urlencode(params)
+           payload = our_http.urlencode_any(params)
 
         return StringBodyProducer(payload)
 
