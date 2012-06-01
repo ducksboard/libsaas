@@ -6,18 +6,18 @@ to use Unicode and where to use byte strings need to be followed.
 
 As defined in the standards, URLs are ASCII-only. Characters from outside of
 ASCII should be encoded using so-called percent encoding. Encoding schemes,
-such as UTF-8 or ISO-8859-2 are mostly outside of the scope of HTTP. That is
-why libsaas coerces all parameters to byte strings and handles the percent
-quoting for you.
+such as UTF-8 or ISO-8859-2 are mostly outside of the scope of HTTP. Libsaas
+tries to be flexible in what it accepts as user input and handles encoding and
+percent quoting automatically for you.
 
-When you pass a text parameter to a libsaas method, it will be coerced to bytes
-before percent-encoding, and UTF-8 will be used as the encoding. This means
-that in Python 2 parameters of the `str` type will be used as-is and
+When you pass a string parameter to a libsaas method, it will be coerced to
+bytes before percent-encoding, and UTF-8 will be used as the encoding. This
+means that in Python 2 parameters of the `str` type will be used as-is and
 `unicode` parameters will be encoded according to UTF-8. In Python 3 `str`
 parameters will be UTF-8 encoded and `bytes` will be used as-is.
 
 If you need to send characters outside of ASCII in different encoding than
-UTF-8, encode them before handing the bytes off to libsaas.
+UTF-8, encode them yourself and handing the bytes off to libsaas.
 
 Data returned from libsaas methods might have different encoding, depending on
 the method it question. For most API using JSON it will be Unicode, because the
@@ -46,9 +46,11 @@ Here's how each of them should be represented with regards to Unicode/bytes.
 HTTP method
 -----------
 
-In Python 2 this should be a `str` (byte string) that only contains bytes from
-the ASCII range and in Python 3 a `str` (Unicode string) that only uses ASCII
-characters.
+In both Python 2 and 3 this should be a `str` object, that only contains bytes
+from the ASCII range. Note that in Python 2 this represents a binary string and
+in Python 3 it means Unicode text. Since the HTTP method name can only include
+ASCII characters, the distinction is not important and using `str` makes it
+easy to write code that's compatible with both Python 2 and 3.
 
 URL
 ---
@@ -56,20 +58,16 @@ URL
 Same as the HTTP method, it should be a string that only uses ASCII
 characters. Note that this means that libsaas methods should take care to
 encode user input adecuately before handing the :class:`Request` over to the
-executor.
+executor and they need to be prepared to accept both byte strings and text.
 
 Query parameters
 ----------------
 
-On Python 2 this should be a mapping of `str` to `str`. The executor will
-take care of percent-encoding, but don't hand it `unicode` values, encode them
-in the method.
-
-On Python 3 this should be a mapping of either `str` or `bytes` to `str` or
-`bytes`. The executor will take care of encoding byte values with UTF-8 and
-percent-encoding them. The reason why unicode strings are allowed in Python 3
-is to make writing code compatible with both versions of Python easier, you can
-always use the single-quote syntax and the values produced will be accepted.
+This can either be a mapping of strings to strings or a simple string
+value. The executor will accept both byte strings and text for keys and values
+of the mapping, as well as numbers. It is the executor's responsibility to
+correctly encode and quote those value before making a HTTP request to the
+server.
 
 HTTP headers
 ------------

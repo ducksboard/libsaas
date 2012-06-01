@@ -23,6 +23,20 @@ class Request(object):
     Everything that's needed to make a HTTP request.
     """
     def __init__(self, method, uri, params=None, headers=None):
+        """
+        :var method: the HTTP method
+        :vartype method: str using only ASCII characters
+
+        :var uri: the URI, without query parameters
+        :vartype uri: str using only ASCII characters
+
+        :var params: query parameters or body
+        :vartype params: dict or string, keys and values can be text, binary or
+            integer and the executor will encode and quote them
+
+        :var headers: HTTP headers :vartype headers: dict of str to str, both
+            keys and values using only ASCII characters
+        """
         self.method = method
         self.uri = uri
         self.params = params if params is not None else {}
