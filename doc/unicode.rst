@@ -17,10 +17,10 @@ means that in Python 2 parameters of the `str` type will be used as-is and
 parameters will be UTF-8 encoded and `bytes` will be used as-is.
 
 If you need to send characters outside of ASCII in different encoding than
-UTF-8, encode them yourself and handing the bytes off to libsaas.
+UTF-8, encode them yourself and hand the bytes off to libsaas.
 
-Data returned from libsaas methods might have different encoding, depending on
-the method it question. For most API using JSON it will be Unicode, because the
+Data returned from libsaas methods might be encoded differently, depending on
+the method in question. For most APIs using JSON it will be Unicode, because the
 JSON standard mandates the use of UTF-8, making it easy to convert bytes
 received from the service into Unicode characters. Some APIs though might
 return binary data, such as APIs exporting images or providing access to raw
