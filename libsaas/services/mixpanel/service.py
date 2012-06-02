@@ -32,8 +32,8 @@ class Mixpanel(base.Resource):
             able to export data through this service object.
         :vartype api_key: str or None
 
-        :var api_secret: Optional API secret. If you leave this as None, you won't be
-            able to export data through this service object.
+        :var api_secret: Optional API secret. If you leave this as None, you
+            won't be able to export data through this service object.
         :vartype api_secret: str or None
         """
         self.token = token
@@ -111,7 +111,7 @@ class Mixpanel(base.Resource):
 
         return request, resources.parse_boolean
 
-    track.__doc__ =  track.__doc__.format(
+    track.__doc__ = track.__doc__.format(
         'https://mixpanel.com/docs/api-documentation/'
         'http-specification-insert-data')
 
@@ -146,7 +146,7 @@ class Mixpanel(base.Resource):
 
         return request, resources.parse_export
 
-    export.__doc__ =  export.__doc__.format(
+    export.__doc__ = export.__doc__.format(
         'https://mixpanel.com/docs/api-documentation/'
         'exporting-raw-data-you-inserted-into-mixpanel#export')
 

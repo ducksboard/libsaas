@@ -41,8 +41,8 @@ class Events(base.Resource):
         """
         Fetch event data.
         """
-        params = base.get_params(('event', 'type', 'unit', 'interval'), locals(),
-                                 serialize_param)
+        params = base.get_params(('event', 'type', 'unit', 'interval'),
+                                 locals(), serialize_param)
         request = http.Request('GET', 'events/', params)
 
         return request, parsers.parse_json
@@ -76,8 +76,9 @@ class Properties(base.Resource):
         """
         Fetch data of a single event.
         """
-        params = base.get_params(('event', 'name', 'type', 'unit', 'interval',
-                                  'values', 'limit'), locals(), serialize_param)
+        params = base.get_params(('event', 'name', 'type',
+                                  'unit', 'interval', 'values', 'limit'),
+                                 locals(), serialize_param)
         request = http.Request('GET', 'properties/', params)
 
         return request, parsers.parse_json
@@ -114,9 +115,9 @@ class Funnels(base.Resource):
         """
         Fetch data for a funnel.
         """
-        params = base.get_params(('funnel_id', 'from_date', 'to_date', 'length',
-                                 'interval', 'unit', 'on', 'where', 'limit'),
-                                 locals(), serialize_param)
+        params = base.get_params(
+            ('funnel_id', 'from_date', 'to_date', 'length', 'interval',
+             'unit', 'on', 'where', 'limit'), locals(), serialize_param)
 
         request = http.Request('GET', 'funnels/', params)
 
@@ -191,9 +192,9 @@ class Segmentation(base.Resource):
 class Retention(base.Resource):
 
     @base.apimethod
-    def get(self, from_date, to_date, retention_type=None, born_event=None, event=None,
-            born_Where=None, where=None, interval=None, interval_count=None,
-            unit=None, on=None, limit=None):
+    def get(self, from_date, to_date, retention_type=None, born_event=None,
+            event=None, born_Where=None, where=None, interval=None,
+            interval_count=None, unit=None, on=None, limit=None):
         """
         Fetch cohort analysis.
         """

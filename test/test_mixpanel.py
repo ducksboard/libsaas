@@ -58,7 +58,8 @@ class MixpanelTestCase(unittest.TestCase):
     def test_events(self):
         self.service.events().get(['login', 'logout'], 'general', 'day', 10)
         self.expect('events/', {'event': json.dumps(['login', 'logout']),
-                                'type': 'general', 'unit': 'day', 'interval': 10})
+                                'type': 'general', 'unit': 'day',
+                                'interval': 10})
 
         self.service.events().top('general', limit=10)
         self.expect('events/top/', {'type': 'general', 'limit': 10})
