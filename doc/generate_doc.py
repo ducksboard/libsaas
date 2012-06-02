@@ -26,7 +26,7 @@ def method_path(resource, method):
                      method.__name__))
 
 
-def walk_resource(resource, rst):
+def walk_resource(resource, rst, top):
     for child_name in resource.list_resources():
         method = getattr(resource, child_name)
         path = method_path(resource, method)
@@ -34,9 +34,16 @@ def walk_resource(resource, rst):
         rst.write('.. automethod:: {0}\n'.format(path))
 
         for child_resource in method.produces:
-            walk_resource(child_resource, rst)
+            walk_resource(child_resource, rst, False)
 
-    for child_name in resource.list_methods():
+    methods = resource.list_methods()
+    if not methods:
+        return
+
+    if top:
+        rst.write(_title('Service methods', '-'))
+
+    for child_name in methods:
         method = getattr(resource, child_name)
         path = method_path(resource, method)
         rst.write('.. automethod:: {0}\n'.format(path))
@@ -55,7 +62,7 @@ def process_package(importer, modname):
     rst.write(_title(klass.__name__, '='))
     rst.write('.. autoclass:: {0}.{1}\n'.format(modname, klass.__name__))
 
-    walk_resource(klass, rst)
+    walk_resource(klass, rst, True)
 
     rst.close()
 
