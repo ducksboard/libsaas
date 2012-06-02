@@ -16,7 +16,6 @@ class InsufficientSettings(Exception):
     """
 
 
-
 class Mixpanel(base.Resource):
     """
     """
@@ -33,8 +32,8 @@ class Mixpanel(base.Resource):
             able to export data through this service object.
         :vartype api_key: str or None
 
-        :var api_secret: Optional API secret. If you leave this as None, you won't be
-            able to export data through this service object.
+        :var api_secret: Optional API secret. If you leave this as None, you
+            won't be able to export data through this service object.
         :vartype api_secret: str or None
         """
         self.token = token
@@ -57,12 +56,12 @@ class Mixpanel(base.Resource):
         if self.USE_EXPIRE:
             request.params['expire'] = calendar.timegm(time.gmtime()) + 600
 
-        to_hash = ''.join('{0}={1}'.format(key, request.params[key]) for key in
-                          sorted(request.params.keys()))
+        to_hash = ''.join('{0}={1}'.format(key, port.to_u(request.params[key]))
+                          for key in sorted(request.params.keys()))
 
         md5 = hashlib.md5()
-        md5.update(to_hash.encode('utf-8'))
-        md5.update(self.api_secret.encode('utf-8'))
+        md5.update(port.to_b(to_hash))
+        md5.update(port.to_b(self.api_secret))
 
         request.params['sig'] = md5.hexdigest()
 
@@ -74,6 +73,26 @@ class Mixpanel(base.Resource):
 
     @base.apimethod
     def track(self, event, properties=None, ip=False, test=False):
+        """
+        Track an event.
+
+        Upstream documentation: {0}
+
+        :var event: The name of the event.
+        :vartype event: str
+
+        :var properties: The event's properties, your access token will be
+            inserted into it automatically.
+        :vartype properties: dict
+
+        :var ip: Should Mixpanel automatically use the incoming request IP.
+        :vartype ip: bool
+
+        :var test: Use a high priority rate limited queue for testing.
+        :vartype test: bool
+
+        :return: A boolean that tells if the event has been logged.
+        """
         if properties is None:
             properties = {}
         properties['token'] = self.token
@@ -85,15 +104,39 @@ class Mixpanel(base.Resource):
                                  resources.serialize_param)
 
         data = {'event': port.to_u(event), 'properties': properties}
-        params['data'] = base64.b64encode(json.dumps(data).encode('utf-8'))
+        params['data'] = base64.b64encode(port.to_b(json.dumps(data)))
 
         request = http.Request('GET', 'http://api.mixpanel.com/track/', params)
         request.nosign = True
 
         return request, resources.parse_boolean
 
+    track.__doc__ = track.__doc__.format(
+        'https://mixpanel.com/docs/api-documentation/'
+        'http-specification-insert-data')
+
     @base.apimethod
-    def export(self, from_date, to_date, event, where=None, bucket=None):
+    def export(self, from_date, to_date, event=None, where=None, bucket=None):
+        """
+        Export raw data from your account.
+
+        Upstream documentation: {0}
+
+        :var from_date: Query start date, in yyyy-mm-dd format.
+        :vartype from_date: str
+
+        :var to_date: Query finish date, in yyyy-mm-dd format.
+        :vartype to_date: str
+
+        :var event: Optional list of events to export.
+        :vartype event: list of str
+
+        :var where: A filter expression.
+        :vartype where: str
+
+        :var bucket: Data bucket to query.
+        :vartype bucket: str
+        """
         params = base.get_params(('from_date', 'to_date',
                                   'event', 'where', 'bucket'),
                                  locals(), resources.serialize_param)
@@ -103,22 +146,68 @@ class Mixpanel(base.Resource):
 
         return request, resources.parse_export
 
+    export.__doc__ = export.__doc__.format(
+        'https://mixpanel.com/docs/api-documentation/'
+        'exporting-raw-data-you-inserted-into-mixpanel#export')
+
     @base.resource(resources.Events)
     def events(self):
+        """
+        Return the resource corresponding to events.
+        """
         return resources.Events(self)
 
     @base.resource(resources.Properties)
     def properties(self):
+        """
+        Return the resource corresponding to events properties.
+        """
         return resources.Properties(self)
 
     @base.resource(resources.Funnels)
     def funnels(self):
+        """
+        Return the resource corresponding to funnels.
+        """
         return resources.Funnels(self)
 
     @base.resource(resources.Segmentation)
     def segmentation(self):
+        """
+        Return the resource corresponding to segmentation.
+        """
         return resources.Segmentation(self)
 
     @base.resource(resources.Retention)
     def retention(self):
+        """
+        Return the resource corresponding to retention (cohort analysis).
+        """
         return resources.Retention(self)
+
+
+def add_docstrings():
+    # the upstream URLs follow a fixed pattern, so add them programatically
+
+    def extra_doc(resource_name, method_name):
+        base = 'https://mixpanel.com/docs/api-documentation/data-export-api'
+        method_name = 'default' if method_name == 'get' else method_name
+        doc_name = ('event-properties' if resource_name == 'properties'
+                    else resource_name)
+
+        tmpl = '\n\nUpstream documentation: {0}#{1}-{2}'
+        return tmpl.format(base, doc_name, method_name)
+
+    # walk the list of resources
+    for resource_name in Mixpanel.list_resources():
+        # get the resource class
+        resource = getattr(Mixpanel, resource_name).produces[0]
+        # walks its list of methods
+        for method_name in resource.list_methods():
+            # update the method's docstring
+            function = port.method_func(resource, method_name)
+            extra = extra_doc(resource_name, method_name)
+            function.__doc__ += extra
+
+
+add_docstrings()

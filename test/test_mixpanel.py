@@ -58,7 +58,8 @@ class MixpanelTestCase(unittest.TestCase):
     def test_events(self):
         self.service.events().get(['login', 'logout'], 'general', 'day', 10)
         self.expect('events/', {'event': json.dumps(['login', 'logout']),
-                                'type': 'general', 'unit': 'day', 'interval': 10})
+                                'type': 'general', 'unit': 'day',
+                                'interval': 10})
 
         self.service.events().top('general', limit=10)
         self.expect('events/top/', {'type': 'general', 'limit': 10})
@@ -109,7 +110,7 @@ class MixpanelTestCase(unittest.TestCase):
                     {'event': 'buy', 'from_date': '2011-01-01',
                      'to_date': '2012-01-01', 'on': on})
 
-        on = 'property["amount"]', 'day'
+        on = 'property["amount"]'
         self.service.segmentation().average('pay', '2011-01-01',
                                             '2012-01-01', on, 'day')
         self.expect('segmentation/average/',
@@ -124,10 +125,14 @@ class MixpanelTestCase(unittest.TestCase):
                      'born_event': 'login', 'limit': 10})
 
     def test_export(self):
-        self.service.export('2011-01-01', '2012-01-01', ['login', 'logout'])
+        self.executor.set_response(b'{"foo": "bar"}\n{"baz": "quuz"}', 200, {})
+        res = self.service.export('2011-01-01', '2012-01-01',
+                                  ['login', 'logout'])
         self.expect('export/',
                     {'from_date': '2011-01-01', 'to_date': '2012-01-01',
                      'event': json.dumps(['login', 'logout'])}, 'data')
+
+        self.assertEqual(res, [{'foo': 'bar'}, {'baz': 'quuz'}])
 
     def test_no_key(self):
         self.service = mixpanel.Mixpanel('my-token')
@@ -156,7 +161,7 @@ class MixpanelTestCase(unittest.TestCase):
 
         # try a unicode event name
         self.executor.set_response(b'1', 200, {})
-        self.service.track(b'\xce\xbb')
+        self.service.track(b'\xce\xbb'.decode('utf-8'))
         data = json.dumps({'event': b'\xce\xbb'.decode('utf-8'),
                            'properties': {'token': 'my-token'}})
         data = base64.b64encode(data.encode('utf-8'))
