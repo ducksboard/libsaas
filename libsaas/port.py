@@ -60,3 +60,17 @@ def to_b(val, encoding='utf-8'):
         return text_type(val).encode(encoding)
 
     return val.encode(encoding)
+
+
+def method_func(klass, method_name):
+    """
+    Get the function object from a class and a method name.
+
+    In Python 2 doing getattr(SomeClass, 'methodname') returns an
+    instancemethod and in Python 3 a function. Use this helper to reliably get
+    the function object
+    """
+    method = getattr(klass, method_name)
+    # in Python 2 method will be an instancemethod, try to get its __func__
+    # attribute and fall back to what we already have (for Python 3)
+    return getattr(method, '__func__', method)
