@@ -35,7 +35,6 @@ else:
         from StringIO import StringIO
 
 
-
 def to_u(val, encoding='utf-8'):
     """
     Take a number, text (unicode) or binary value and return unicode. Binary

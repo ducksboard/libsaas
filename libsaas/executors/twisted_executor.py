@@ -136,7 +136,7 @@ class TwistedExecutor(object):
 
         payload = params
         if isinstance(params, dict):
-           payload = our_http.urlencode_any(params)
+            payload = our_http.urlencode_any(params)
 
         return StringBodyProducer(payload)
 

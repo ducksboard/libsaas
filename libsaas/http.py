@@ -58,7 +58,6 @@ class Request(object):
         return not self == other
 
 
-
 def quote_any(val):
     """
     Percent quite any value, be it binary, text or integer.

@@ -92,6 +92,7 @@ class UsersBase(resource.GitHubResource):
 
         return http.Request('GET', url, params), parsers.parse_json
 
+
 class CurrentUser(UsersBase):
 
     def require_collection(self):

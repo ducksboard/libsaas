@@ -57,9 +57,11 @@ class Test(Command):
     description = "run the automated test suite"
     user_options = []
 
-    def initialize_options(self): pass
+    def initialize_options(self):
+        pass
 
-    def finalize_options(self): pass
+    def finalize_options(self):
+        pass
 
     def run(self):
         from test.test_libsaas import main

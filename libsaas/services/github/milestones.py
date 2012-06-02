@@ -34,11 +34,15 @@ class Milestones(MilestonesBase):
         """
         Fetch milestones for this repository, based on the filter parameters.
 
-        For details on the meanings and allowed values for each parameter, see
-        http://developer.github.com/v3/issues/milestones/#list-milestones-for-a-repository.
+        For details on the meanings and allowed values for each parameter,
+        see {0}.
         """
         url = self.get_url()
         params = base.get_params(
             ('state', 'sort', 'direction', 'page', 'per_page'), locals())
 
         return http.Request('GET', url, params), parsers.parse_json
+
+    get.__doc__ = get.__doc__.format(
+        'http://developer.github.com/v3/issues/milestones/'
+        '#list-milestones-for-a-repository')

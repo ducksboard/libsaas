@@ -375,7 +375,8 @@ class Mailchimp(base.Resource):
 
     # XXX params order
     @base.apimethod
-    def listMembers(self, id, status='unsubscribed', since=None, start=None, limit=None):
+    def listMembers(self, id, status='unsubscribed',
+                    since=None, start=None, limit=None):
         return self.method_call(locals())
 
     @base.apimethod

@@ -30,7 +30,8 @@ def walk_resource(resource, rst, top):
     for child_name in resource.list_resources():
         method = getattr(resource, child_name)
         path = method_path(resource, method)
-        rst.write(_title(', '.join([p.__name__ for p in method.produces]), '-'))
+        section_name = ', '.join([p.__name__ for p in method.produces])
+        rst.write(_title(section_name, '-'))
         rst.write('.. automethod:: {0}\n'.format(path))
 
         for child_resource in method.produces:
