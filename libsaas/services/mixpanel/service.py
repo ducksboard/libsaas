@@ -56,12 +56,12 @@ class Mixpanel(base.Resource):
         if self.USE_EXPIRE:
             request.params['expire'] = calendar.timegm(time.gmtime()) + 600
 
-        to_hash = ''.join('{0}={1}'.format(key, request.params[key]) for key in
-                          sorted(request.params.keys()))
+        to_hash = ''.join('{0}={1}'.format(key, port.to_u(request.params[key]))
+                          for key in sorted(request.params.keys()))
 
         md5 = hashlib.md5()
-        md5.update(to_hash.encode('utf-8'))
-        md5.update(self.api_secret.encode('utf-8'))
+        md5.update(port.to_b(to_hash))
+        md5.update(port.to_b(self.api_secret))
 
         request.params['sig'] = md5.hexdigest()
 
@@ -104,7 +104,7 @@ class Mixpanel(base.Resource):
                                  resources.serialize_param)
 
         data = {'event': port.to_u(event), 'properties': properties}
-        params['data'] = base64.b64encode(json.dumps(data).encode('utf-8'))
+        params['data'] = base64.b64encode(port.to_b(json.dumps(data)))
 
         request = http.Request('GET', 'http://api.mixpanel.com/track/', params)
         request.nosign = True

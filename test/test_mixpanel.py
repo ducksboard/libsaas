@@ -156,7 +156,7 @@ class MixpanelTestCase(unittest.TestCase):
 
         # try a unicode event name
         self.executor.set_response(b'1', 200, {})
-        self.service.track(b'\xce\xbb')
+        self.service.track(b'\xce\xbb'.decode('utf-8'))
         data = json.dumps({'event': b'\xce\xbb'.decode('utf-8'),
                            'properties': {'token': 'my-token'}})
         data = base64.b64encode(data.encode('utf-8'))
