@@ -109,7 +109,7 @@ class MixpanelTestCase(unittest.TestCase):
                     {'event': 'buy', 'from_date': '2011-01-01',
                      'to_date': '2012-01-01', 'on': on})
 
-        on = 'property["amount"]', 'day'
+        on = 'property["amount"]'
         self.service.segmentation().average('pay', '2011-01-01',
                                             '2012-01-01', on, 'day')
         self.expect('segmentation/average/',
@@ -124,10 +124,14 @@ class MixpanelTestCase(unittest.TestCase):
                      'born_event': 'login', 'limit': 10})
 
     def test_export(self):
-        self.service.export('2011-01-01', '2012-01-01', ['login', 'logout'])
+        self.executor.set_response(b'{"foo": "bar"}\n{"baz": "quuz"}', 200, {})
+        res = self.service.export('2011-01-01', '2012-01-01',
+                                  ['login', 'logout'])
         self.expect('export/',
                     {'from_date': '2011-01-01', 'to_date': '2012-01-01',
                      'event': json.dumps(['login', 'logout'])}, 'data')
+
+        self.assertEqual(res, [{'foo': 'bar'}, {'baz': 'quuz'}])
 
     def test_no_key(self):
         self.service = mixpanel.Mixpanel('my-token')
