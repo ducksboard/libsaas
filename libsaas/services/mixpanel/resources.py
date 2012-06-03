@@ -79,7 +79,7 @@ class Properties(base.Resource):
         params = base.get_params(('event', 'name', 'type',
                                   'unit', 'interval', 'values', 'limit'),
                                  locals(), serialize_param)
-        request = http.Request('GET', 'properties/', params)
+        request = http.Request('GET', 'events/properties/', params)
 
         return request, parsers.parse_json
 
@@ -90,7 +90,7 @@ class Properties(base.Resource):
         """
         params = base.get_params(('event', 'limit'), locals(), serialize_param)
 
-        request = http.Request('GET', 'properties/top/', params)
+        request = http.Request('GET', 'events/properties/top/', params)
 
         return request, parsers.parse_json
 
@@ -102,7 +102,7 @@ class Properties(base.Resource):
         params = base.get_params(('event', 'name', 'limit', 'bucket'),
                                  locals(), serialize_param)
 
-        request = http.Request('GET', 'properties/values/', params)
+        request = http.Request('GET', 'events/properties/values/', params)
 
         return request, parsers.parse_json
 

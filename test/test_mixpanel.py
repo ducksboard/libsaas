@@ -71,17 +71,17 @@ class MixpanelTestCase(unittest.TestCase):
         self.service.properties().get('login', 'plan', 'unique', 'day', 7,
                                       values=['standard', 'premium'])
 
-        self.expect('properties/',
+        self.expect('events/properties/',
                     {'event': 'login', 'name': 'plan', 'type': 'unique',
                      'unit': 'day', 'interval': 7,
                      'values': json.dumps(['standard', 'premium'])})
 
         self.service.properties().top('login')
-        self.expect('properties/top/', {'event': 'login'})
+        self.expect('events/properties/top/', {'event': 'login'})
 
         self.service.properties().values('login', 'plan', bucket='10')
-        self.expect('properties/values/', {'event': 'login', 'name': 'plan',
-                                           'bucket': '10'})
+        self.expect('events/properties/values/',
+                    {'event': 'login', 'name': 'plan', 'bucket': '10'})
 
     def test_funnels(self):
         self.service.funnels().get(10, '2012-01-01', length=5)

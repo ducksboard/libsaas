@@ -40,12 +40,6 @@ class StringBodyProducer(object):
         pass
 
 
-class HTTPResponseError(Exception):
-    """
-    The server returned a non 2xx HTTP response.
-    """
-
-
 class HTTPResponseProtocol(protocol.Protocol):
     """
     A simple protocol class to interpret data from a Twisted response.

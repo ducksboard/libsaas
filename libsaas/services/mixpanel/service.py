@@ -25,8 +25,10 @@ class Mixpanel(base.Resource):
         """
         Create a Mixpanel service.
 
-        :var token: The token used for tracking events.
-        :vartype token: str
+        :var token: Optional token used for tracking events. If you leave this
+            as None, you won't be able to track events through this service
+            object.
+        :vartype token: str or None
 
         :var api_key: Optional API key. If you leave this as None, you won't be
             able to export data through this service object.
@@ -93,6 +95,9 @@ class Mixpanel(base.Resource):
 
         :return: A boolean that tells if the event has been logged.
         """
+        if not self.token:
+            raise InsufficientSettings('token is required for this method')
+
         if properties is None:
             properties = {}
         properties['token'] = self.token
