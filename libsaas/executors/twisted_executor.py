@@ -102,7 +102,7 @@ class TwistedExecutor(object):
         uri = request.uri
         producer = None
 
-        if request.method.upper() in http.URLENCODE_METHODS:
+        if request.method.upper() in our_http.URLENCODE_METHODS:
             uri = self.encode_uri(request)
         else:
             producer = self.body_producer(request.params)
