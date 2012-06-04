@@ -200,7 +200,7 @@ def add_docstrings():
         doc_name = ('event-properties' if resource_name == 'properties'
                     else resource_name)
 
-        tmpl = '\n\nUpstream documentation: {0}#{1}-{2}'
+        tmpl = '\nUpstream documentation: {0}#{1}-{2}'
         return tmpl.format(base, doc_name, method_name)
 
     # walk the list of resources
