@@ -110,11 +110,11 @@ class TwistedExecutor(object):
             request.headers['Content-Type'] = content_type
 
         logger.debug('request uri: %r, producer: %r, headers: %r',
-                     request.uri, producer, request.headers)
+                     uri, producer, request.headers)
 
         headers = self.prepare_headers(request.headers)
 
-        d = self.agent.request(method=request.method, uri=request.uri,
+        d = self.agent.request(method=request.method, uri=uri,
                                headers=headers, bodyProducer=producer)
         return d.addCallback(self.got_response, parser)
 
