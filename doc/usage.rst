@@ -65,7 +65,7 @@ the service parameters and the path to the method you want to call.
 
 This means that code like this::
 
-  >>> from libsaas.service import zendesk
+  >>> from libsaas.services import zendesk
   >>> service = zendesk.Zendesk('myapp', 'myuser', 's3cr3t')
   >>> service.user(364).tickets_requested()
 
