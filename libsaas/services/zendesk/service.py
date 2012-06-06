@@ -77,6 +77,20 @@ class Zendesk(base.Resource):
             return resources.CurrentUser(self)
         return resources.User(self, user_id)
 
+    @base.resource(resources.Groups)
+    def groups(self):
+        """
+        Return the resource corresponding to all groups.
+        """
+        return resources.Groups(self)
+
+    @base.resource(resources.Group)
+    def group(self, group_id):
+        """
+        Return the resource corresponding to a single group.
+        """
+        return resources.Group(self, group_id)
+
     @base.resource(resources.SatisfactionRatings)
     def satisfaction_ratings(self):
         """
@@ -113,3 +127,10 @@ class Zendesk(base.Resource):
                                   'page', 'per_page'), locals())
 
         return http.Request('GET', url, params), parsers.parse_json
+
+    @base.resource(resources.Views)
+    def views(self):
+        """
+        Return the resource corresponding to all views.
+        """
+        return resources.Views(self)

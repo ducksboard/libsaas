@@ -125,6 +125,36 @@ class User(UsersBase):
         return http.Request('GET', url, params), parsers.parse_json
 
 
+class GroupsBase(ZendeskResource):
+
+    path = 'groups'
+
+
+class Groups(GroupsBase):
+
+    def update(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
+    def delete(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
+    @base.apimethod
+    def assignable(self, page=None, per_page=None):
+        """
+        Fetch assignable groups.
+        """
+        url = '{0}/{1}'.format(self.get_url(), 'assignable')
+        params = base.get_params(('page', 'per_page'), locals())
+
+        return http.Request('GET', url, params), parsers.parse_json
+
+
+class Group(GroupsBase):
+
+    def create(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
+
 class SatisfactionRatingsBase(ZendeskResource):
 
     path = 'satisfaction_ratings'
@@ -154,3 +184,27 @@ class SatisfactionRatings(SatisfactionRatingsBase):
 
 class SatisfactionRating(SatisfactionRatingsBase):
     pass
+
+
+class Views(ZendeskResource):
+
+    path = 'views'
+
+    def create(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
+    def update(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
+    def delete(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
+    @base.apimethod
+    def active(self, page=None, per_page=None):
+        """
+        Fetch active shared and personal Views available to the current user.
+        """
+        url = '{0}/{1}'.format(self.get_url(), 'active')
+        params = base.get_params(('page', 'per_page'), locals())
+
+        return http.Request('GET', url, params), parsers.parse_json
