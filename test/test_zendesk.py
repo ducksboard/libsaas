@@ -72,6 +72,27 @@ class ZendeskTestCase(unittest.TestCase):
         self.service.user().get()
         self.expect('GET', '/users/me.json')
 
+    def test_groups(self):
+        self.service.groups().get(page=3)
+        self.expect('GET', '/groups.json', {'page': 3})
+
+        self.service.group(3).get()
+        self.expect('GET', '/groups/3.json')
+
+        self.service.groups().create({'group': {'x': 'x'}})
+        self.expect('POST', '/groups.json',
+                    json.dumps({'group': {'x': 'x'}}))
+
+        self.service.group(23).update({'group': {'x': 'x'}})
+        self.expect('PUT', '/groups/23.json',
+                    json.dumps({'group': {'x': 'x'}}))
+
+        self.service.group(23).delete()
+        self.expect('DELETE', '/groups/23.json')
+
+        self.service.groups().assignable()
+        self.expect('GET', '/groups/assignable.json')
+
     def test_satisfaction(self):
         self.service.satisfaction_ratings().get(page=3)
         self.expect('GET', '/satisfaction_ratings.json', {'page': 3})
@@ -86,3 +107,10 @@ class ZendeskTestCase(unittest.TestCase):
         self.service.search('a term', sort_by='status')
         self.expect('GET', '/search.json',
                     {'query': 'a term', 'sort_by': 'status'})
+
+    def test_views(self):
+        self.service.views().get(page=3)
+        self.expect('GET', '/views.json', {'page': 3})
+
+        self.service.views().active()
+        self.expect('GET', '/views/active.json')
