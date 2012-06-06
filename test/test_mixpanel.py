@@ -165,4 +165,4 @@ class MixpanelTestCase(unittest.TestCase):
         data = json.dumps({'event': b'\xce\xbb'.decode('utf-8'),
                            'properties': {'token': 'my-token'}})
         data = base64.b64encode(data.encode('utf-8'))
-        self.expect('track/', {'data': data,'ip': '0', 'test': '0'}, 'api')
+        self.expect('track/', {'data': data, 'ip': '0', 'test': '0'}, 'api')
