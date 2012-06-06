@@ -6,7 +6,7 @@ from twisted.web.iweb import IBodyProducer
 from zope.interface import implements
 
 from libsaas import port
-from libsaas import http as  our_http
+from libsaas import http as our_http
 
 from . import base
 
