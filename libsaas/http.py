@@ -15,7 +15,7 @@ class HTTPError(Exception):
         self.code = code
         self.headers = headers
 
-    def __str__(self):
+    def __repr__(self):
         return '<{0} code {1}>'.format(self.__class__.__name__, self.code)
 
 
