@@ -21,7 +21,7 @@ class Mixpanel(base.Resource):
     """
     USE_EXPIRE = True
 
-    def __init__(self, token, api_key=None, api_secret=None):
+    def __init__(self, token=None, api_key=None, api_secret=None):
         """
         Create a Mixpanel service.
 
