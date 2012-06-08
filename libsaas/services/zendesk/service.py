@@ -91,6 +91,20 @@ class Zendesk(base.Resource):
         """
         return resources.Group(self, group_id)
 
+    @base.resource(resources.Activities)
+    def activities(self):
+        """
+        Return the resource corresponding to all activities.
+        """
+        return resources.Activities(self)
+
+    @base.resource(resources.Activity)
+    def activity(self, activity_id):
+        """
+        Return the resource corresponding to a single activity.
+        """
+        return resources.Activity(self, activity_id)
+
     @base.resource(resources.SatisfactionRatings)
     def satisfaction_ratings(self):
         """

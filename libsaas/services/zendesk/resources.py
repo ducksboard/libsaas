@@ -58,6 +58,16 @@ class Ticket(TicketsBase):
 
         return http.Request('GET', url, params), parsers.parse_json
 
+    @base.apimethod
+    def audits(self, page=None, per_page=None):
+        """
+        Fetch the audits on a ticket.
+        """
+        url = '{0}/{1}'.format(self.get_url(), 'audits')
+        params = base.get_params(('page', 'per_page'), locals())
+
+        return http.Request('GET', url, params), parsers.parse_json
+
 
 class UsersBase(ZendeskResource):
 
@@ -153,6 +163,39 @@ class Group(GroupsBase):
 
     def create(self, *args, **kwargs):
         raise base.MethodNotSupported()
+
+
+class ActivitiesBase(ZendeskResource):
+
+    path = 'activities'
+
+    def create(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
+    def update(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
+    def delete(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
+
+class Activities(ActivitiesBase):
+
+    @base.apimethod
+    def get(self, since=None, page=None, per_page=None):
+        """
+        Fetch the list of activities
+
+        :var since: Timestamp offset in UTC on ISO8601 form %Y-%m-%dT%H:%M:%SZ
+        :vartype since: str
+        """
+        params = base.get_params(('since', 'page', 'per_page'), locals())
+
+        return http.Request('GET', self.get_url(), params), parsers.parse_json
+
+
+class Activity(ActivitiesBase):
+    pass
 
 
 class SatisfactionRatingsBase(ZendeskResource):

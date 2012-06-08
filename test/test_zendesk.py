@@ -48,6 +48,9 @@ class ZendeskTestCase(unittest.TestCase):
         self.service.ticket(23).collaborators(page=3)
         self.expect('GET', '/tickets/23/collaborators.json', {'page': 3})
 
+        self.service.ticket(23).audits()
+        self.expect('GET', '/tickets/23/audits.json')
+
     def test_users(self):
         self.service.users().get(page=10)
         self.expect('GET', '/users.json', {'page': 10})
@@ -92,6 +95,17 @@ class ZendeskTestCase(unittest.TestCase):
 
         self.service.groups().assignable()
         self.expect('GET', '/groups/assignable.json')
+
+    def test_activities(self):
+        self.service.activities().get(page=3)
+        self.expect('GET', '/activities.json', {'page': 3})
+
+        self.service.activities().get(since="2012-03-05T10:38:52Z")
+        self.expect('GET', '/activities.json',
+                    {'since': "2012-03-05T10:38:52Z"})
+
+        self.service.activity(3).get()
+        self.expect('GET', '/activities/3.json')
 
     def test_satisfaction(self):
         self.service.satisfaction_ratings().get(page=3)
