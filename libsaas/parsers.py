@@ -7,6 +7,9 @@ import json
 
 from libsaas import http
 
+# expose the function from the xml module as a parser
+from libsaas.xml import parse_xml
+
 
 def parse_json(body, code, headers):
     if not 200 <= code < 300:
