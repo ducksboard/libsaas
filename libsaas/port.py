@@ -14,6 +14,7 @@ if PY3:
     text_type = str
     binary_type = bytes
     integer_types = int,
+    numeric_types = int, float
 
     from urllib import request as urllib_request
     from urllib.parse import urlencode, quote
@@ -24,7 +25,8 @@ else:
 
     text_type = unicode
     binary_type = str
-    integer_types = (int, long)
+    integer_types = int, long
+    numeric_types = int, long, float
 
     import urllib2 as urllib_request
     from urllib import urlencode, quote
@@ -42,7 +44,7 @@ def to_u(val, encoding='utf-8'):
     """
     if isinstance(val, text_type):
         return val
-    elif isinstance(val, integer_types):
+    elif isinstance(val, numeric_types):
         return text_type(val)
 
     return val.decode(encoding)
@@ -55,7 +57,7 @@ def to_b(val, encoding='utf-8'):
     """
     if isinstance(val, binary_type):
         return val
-    elif isinstance(val, integer_types):
+    elif isinstance(val, numeric_types):
         return text_type(val).encode(encoding)
 
     return val.encode(encoding)
