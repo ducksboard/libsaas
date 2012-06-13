@@ -58,7 +58,7 @@ Python methods and receive Python objects.</p>
 <span class="n">joe</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">users</span><span class="p">()</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">'joe@example.org'</span><span class="p">)[</span><span class="s">'users'</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">joes_tickets</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">user</span><span class="p">(</span><span class="n">joe</span><span class="p">[</span><span class="s">'id'</span><span class="p">])</span><span class="o">.</span><span class="n">tickets_requested</span><span class="p">()</span>
 
-<span class="k">for</span> <span class="n">ticket</span> <span class="ow">in</span> <span class="n">joes_tickets</span><span class="p">:</span>
+<span class="k">for</span> <span class="n">ticket</span> <span class="ow">in</span> <span class="n">joes_tickets</span><span class="p">[</span><span class="s">'tickets'</span><span class="p">]:</span>
     <span class="k">print</span><span class="p">(</span><span class="n">ticket</span><span class="p">[</span><span class="s">'description'</span><span class="p">])</span>
 </pre>
 </div>
