@@ -100,7 +100,6 @@ class CurrentUser(base.HierarchicalResource):
 
     path = 'users'
 
-    # XXX does not work
     @base.apimethod
     def get(self):
         url = '{0}/{1}'.format(self.get_url(), 'me')
