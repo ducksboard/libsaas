@@ -117,9 +117,8 @@ class User(UsersBase):
         """
         Fetch tickets requested by this user.
         """
-        url = '{0}/{1}/tickets/requested.json'.format(self.path,
-                                                      self.object_id)
-        params = self.collection_params(page, per_page)
+        url = '{0}/tickets/{1}'.format(self.get_url(), 'requested')
+        params = base.get_params(('page', 'per_page'), locals())
 
         return http.Request('GET', url, params), parsers.parse_json
 
@@ -128,8 +127,8 @@ class User(UsersBase):
         """
         Fetch tickets where this user is CC'd.
         """
-        url = '{0}/{1}/tickets/ccd.json'.format(self.path, self.object_id)
-        params = self.collection_params(page, per_page)
+        url = '{0}/tickets/{1}'.format(self.get_url(), 'ccd')
+        params = base.get_params(('page', 'per_page'), locals())
 
         return http.Request('GET', url, params), parsers.parse_json
 

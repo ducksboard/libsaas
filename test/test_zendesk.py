@@ -75,6 +75,13 @@ class ZendeskTestCase(unittest.TestCase):
         self.service.user().get()
         self.expect('GET', '/users/me.json')
 
+        self.service.user(6).tickets_requested(2)
+        self.expect('GET', '/users/6/tickets/requested.json', {'page': 2})
+
+        self.service.user().get()
+        self.service.user(6).tickets_ccd()
+        self.expect('GET', '/users/6/tickets/ccd.json', {})
+
     def test_groups(self):
         self.service.groups().get(page=3)
         self.expect('GET', '/groups.json', {'page': 3})
