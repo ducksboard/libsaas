@@ -17,6 +17,7 @@ class XMLParserTestCase(unittest.TestCase):
                         <cryopreserved type="boolean">true</cryopreserved>
                     </created_by>
                     <family>
+                        <children type="array"></children>
                         <uncles type="array">
                             <uncle><name>Scrooge McDuck</name></uncle>
                             <uncle><name>Ludwig Von Drake</name></uncle>
@@ -40,6 +41,7 @@ class XMLParserTestCase(unittest.TestCase):
         family = duck['family']
         self.assertEqual(len(family['uncles']['uncle']), 2)
         self.assertEqual(len(family['nephew']), 3)
+        self.assertFalse(family['children'])
 
     def test_encoding(self):
         u_test = (b'<?xml version="1.0" encoding="UTF-8"?>'

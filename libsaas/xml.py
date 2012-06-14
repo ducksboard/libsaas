@@ -43,6 +43,9 @@ def value_for_element(elem):
     elif elem_type == 'array':
         tags = set([child.tag for child in elem])
 
+        if not tags:
+            return []
+
         if len(tags) > 1:
             raise XMLParserException()
 
@@ -88,6 +91,7 @@ def parse_xml(body, code, headers):
             <cryopreserved type="boolean">true</cryopreserved>
         </created_by>
         <family>
+            <children type="array"></children>
             <uncles type="array">
                 <uncle><name>Scrooge McDuck</name></uncle>
                 <uncle><name>Ludwig Von Drake</name></uncle>
@@ -105,6 +109,7 @@ def parse_xml(body, code, headers):
               'family': {'nephew': [{'name': 'Huey'},
                                     {'name': 'Dewey'},
                                     {'name': 'Louie'}],
+                         'children': [],
                          'uncles': {'uncle': [{'name': 'Scrooge McDuck'},
                                               {'name': 'Ludwig Von Drake'}]}},
               'first_film': None,
@@ -128,6 +133,9 @@ def element_for_value(obj, parent):
             node = etree.SubElement(parent, key)
             element_for_value(value, node)
         elif isinstance(value, list):
+            if not value:
+                node = etree.SubElement(parent, key)
+
             for item in value:
                 node = etree.SubElement(parent, key)
                 element_for_value(item, node)
@@ -153,6 +161,7 @@ def dict_to_xml(obj):
               'family': {'nephew': [{'name': 'Huey'},
                                     {'name': 'Dewey'},
                                     {'name': 'Louie'}],
+                         'children': [],
                          'uncles': {'uncle': [{'name': 'Scrooge McDuck'},
                                               {'name': 'Ludwig Von Drake'}]}},
               'first_film': None,
@@ -165,6 +174,7 @@ def dict_to_xml(obj):
     <duck>
         <name>Donald</name>
         <family>
+            <children />
             <nephew><name>Huey</name></nephew>
             <nephew><name>Dewey</name></nephew>
             <nephew><name>Louie</name></nephew>
