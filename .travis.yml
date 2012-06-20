@@ -18,8 +18,8 @@ matrix:
       env: LIBSAAS_XML_LIBRARY=lxml
 
 install:
-  - sudo apt-get install libxml2-dev libxslt1-dev
-  - pip install lxml --use-mirrors
+  - test "$LIBSAAS_XML_LIBRARY" == "lxml" && sudo apt-get install libxml2-dev libxslt1-dev || true
+  - test "$LIBSAAS_XML_LIBRARY" == "lxml" && pip install lxml --use-mirrors || true
 
 script: python setup.py test
 
