@@ -8,7 +8,7 @@ import collections
 from libsaas import http
 
 try:
-    from lxml.etree import ElementTree as etree
+    from lxml import etree
 except ImportError:
     try:
         from xml.etree import cElementTree as etree
