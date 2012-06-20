@@ -4,16 +4,30 @@ XML utilities.
 from __future__ import absolute_import
 
 import collections
+import os
 
 from libsaas import http
 
-try:
+# check for explicit request to use a specific library
+_library = os.getenv("LIBSAAS_XML_LIBRARY")
+
+if _library == "lxml":
     from lxml import etree
-except ImportError:
+elif _library == "cElementTree":
+    from xml.etree import cElementTree as etree
+elif _library == "ElementTree":
+    from xml.etree import ElementTree as etree
+else:
+    # try various implementations until one works
     try:
-        from xml.etree import cElementTree as etree
+        from lxml import etree
     except ImportError:
-        from xml.etree import ElementTree as etree
+        try:
+            from xml.etree import cElementTree as etree
+        except ImportError:
+            from xml.etree import ElementTree as etree
+
+del _library
 
 
 class XMLParserException(Exception):

@@ -6,6 +6,21 @@ python:
   - 3.2
   - pypy
 
+env:
+  - LIBSAAS_XML_LIBRARY=lxml
+  - LIBSAAS_XML_LIBRARY=cElementTree
+  - LIBSAAS_XML_LIBRARY=ElementTree
+
+# lxml won't work on PyPy
+matrix:
+  exclude:
+    - python: pypy
+      env: LIBSAAS_XML_LIBRARY=lxml
+
+install:
+  - sudo apt-get install libxml2-dev libxslt1-dev
+  - pip install lxml --use-mirrors
+
 script: python setup.py test
 
 notifications:
