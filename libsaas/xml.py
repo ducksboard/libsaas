@@ -6,7 +6,8 @@ from __future__ import absolute_import
 import collections
 import os
 
-from libsaas import http
+from libsaas import http, port
+
 
 # check for explicit request to use a specific library
 _library = os.getenv("LIBSAAS_XML_LIBRARY")
@@ -162,7 +163,8 @@ def element_for_value(obj, parent):
                 parent.set(key.lstrip('@'), value)
             else:
                 node = etree.SubElement(parent, key)
-                node.text = '{0}'.format(value) if value is not None else ''
+                node.text = (port.to_u(value)
+                             if value is not None else port.to_u(''))
 
 
 def dict_to_xml(obj):

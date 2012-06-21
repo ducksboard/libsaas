@@ -49,15 +49,29 @@ class XMLParserTestCase(unittest.TestCase):
         self.assertFalse(family['children'])
 
     def test_encoding(self):
+        u_test = (b'<?xml version="1.0" encoding="latin1"?>'
+                  b'<team><boolean>True</boolean>'
+                  b'<name>Bar\xe7a</name>'
+                  b'<nil />'
+                  b'<number>1234</number></team>')
+        resp = xml.parse_xml(u_test, 200, None)
+        self.assertEqual(resp['team']['name'], b'Bar\xe7a'.decode('latin1'))
+
         u_test = (b'<?xml version="1.0" encoding="UTF-8"?>'
-                  b'<team><name>Bar\xc3\xa7a</name></team>')
+                  b'<team><boolean>True</boolean>'
+                  b'<name>Bar\xc3\xa7a</name>'
+                  b'<nil />'
+                  b'<number>1234</number></team>')
         resp = xml.parse_xml(u_test, 200, None)
         self.assertEqual(resp['team']['name'], b'Bar\xc3\xa7a'.decode('utf-8'))
 
-        u_test = (b'<?xml version="1.0" encoding="latin1"?>'
-                  b'<team><name>Bar\xe7a</name></team>')
-        resp = xml.parse_xml(u_test, 200, None)
-        self.assertEqual(resp['team']['name'], b'Bar\xe7a'.decode('latin1'))
+        resp = xml.dict_to_xml({'team': {
+            'name': b'Bar\xc3\xa7a'.decode('utf-8'),
+            'boolean': True,
+            'number': 1234,
+            'nil': None
+        }})
+        self.assertEqual(resp, u_test)
 
     def test_syntax_error(self):
         wrong_xml = (b'<?xml version="1.0" encoding="UTF-8"?>'
