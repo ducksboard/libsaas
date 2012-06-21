@@ -82,7 +82,11 @@ def value_for_element(elem):
 
         return elem_dict or None
 
-    return (elem_dict.update({elem.tag: value}) if elem_dict else value)
+    if elem_dict:
+        elem_dict.update({elem.tag: value})
+        return elem_dict
+    else:
+        return value
 
 
 def parse_xml(body, code, headers):
