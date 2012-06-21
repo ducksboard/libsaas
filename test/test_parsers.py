@@ -7,11 +7,14 @@ class XMLParserTestCase(unittest.TestCase):
 
     xml_header = b'<?xml version="1.0" encoding="UTF-8"?>'
     xml_duck = b'''<duck>
+                    <article href="http://en.wikipedia.org/wiki/Donald_Duck"/>
                     <name>Donald</name>
                     <birth_date type="datetime">1934-06-04T00:00:00</birth_date>
                     <first_film/>
                     <last_film></last_film>
-                    <species href="http://en.wikipedia.org/wiki/Pekin_duck"/>
+                    <species href="http://en.wikipedia.org/wiki/Pekin_duck">
+                        Pekin duck
+                    </species>
                     <created_by href="http://en.wikipedia.org/wiki/Walt_Disney">
                         <name>Walt Disney</name>
                         <cryopreserved type="boolean">true</cryopreserved>
@@ -34,7 +37,9 @@ class XMLParserTestCase(unittest.TestCase):
         """
         self.assertEqual(duck['name'], 'Donald')
         self.assertEqual(duck['first_film'], None)
+        self.assertTrue('@href' in duck['article'])
         self.assertTrue('@href' in duck['species'])
+        self.assertTrue(duck['species']['species'], 'Pekin duck')
         self.assertEqual(duck['created_by']['name'], 'Walt Disney')
         self.assertTrue(duck['created_by']['cryopreserved'])
 
