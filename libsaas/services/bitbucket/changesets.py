@@ -4,21 +4,25 @@ from libsaas.services import base
 from . import resource
 
 
-class Changesets(resource.BitBucketResource):
+class BaseChangesets(resource.BitBucketResource):
 
-    def __init__(self, parent, user, repo, commit=None):
-        self.parent = parent
-        self.user = user
-        self.repo = repo
-        self.commit = commit
+    path = 'changesets'
 
-    def get_url(self):
-        url = '{0}/{1}/{2}/changesets'.format(
-            self.parent.get_url(), self.user, self.repo)
-        if self.commit is not None:
-            url += '/{0}/diffstat'.format(self.commit)
 
-        return url
+class Changeset(BaseChangesets):
+
+    @base.apimethod
+    def diffstat(self):
+        """
+        Return the diffstat for this changeset
+        """
+        url = '{0}/diffstat'.format(self.get_url())
+        request = http.Request('GET', url)
+
+        return request, parsers.parse_json
+
+
+class Changesets(BaseChangesets):
 
     @base.apimethod
     def get(self, start='tip', limit=15):

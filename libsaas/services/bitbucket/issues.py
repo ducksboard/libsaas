@@ -1,202 +1,139 @@
 from libsaas import http, parsers
 from libsaas.services import base
 
-from . import resource
+from . import resource, followers
 
 
-class Issues(resource.BitBucketResource):
+class IssueComponentsBase(resource.BitBucketResource):
 
-    def __init__(self, parent, user, repo):
-        self.parent = parent
-        self.user = user
-        self.repo = repo
+    path = 'components'
 
-    def get_url(self):
-        url = '{0}/repositories/{1}/{2}/issues/'.format(self.parent.get_url(),
-                                                    self.user, self.repo)
-        return url
+
+class IssueComponents(IssueComponentsBase):
+    pass
+
+
+class IssueComponent(IssueComponentsBase):
+    pass
+
+
+class IssueCommentsBase(resource.BitBucketResource):
+
+    path = 'comments'
+
+
+class IssueComments(IssueCommentsBase):
+    pass
+
+
+class IssueComment(IssueCommentsBase):
+    pass
+
+
+class IssueMilestonesBase(resource.BitBucketResource):
+
+    path = 'milestones'
+
+
+class IssueMilestone(IssueMilestonesBase):
+    pass
+
+
+class IssueMilestones(IssueMilestonesBase):
+    pass
+
+
+class IssueVersionsBase(resource.BitBucketResource):
+
+    path = 'versions'
+
+
+class IssueVersion(IssueVersionsBase):
+    pass
+
+
+class IssueVersions(IssueVersionsBase):
+    pass
+
+
+class RepoIssuesBase(resource.BitBucketResource):
+
+    path = 'issues'
+
+
+class RepoIssue(RepoIssuesBase):
+
+    @base.resource(IssueComments)
+    def comments(self):
+        """
+        Return the resource corresponding to the comments of this issue.
+        """
+        return IssueComments(self)
+
+    @base.resource(IssueComment)
+    def comment(self, comment_id):
+        """
+        Return the resource corresponding to a single comment of this issue.
+        """
+        return IssueComment(self, comment_id)
+
+    @base.resource(followers.IssueFollowers)
+    def followers(self):
+        """
+        Return the resource corresponding to the followers of this issue.
+        """
+        return followers.IssueFollowers(self)
+
+
+class RepoIssues(RepoIssuesBase):
 
     @base.apimethod
-    def get(self, search=None, offset=None, limit=None):
+    def get(self, search=None, start=None, limit=None):
         """
-        Fetch issues
-
-        :var filter: https://confluence.atlassian.com/display/BITBUCKET/Issues
+        Fetch issues for this repository based on the filter parameters.
         """
-        params = resource.get_params(('search', 'offset', 'limit'), locals())
-        request = http.Request('GET', self.get_url(), params)
+        url = self.get_url()
+        params = base.get_params(
+            ('id', 'search', 'filter', 'start', 'limit'), locals())
 
-        return request, parsers.parse_json
+        return http.Request('GET', url, params), parsers.parse_json
 
     @base.apimethod
-    def components(self, id=None):
+    def search(self, search=None):
         """
-        Fetch components
+        Search through issues.
 
-        :var id: If setted just the component ID to return
+        :var search: the query string parameter.
         """
-        url = '{0}components/'.format(self.get_url())
-        if id is not None:
-            url += '{0}/'.format(id)
+        url = self.get_url()
+        params = base.get_params(('search', ), locals())
+
+        return http.Request('GET', url, params), parsers.parse_json
+
+    @base.apimethod
+    def filter(self, **kwargs):
+        """
+        Search through the issues applying filters.
+
+        Look at https://confluence.atlassian.com/display/BITBUCKET/Issues
+        to get a complete list of possible filters
+        """
+        def symbol(lenght):
+            return '&' if lenght else '?'
+
+        query = ''
+        for key, value in kwargs.iteritems():
+            if type(value) is tuple:
+                # Each element is treated as OR
+                for element in value:
+                    query += '{0}{1}={2}'.format(
+                                            symbol(len(query)), key, element)
+            elif type(value) is str:
+                query += '{0}{1}={2}'.format(symbol(len(query)), key, value)
+
+        url = '{0}{1}'.format(self.get_url(), query)
+
         return http.Request('GET', url), parsers.parse_json
-
-    @base.apimethod
-    def add_component(self, obj):
-        """
-        Add a component to the issues.
-
-        :var obj: a Python object with the needed params:
-            name: the component name
-        """
-        url = '{0}components/'.format(self.get_url())
-        request = http.Request('POST', url, self.wrap_object(obj))
-
-        return request, parsers.parse_json
-
-    @base.apimethod
-    def edit_component(self, id, obj):
-        """
-        Edit a component from the issues.
-
-        :var id: the component ID
-        :var obj: a Python object wuth the needed params:
-            name: the component name
-        """
-        url = '{0}components/{1}/'.format(self.get_url(), id)
-        request = http.Request('PUT', url, self.wrap_object(obj))
-
-        return request, parsers.parse_json
-
-    @base.apimethod
-    def delete_component(self, id):
-        """
-        Delete a component from the issues.
-
-        :var id: the component ID
-        """
-        url = '{0}components/{1}/'.format(self.get_url(), id)
-        request = http.Request('DELETE', url)
-
-        return request, parsers.parse_json
-
-    @base.apimethod
-    def milestones(self, id=None):
-        """
-        Fetch milestones
-
-        :var id: If setted just the component ID to return
-        """
-        url = '{0}milestones/'.format(self.get_url())
-        if id is not None:
-            url += '{0}/'.format(id)
-        return http.Request('GET', url), parsers.parse_json
-
-    @base.apimethod
-    def add_milestone(self, obj):
-        """
-        Add a milestone to the issues.
-
-        :var obj: a Python object with the needed params:
-            name: the milestone name
-        """
-        url = '{0}milestones/'.format(self.get_url())
-        request = http.Request('POST', url, self.wrap_object(obj))
-
-        return request, parsers.parse_json
-
-    @base.apimethod
-    def edit_milestone(self, id, obj):
-        """
-        Edit a milestone from the issues.
-
-        :var id: the milestone ID
-        :var obj: a Python object wuth the needed params:
-            name: the milestone name
-        """
-        url = '{0}milestones/{1}/'.format(self.get_url(), id)
-        request = http.Request('PUT', url, self.wrap_object(obj))
-
-        return request, parsers.parse_json
-
-    @base.apimethod
-    def delete_milestone(self, id):
-        """
-        Delete a milestone from the issues.
-
-        :var id: the milestone ID
-        """
-        url = '{0}milestones/{1}/'.format(self.get_url(), id)
-        request = http.Request('DELETE', url)
-
-        return request, parsers.parse_json
-
-    @base.apimethod
-    def versions(self, id=None):
-        """
-        Fetch versions
-
-        :var id: If setted just the component ID to return
-        """
-        url = '{0}versions/'.format(self.get_url())
-        if id is not None:
-            url += '{0}/'.format(id)
-        return http.Request('GET', url), parsers.parse_json
-
-    @base.apimethod
-    def add_version(self, obj):
-        """
-        Add a version to the issues.
-
-        :var obj: a Python object with the needed params:
-            name: the version name
-        """
-        url = '{0}versions/'.format(self.get_url())
-        request = http.Request('POST', url, self.wrap_object(obj))
-
-        return request, parsers.parse_json
-
-    @base.apimethod
-    def edit_version(self, id, obj):
-        """
-        Edit a version from the issues.
-
-        :var id: the version ID
-        :var obj: a Python object wuth the needed params:
-            name: the version name
-        """
-        url = '{0}versions/{1}/'.format(self.get_url(), id)
-        request = http.Request('PUT', url, self.wrap_object(obj))
-
-        return request, parsers.parse_json
-
-    @base.apimethod
-    def delete_version(self, id):
-        """
-        Delete a version from the issues.
-
-        :var id: the version ID
-        """
-        url = '{0}versions/{1}/'.format(self.get_url(), id)
-        request = http.Request('DELETE', url)
-
-        return request, parsers.parse_json
-
-
-class Issue(resource.BitBucketResource):
-
-    def __init__(self, parent, user, repo, id=None, comments=None):
-        self.parent = parent
-        self.user = user
-        self.repo = repo
-        self.id = id
-
-    def get_url(self):
-        url = '{0}/repositories/{1}/{2}/issues/'.format(
-                            self.parent.get_url(), self.user, self.repo)
-        if self.id is not None:
-            url += '{0}/'.format(self.id)
-
-        return url
 
     @base.apimethod
     def create(self, obj):
@@ -225,7 +162,7 @@ class Issue(resource.BitBucketResource):
                 duplicate
                 wontfix
             kind: The kinf of the issue. Valid kinds are:
-                bug
+                bug<
                 enhancement
                 proposal
                 task
@@ -234,69 +171,44 @@ class Issue(resource.BitBucketResource):
 
         return request, parsers.parse_json
 
-    @base.apimethod
-    def update(self, obj):
+    @base.resource(IssueComponents)
+    def components(self):
         """
-        Update an issue.
-
-        :var obj: a Python object with the needed params that are like create
+        Return the resource corresponding to the components of this issue.
         """
-        request = http.Request('PUT', self.get_url(), self.wrap_object(obj))
+        return IssueComponents(self)
 
-        return request, parsers.parse_json
-
-    @base.apimethod
-    def delete(self):
+    @base.resource(IssueComment)
+    def component(self, component_id):
         """
-        Delete an issue.
+        Return the resources corresponding to one component of this issue.
         """
-        request = http.Request('DELETE', self.get_url())
+        return IssueComponent(self, component_id)
 
-        return request, parsers.parse_json
-
-    @base.apimethod
-    def comments(self, id=None):
+    @base.resource(IssueMilestones)
+    def milestones(self):
         """
-        Get an issue comments
+        Return the resources corresponding to the milestones of this issue.
         """
-        url = '{0}comments/'.format(self.get_url())
-        if id is not None:
-            url += '{0}/'.format(id)
+        return IssueMilestones(self)
 
-        return http.Request('GET', url), parsers.parse_json
-
-    @base.apimethod
-    def add_comment(self, obj):
+    @base.resource(IssueMilestone)
+    def milestone(self, milestone_id):
         """
-        Add a new comment to an issue.
-
-        :var obj: a Python object with the needed params
+        Return the resource corresponding to one milestone of this issue.
         """
-        url = '{0}comments/'.format(self.get_url())
-        request = http.Request('POST', url, self.wrap_object(obj))
+        return IssueMilestone(self, milestone_id)
 
-        return request, parsers.parse_json
-
-    @base.apimethod
-    def edit_comment(self, id, obj):
+    @base.resource(IssueVersions)
+    def versions(self):
         """
-        Edit a comment from an issue.
-
-        :var id: The comment id for the issue.
-        :var obj: a Python object with the needed params
+        Return the resource corresponding to the versions of this issue.
         """
-        url = '{0}comments/{1}/'.format(self.get_url(), id)
-        request = http.Request('PUT', url, self.wrap_object(obj))
+        return IssueVersions(self)
 
-        return request, parsers.parse_json
-
-    @base.apimethod
-    def delete_comment(self, id):
+    @base.resource(IssueVersion)
+    def version(self, version_id):
         """
-        Remove a comment from an issue.
-
-        :var id: the ID of the comment to remove from the issue.
+        Return the resource corresponding to one version of this issue.
         """
-        url = '{0}comments/{1}/'.format(self.get_url(), id)
-
-        return http.Request('DELETE', url), parsers.parse_json
+        return IssueVersion(self, version_id)

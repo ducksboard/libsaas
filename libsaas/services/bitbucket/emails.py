@@ -16,23 +16,6 @@ class Emails(resource.BitBucketResource):
         return http.Request('PUT', '{0}/{1}'.format(
                 self.get_url(), address)), parsers.parse_json
 
-    @base.apimethod
-    def primary(self, address):
-        """
-        Set an email as de primary email.
-        """
-        return http.Request('POST', '{0}/{1}'.format(
-                self.get_url(), address),
-                self.wrap_object({'primary': 'true'})), parsers.parse_json
-
-    @base.apimethod
-    def delete(self, address):
-        """
-        Delete an email address from the user account
-        """
-        return http.Request('DELETE', '{0}/{1}'.format(
-            self.get_url(), address)), parsers.parse_json
-
 
 class Email(resource.BitBucketResource):
 
@@ -42,3 +25,19 @@ class Email(resource.BitBucketResource):
 
     def get_url(self):
         return '{0}/emails/{1}/'.format(self.parent.get_url(), self.email)
+
+    @base.apimethod
+    def primary(self):
+        """
+        Set this email as de primary email.
+        """
+        return http.Request('POST', '{0}'.format(self.get_url()),
+                self.wrap_object({'primary': 'true'})), parsers.parse_json
+
+    @base.apimethod
+    def delete(self):
+        """
+        Delete this email address from the user account
+        """
+        return http.Request('DELETE', '{0}'.format(
+                            self.get_url())), parsers.parse_json

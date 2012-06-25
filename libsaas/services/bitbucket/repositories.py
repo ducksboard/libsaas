@@ -1,10 +1,13 @@
 from libsaas import http, parsers
 from libsaas.services import base
 
-from . import resource
+from . import (
+    resource, privileges, issues, links, changesets, events, followers,
+    services
+)
 
 
-class Repositories(resource.BitBucketResource):
+class Repos(resource.BitBucketResource):
 
     def __init__(self, parent, user=None, repo=None):
         self.parent = parent
@@ -81,7 +84,7 @@ class Repositories(resource.BitBucketResource):
         return request, parsers.parse_json
 
 
-class Repository(resource.BitBucketResource):
+class Repo(resource.BitBucketResource):
 
     def __init__(self, parent, user, repo):
         self.parent = parent
@@ -89,21 +92,8 @@ class Repository(resource.BitBucketResource):
         self.repo = repo
 
     def get_url(self):
-        return '{0}/repositories/{1}/{2}/'.format(self.parent.get_url(),
+        return '{0}/repositories/{1}/{2}'.format(self.parent.get_url(),
                                                         self.user, self.repo)
-
-    @base.apimethod
-    def links(self, id=None):
-        """
-        Fetch repository links
-        """
-        links = 'links/'
-        if id is not None:
-            links += '{0}/'.format(id)
-
-        request = http.Request('GET', self.get_url() + links)
-
-        return request, parsers.parse_json
 
     @base.apimethod
     def add(self, obj):
@@ -141,3 +131,81 @@ class Repository(resource.BitBucketResource):
         request = http.Request('DELETE', url)
 
         return request, parsers.parse_json
+
+    @base.resource(privileges.RepoPrivileges)
+    def privileges(self, specific_user=None):
+        """
+        Return a resource corresponding to all privileges from this repo.
+        """
+        return privileges.RepoPrivileges(
+                                    self, self.user, self.repo, specific_user)
+
+    @base.resource(issues.RepoIssue)
+    def issue(self, id):
+        """
+        Return a resource corresponding to an issue from this repo.
+        """
+        return issues.RepoIssue(self, id)
+
+    @base.resource(issues.RepoIssues)
+    def issues(self):
+        """
+        Return a resource corresponding to all issues from this repo.
+        """
+        return issues.RepoIssues(self)
+
+    @base.resource(links.RepoLink)
+    def link(self, id):
+        """
+        Reurn a resource corresponding to a link from this repo.
+        """
+        return links.RepoLink(self, id)
+
+    @base.resource(links.RepoLinks)
+    def links(self):
+        """
+        Return a resouce corresponding to all the links from this repo.
+        """
+        return links.RepoLinks(self)
+
+    @base.resource(changesets.Changeset)
+    def changeset(self, changeset_md5):
+        """
+        Return a resource corresponding to a changeset for this repo.
+        """
+        return changesets.Changeset(self, changeset_md5)
+
+    @base.resource(changesets.Changesets)
+    def changesets(self):
+        """
+        Return a resource corresponding to all the changesets for this repo.
+        """
+        return changesets.Changesets(self)
+
+    @base.resource(events.RepoEvents)
+    def events(self):
+        """
+        Return a resource corresponding to all the events for this repo.
+        """
+        return events.RepoEvents(self)
+
+    @base.resource(followers.RepoFollowers)
+    def followers(self):
+        """
+        Return a resource corresponding to all the followers for this repo.
+        """
+        return followers.RepoFollowers(self)
+
+    @base.resource(services.Service)
+    def service(self, service_id):
+        """
+        Return a resource corresponding to one service for this repo.
+        """
+        return services.Service(self, service_id)
+
+    @base.resource(services.Services)
+    def services(self):
+        """
+        Return a resource corresponding to all the services for this repo.
+        """
+        return services.Services(self)
