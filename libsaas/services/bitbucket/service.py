@@ -47,7 +47,7 @@ class BitBucket(base.Resource):
         return emails.Emails(self)
 
     @base.resource(repositories.Repo)
-    def repo(self, user, repo=None):
+    def repo(self, user, repo):
         """
         Return the resource corresponding to one repository
         """
