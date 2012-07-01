@@ -18,6 +18,8 @@ class HTTPError(Exception):
     def __repr__(self):
         return '<{0} code {1}>'.format(self.__class__.__name__, self.code)
 
+    __str__ = __repr__
+
 
 class Request(object):
     """
