@@ -32,7 +32,7 @@ class Changesets(BaseChangesets):
         :var start: Changesets start default is 'tip'
         :var limit: Limit of changesets, default is 15
         """
-        params = resource.get_params(('start', 'limit'), locals())
+        params = base.get_params(('start', 'limit'), locals())
         request = http.Request('GET', self.get_url(), params)
 
         return request, parsers.parse_json
