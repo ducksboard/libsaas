@@ -1,10 +1,7 @@
-import json
-
-from libsaas import http
 from libsaas.filters import auth
 from libsaas.services import base
 
-from . import emails, groups, repositories, invitations, users
+from . import emails, repositories, users
 
 
 class BitBucket(base.Resource):
@@ -23,24 +20,17 @@ class BitBucket(base.Resource):
         self.apiroot = 'https://api.bitbucket.org/1.0'
 
         self.add_filter(auth.BasicAuth(username, password))
-        self.add_filter(self.use_json)
+        # although not consistent throughout the documentation, BitBucket
+        # resources seem to end with a trailing slash, regardless of whether
+        # they represent a single object or a collection
+        self.add_filter(self.add_trailing_slash)
 
-    def add_authorization(self, request):
-        request.headers['Authorization'] = 'token {0}'.format(self.oauth_token)
-
-    def use_json(self, request):
-        if request.method.upper() not in http.URLENCODE_METHODS:
-            request.params = json.dumps(request.params)
+    def add_trailing_slash(self, request):
+        if not '?' in request.uri and not request.uri.endswith('/'):
+            request.uri += '/'
 
     def get_url(self):
         return self.apiroot
-
-    @base.resource(invitations.Invitations)
-    def invitations(self, user, repo):
-        """
-        Perform invitations.
-        """
-        return invitations.Invitations(self, user, repo)
 
     @base.resource(emails.Email)
     def email(self, email_id):
@@ -56,24 +46,6 @@ class BitBucket(base.Resource):
         """
         return emails.Emails(self)
 
-    @base.resource(groups.GroupPrivileges)
-    def group_privileges(self, user=None, group=None):
-        return groups.GroupPrivileges(self, user, group)
-
-    @base.resource(groups.Group)
-    def group(self, user, group=None):
-        """
-        Return the resource corresponding to one group
-        """
-        return groups.Group(self, user, group)
-
-    @base.resource(groups.Groups)
-    def groups(self, user):
-        """
-        Return the resource corresponding to all the groups
-        """
-        return groups.Groups(self, user)
-
     @base.resource(repositories.Repo)
     def repo(self, user, repo=None):
         """
@@ -82,11 +54,11 @@ class BitBucket(base.Resource):
         return repositories.Repo(self, user, repo)
 
     @base.resource(repositories.Repos)
-    def repos(self, user=None, repo=None):
+    def repos(self):
         """
         Return the resource corresponding to all the repositories
         """
-        return repositories.Repos(self, user, repo)
+        return repositories.Repos(self)
 
     @base.resource(users.User)
     def user(self, user_id=None):

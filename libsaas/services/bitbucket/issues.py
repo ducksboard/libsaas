@@ -1,12 +1,15 @@
-from libsaas import http, parsers
+from libsaas import http, parsers, port
 from libsaas.services import base
 
-from . import resource, followers
+from . import resource
 
 
 class IssueComponentsBase(resource.BitBucketResource):
 
     path = 'components'
+
+    def wrap_object(self, obj):
+        return {'name': obj}
 
 
 class IssueComponents(IssueComponentsBase):
@@ -21,6 +24,9 @@ class IssueCommentsBase(resource.BitBucketResource):
 
     path = 'comments'
 
+    def wrap_object(self, obj):
+        return {'content': obj}
+
 
 class IssueComments(IssueCommentsBase):
     pass
@@ -34,6 +40,9 @@ class IssueMilestonesBase(resource.BitBucketResource):
 
     path = 'milestones'
 
+    def wrap_object(self, obj):
+        return {'name': obj}
+
 
 class IssueMilestone(IssueMilestonesBase):
     pass
@@ -46,6 +55,9 @@ class IssueMilestones(IssueMilestonesBase):
 class IssueVersionsBase(resource.BitBucketResource):
 
     path = 'versions'
+
+    def wrap_object(self, obj):
+        return {'name': obj}
 
 
 class IssueVersion(IssueVersionsBase):
@@ -63,6 +75,15 @@ class RepoIssuesBase(resource.BitBucketResource):
 
 class RepoIssue(RepoIssuesBase):
 
+    @base.apimethod
+    def followers(self):
+        """
+        Fetch the followers of this issue.
+        """
+        request = http.Request('GET', '{0}/followers/'.format(self.get_url()))
+
+        return request, parsers.parse_json
+
     @base.resource(IssueComments)
     def comments(self):
         """
@@ -76,13 +97,6 @@ class RepoIssue(RepoIssuesBase):
         Return the resource corresponding to a single comment of this issue.
         """
         return IssueComment(self, comment_id)
-
-    @base.resource(followers.IssueFollowers)
-    def followers(self):
-        """
-        Return the resource corresponding to the followers of this issue.
-        """
-        return followers.IssueFollowers(self)
 
 
 class RepoIssues(RepoIssuesBase):
@@ -111,28 +125,35 @@ class RepoIssues(RepoIssuesBase):
         return http.Request('GET', url, params), parsers.parse_json
 
     @base.apimethod
-    def filter(self, **kwargs):
+    def filter(self, filters):
         """
         Search through the issues applying filters.
 
         Look at https://confluence.atlassian.com/display/BITBUCKET/Issues
-        to get a complete list of possible filters
+        to get a complete list of possible filters.
+
+        :var filters: A dictionary of filters. Keys are strings corresponding
+            to the filter names and values are ether string filter values or
+            tuples, in which case their conditions are implicitly ORed. For
+            example, {"title": ("~one", "~two")} would mean issues with the
+            title containing either "one" or "two"
+        :vartype filters: dict of str to str or tuple of str
         """
-        def symbol(lenght):
-            return '&' if lenght else '?'
+        # because http.Request needs params to be a dict of strings to strings
+        # (roughly) and since BitBucket wants repeated parameters to express
+        # OR, we'll do the quoting by hand ourselves
+        def flatten_conditions(filters):
+            for key, val in filters.items():
+                if isinstance(val, (list, tuple)):
+                    for v in val:
+                        yield (port.to_b(key), port.to_b(v))
+                else:
+                    yield (port.to_b(key), port.to_b(val))
 
-        query = ''
-        for key, value in kwargs.iteritems():
-            if type(value) is tuple:
-                # Each element is treated as OR
-                for element in value:
-                    query += '{0}{1}={2}'.format(
-                                            symbol(len(query)), key, element)
-            elif type(value) is str:
-                query += '{0}{1}={2}'.format(symbol(len(query)), key, value)
+        to_encode = tuple(flatten_conditions(filters))
+        qs = port.urlencode(to_encode)
 
-        url = '{0}{1}'.format(self.get_url(), query)
-
+        url = '{0}/?{1}'.format(self.get_url(), qs)
         return http.Request('GET', url), parsers.parse_json
 
     @base.apimethod
@@ -162,7 +183,7 @@ class RepoIssues(RepoIssuesBase):
                 duplicate
                 wontfix
             kind: The kinf of the issue. Valid kinds are:
-                bug<
+                bug
                 enhancement
                 proposal
                 task

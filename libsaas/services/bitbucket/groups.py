@@ -4,138 +4,56 @@ from libsaas.services import base
 from . import resource
 
 
-class Groups(resource.BitBucketResource):
+class GroupMembersBase(resource.BitBucketResource):
 
-    def __init__(self, parent, user):
-        self.parent = parent
-        self.user = user
+    path = 'members'
+
+
+class GroupMember(GroupMembersBase):
+    pass
+
+
+class GroupMembers(GroupMembersBase):
+
+    @base.apimethod
+    def create(self, username):
+        # BitBucket uses PUT to create new group members
+        url = '{0}/{1}/'.format(self.get_url(), username)
+        return http.Request('PUT', url, '*'), parsers.parse_json
+
+
+class GroupsBase(resource.BitBucketResource):
+
+    path = 'groups'
 
     def get_url(self):
-        url = '{0}/groups'.format(self.parent.get_url())
-        if self.user is not None:
-            url += '/{0}'.format(self.user)
+        # the groups resource puts the 'groups' part of the path before the
+        # user part
+        if self.object_id is None:
+            return '{0}/{1}/{2}'.format(
+                self.parent.parent.get_url(), self.path, self.parent.user_id)
 
-        return url
+        return '{0}/{1}/{2}/{3}'.format(
+            self.parent.parent.get_url(), self.path,
+            self.parent.user_id, self.object_id)
 
 
-class Group(resource.BitBucketResource):
+class Groups(GroupsBase):
+    pass
 
-    def __init__(self, parent, user, group=None):
-        self.parent = parent
-        self.user = user
-        self.group = group
 
-    def get_url(self):
-        url = '{0}/groups'.format(self.parent.get_url())
-        if self.user is not None:
-            url += '/{0}'.format(self.user)
-        if self.group is not None:
-            url += '/{0}'.format(self.group)
+class Group(GroupsBase):
 
-        return url
-
-    @base.apimethod
-    def get(self):
+    @base.resource(GroupMember)
+    def member(self, member):
         """
-        Fetch groups
-
-        :var group: Group name where to search
+        Return the resource corresponding to a member of the group.
         """
-        url = '{0}/members'.format(self.get_url())
-        request = http.Request('GET', url)
+        return GroupMember(self, member)
 
-        return request, parsers.parse_json
-
-    @base.apimethod
-    def create(self, obj):
+    @base.resource(GroupMembers)
+    def members(self):
         """
-        Create a new Group.
-
-        :var obj: a Python object with the needed params
+        Return the resource corresponding to all members of the group.
         """
-        request = http.Request('POST', self.get_url(), self.wrap_object(obj))
-
-        return request, parsers.parse_json
-
-    @base.apimethod
-    def update(self, obj):
-        """
-        Update this Group.
-
-        :var obj: a Python object with the update params
-        """
-        request = http.Request('PUT', self.get_url(), self.wrap_object(obj))
-
-        return request, parsers.parse_json
-
-    @base.apimethod
-    def delete(self, username=None):
-        """
-        Delete this Group.
-
-        :var username: Optional Python string to delete an user from a group
-        """
-        url = self.get_url()
-        if username is not None:
-            url += '/members/{0}'.format(username)
-        request = http.Request('DELETE', url)
-
-        return request, parsers.parse_json
-
-    @base.apimethod
-    def add(self, username):
-        """
-        Adds an user to the Group
-
-        :var username: a Python string that represents the group name
-        """
-        url = '{0}/members/{1}'.format(self.get_url(), username)
-        request = http.Request('PUT', url)
-
-        return request, parsers.parse_json
-
-
-class GroupPrivileges(resource.BitBucketResource):
-
-    def __init__(self, parent, user=None, group=None):
-        self.parent = parent
-        self.user = user
-        self.group = group
-
-    def get_url(self):
-        url = '{0}/group-privileges'.format(self.parent.get_url())
-        if self.user is not None:
-            url += '/{0}'.format(self.user)
-        if self.group is not None:
-            url += '/{0}'.format(self.group)
-
-        url += '/'
-
-        return url
-
-    @base.apimethod
-    def get(self, filter=None, private=False):
-        """
-        Fetch group privileges
-
-        :var filter: Can be one of read|write|admin to limit results
-        :var private: Can be used to only include private repositories
-        """
-        params = resource.get_params(('filter', 'private'), locals())
-        request = http.Request('GET', self.get_url(), params)
-
-        return request, parsers.parse_json
-
-    @base.apimethod
-    def grant(self, group=None, privilege='read'):
-        """
-        Grant privileges to users to a repository
-
-        :var privilege: The privilege to assign, can be read|write|admin
-        """
-        url = self.get_url()
-        if privilege is not None and group is not None:
-            url += '/{0}'.format(group)
-        request = http.Request('PUT', url, privilege)
-
-        return request, parsers.parse_json
+        return GroupMembers(self)
