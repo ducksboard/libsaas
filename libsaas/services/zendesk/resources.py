@@ -1,4 +1,4 @@
-from libsaas import http, parsers
+from libsaas import http, parsers, port
 from libsaas.services import base
 
 
@@ -227,7 +227,7 @@ class SatisfactionRating(SatisfactionRatingsBase):
     pass
 
 
-class Views(ZendeskResource):
+class ViewsBase(ZendeskResource):
 
     path = 'views'
 
@@ -240,6 +240,9 @@ class Views(ZendeskResource):
     def delete(self, *args, **kwargs):
         raise base.MethodNotSupported()
 
+
+class Views(ViewsBase):
+
     @base.apimethod
     def active(self, page=None, per_page=None):
         """
@@ -249,3 +252,101 @@ class Views(ZendeskResource):
         params = base.get_params(('page', 'per_page'), locals())
 
         return http.Request('GET', url, params), parsers.parse_json
+
+    @base.apimethod
+    def count_many(self, ids):
+        """
+        Calculates the size of the view in terms of number of tickets the view
+        will return. Only returns values for personal and shared views
+        accessible to the user performing the request.
+
+        :var ids: List of view ids
+        :vartype ids: tuple of int
+        """
+
+        def serializer(val):
+            if isinstance(val, (list, tuple)):
+                return ','.join(map(port.to_b, val))
+            return base.serialize_param(val)
+
+        url = '{0}/{1}'.format(self.get_url(), 'count_many')
+        params = base.get_params(('ids',), locals(), serializer)
+        return http.Request('GET', url, params), parsers.parse_json
+
+    @base.apimethod
+    def preview(self, conditions, columns=None, group_by=None,
+                group_order=None, sort_by=None, sort_order=None):
+        """
+        Views can be previewed by constructing the conditions
+        in the proper format. See {0}.
+
+        :var conditions: A representation of the conditions that constitute the
+            view. See {1}.
+        :vartype conditions: dict
+
+        :var columns: The ticket fields to display. System fields are looked up
+            by name, custom fields by title or id.
+        :vartype columns: tuple of int or str
+
+        :var group_by: When present, the field by which the tickets are grouped
+        :vartype group_by: str
+
+        :var group_order: The direction the tickets are grouped.
+            May be one of 'asc' or 'desc'
+        :vartype group_order: str
+
+        :var sort_by: The field used for sorting. This will either be a title
+            or a custom field id.
+        :vartype sort_by: str
+
+        :var sort_order: The direction the tickets are sorted. May be one of
+            'asc' or 'desc'
+        :vartype sort_order: str
+        """
+
+        url = '{0}/{1}'.format(self.get_url(), 'preview')
+        params = base.get_params(('columns', 'group_by', 'group_order',
+                                  'sort_by', 'sort_order'), locals())
+
+        view = {'view': conditions.copy()}
+        view['view'].update({'output': params})
+
+        request = http.Request('POST', url, view)
+        return request, parsers.parse_json
+
+    preview.__doc__ = preview.__doc__.format(
+        'http://developer.zendesk.com/documentation/'
+        'rest_api/views.html#previewing-views',
+        'http://developer.zendesk.com/documentation/'
+        'rest_api/views.html#conditions')
+
+
+class View(ViewsBase):
+
+    @base.apimethod
+    def execute(self, sort_by=None, sort_order=None):
+        """
+        Get the view output. View output sorting can be controlled by passing
+        the sort_by and sort_order parameters.
+
+        :var sort_by: The field used for sorting. This will either be a title
+            or a custom field id.
+        :vartype sort_by: str
+
+        :var sort_order: The direction the tickets are sorted. May be one of
+            'asc' or 'desc'
+        :vartype sort_order: str
+        """
+        url = '{0}/{1}'.format(self.get_url(), 'execute')
+        params = base.get_params(('sort_by', 'sort_order'), locals())
+
+        return http.Request('GET', url, params), parsers.parse_json
+
+    @base.apimethod
+    def count(self):
+        """
+        Returns the ticket count for a single view.
+        """
+        url = '{0}/{1}'.format(self.get_url(), 'count')
+
+        return http.Request('GET', url), parsers.parse_json
