@@ -13,6 +13,9 @@ class ZendeskTestCase(unittest.TestCase):
 
         self.service = zendesk.Zendesk('mydomain', 'user', 'pass')
 
+    def serialize(self, data):
+        return json.dumps(data).encode('utf-8')
+
     def expect(self, method=None, uri=None, params=None, headers=None):
         if method:
             self.assertEqual(method, self.executor.request.method)
@@ -135,3 +138,24 @@ class ZendeskTestCase(unittest.TestCase):
 
         self.service.views().active()
         self.expect('GET', '/views/active.json')
+
+        self.service.views().count_many([1, 2])
+        self.expect('GET', '/views/count_many.json', {'ids': '1,2'})
+
+        conditions = {
+            "all": [
+                {"operator": "is",
+                 "value": ["open"],
+                 "field": "status"}
+            ]
+        }
+        self.service.views().preview(conditions, columns=['subject'])
+        conditions.update({'output': {'columns': ['subject']}})
+        self.expect('POST', '/views/preview.json',
+                    self.serialize({'view': conditions}))
+
+        self.service.view(1).count()
+        self.expect('GET', '/views/1/count.json')
+
+        self.service.view(1).execute(sort_by='status')
+        self.expect('GET', '/views/1/execute.json', {'sort_by': 'status'})
