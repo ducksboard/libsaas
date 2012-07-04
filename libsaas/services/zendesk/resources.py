@@ -350,3 +350,35 @@ class View(ViewsBase):
         url = '{0}/{1}'.format(self.get_url(), 'count')
 
         return http.Request('GET', url), parsers.parse_json
+
+
+class Exports(ZendeskResource):
+
+    path = 'exports'
+
+    def get(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
+    def create(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
+    def update(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
+    def delete(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
+    @base.apimethod
+    def tickets(self, start_time):
+        """
+        Retrieve tickets that changed in Zendesk "since last you asked"
+
+        :var start_time:  The time of the oldest ticket you are interested in.
+            Tickets modified on or since this time will be returned. The start
+            time is provided as the number of seconds since epoch UTC.
+        :vartype start_time: int
+        """
+        url = '{0}/{1}'.format(self.get_url(), 'tickets')
+        params = base.get_params(('start_time',), locals())
+
+        return http.Request('GET', url, params), parsers.parse_json

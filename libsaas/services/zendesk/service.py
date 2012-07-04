@@ -155,3 +155,10 @@ class Zendesk(base.Resource):
         Return the resource corresponding to a single view.
         """
         return resources.View(self, view_id)
+
+    @base.resource(resources.Exports)
+    def exports(self):
+        """
+        Return the resource corresponding to exports.
+        """
+        return resources.Exports(self)
