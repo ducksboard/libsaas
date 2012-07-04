@@ -1,4 +1,4 @@
-from libsaas import http, parsers, port
+from libsaas import http, parsers
 from libsaas.services import base
 
 from . import resource

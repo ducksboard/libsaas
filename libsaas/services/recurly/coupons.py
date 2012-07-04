@@ -36,6 +36,7 @@ class Coupon(CouponsBase):
 
     pass
 
+
 class CouponRedemption(CouponsBase):
 
     path = 'redemption'

@@ -1,4 +1,3 @@
-from libsaas import http, parsers
 from libsaas.services import base
 
 from . import resource

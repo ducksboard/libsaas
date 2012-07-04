@@ -40,6 +40,3 @@ class Adjustment(AdjustmentsBase):
 
     def update(self, *args, **kwargs):
         raise base.MethodNotSupported()
-
-
-

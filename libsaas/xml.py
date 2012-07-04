@@ -105,7 +105,7 @@ def parse_xml(body, code, headers):
         <first_film/>
         <last_film></last_film>
         <species href="http://en.wikipedia.org/wiki/Pekin_duck"/>
-        <created_by href="http://en.wikipedia.org/wiki/Walt_Disney">
+        <created_by href="http://en.wikipedia.org/wiki/Disney">
             <name>Walt Disney</name>
             <cryopreserved type="boolean">true</cryopreserved>
         </created_by>
@@ -122,7 +122,7 @@ def parse_xml(body, code, headers):
     </duck>
 
     {'duck': {'birth_date': '1934-06-04T00:00:00',
-              'created_by': {'@href': 'http://en.wikipedia.org/wiki/Walt_Disney',
+              'created_by': {'@href': 'http://en.wikipedia.org/wiki/Disney',
                              'cryopreserved': True,
                              'name': 'Walt Disney'},
               'family': {'nephew': [{'name': 'Huey'},
@@ -175,7 +175,7 @@ def dict_to_xml(obj):
     3.  keys starting with '@' became an attribute.
 
     {'duck': {'birth_date': '1934-06-04T00:00:00',
-              'created_by': {'@href': 'http://en.wikipedia.org/wiki/Walt_Disney',
+              'created_by': {'@href': 'http://en.wikipedia.org/wiki/Disney',
                              'cryopreserved': True,
                              'name': 'Walt Disney'},
               'family': {'nephew': [{'name': 'Huey'},
@@ -205,7 +205,7 @@ def dict_to_xml(obj):
         </family>
         <last_film />
         <first_film />
-        <created_by href="http://en.wikipedia.org/wiki/Walt_Disney">
+        <created_by href="http://en.wikipedia.org/wiki/Disney">
             <cryopreserved>True</cryopreserved>
             <name>Walt Disney</name>
         </created_by>
@@ -224,4 +224,3 @@ def dict_to_xml(obj):
     element_for_value(value, root)
     return (b'<?xml version="1.0" encoding="UTF-8"?>' +
                 etree.tostring(root, encoding='utf-8'))
-

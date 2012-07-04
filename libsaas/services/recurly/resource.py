@@ -50,4 +50,3 @@ class RecurlyResource(base.RESTResource):
         request = http.Request('PUT', self.get_url(), self.wrap_object(obj))
 
         return request, parsers.parse_xml
-

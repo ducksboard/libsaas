@@ -9,13 +9,13 @@ class XMLParserTestCase(unittest.TestCase):
     xml_duck = b'''<duck>
                     <article href="http://en.wikipedia.org/wiki/Donald_Duck"/>
                     <name>Donald</name>
-                    <birth_date type="datetime">1934-06-04T00:00:00</birth_date>
+                    <birth_date type="datetime">1934-06-04</birth_date>
                     <first_film/>
                     <last_film></last_film>
                     <species href="http://en.wikipedia.org/wiki/Pekin_duck">
                         Pekin duck
                     </species>
-                    <created_by href="http://en.wikipedia.org/wiki/Walt_Disney">
+                    <created_by href="http://en.wikipedia.org/wiki/Disney">
                         <name>Walt Disney</name>
                         <cryopreserved type="boolean">true</cryopreserved>
                     </created_by>

@@ -4,7 +4,7 @@ from datetime import date
 
 from libsaas import xml
 from libsaas.executors import test_executor
-from libsaas.services import base, recurly
+from libsaas.services import recurly
 
 
 class RecurlyTestCase(unittest.TestCase):
@@ -219,8 +219,8 @@ class RecurlyTestCase(unittest.TestCase):
 
         today = '{0}'.format(date.today())
         self.service.subscription('uuid').postpone(today)
-        self.expect('PUT',
-                    '/subscriptions/uuid/postpone?next_renewal_date={0}'.format(today))
+        self.expect('PUT', ('/subscriptions/uuid/postpone?'
+                            'next_renewal_date={0}').format(today))
 
     def test_transactions(self):
         self.service.transactions().get()
@@ -247,4 +247,3 @@ class RecurlyTestCase(unittest.TestCase):
 
         self.service.transaction('uuid').refund(amount_in_cents=1000)
         self.expect('DELETE', '/transactions/uuid?amount_in_cents=1000')
-

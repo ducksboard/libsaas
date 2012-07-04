@@ -91,6 +91,7 @@ Update the name of the milestone.
 :vartype obj: str
 """
 
+
 class IssueMilestone(IssueMilestonesBase):
     pass
 

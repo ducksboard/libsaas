@@ -54,7 +54,6 @@ class Transaction(TransactionsBase):
         if params:
             url = url + '?' + http.urlencode_any(params)
 
-
         request = http.Request('DELETE', url)
 
         return request, parsers.parse_empty
@@ -64,4 +63,3 @@ class AccountTransactions(TransactionsBase):
 
     def create(self, *args, **kwargs):
         raise base.MethodNotSupported()
-
