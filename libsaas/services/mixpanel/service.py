@@ -102,7 +102,7 @@ class Mixpanel(base.Resource):
             properties = {}
         properties['token'] = self.token
 
-        properites = dict((port.to_u(key), port.to_u(value))for
+        properties = dict((port.to_u(key), port.to_u(value))for
                           key, value in properties.items())
 
         params = base.get_params(('ip', 'test'), locals(),
