@@ -135,7 +135,7 @@ class TwistedExecutor(object):
         return StringBodyProducer(payload)
 
     def prepare_headers(self, headers):
-        prepared = {name: [val] for name, val in headers.items()}
+        prepared = dict((name, [val]) for name, val in headers.items())
         return http_headers.Headers(prepared)
 
     def got_response(self, response, parser):
