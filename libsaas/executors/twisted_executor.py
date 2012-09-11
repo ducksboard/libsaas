@@ -72,7 +72,8 @@ class HTTPResponseProtocol(protocol.Protocol):
             return
 
         try:
-            headers = dict(self.headers.getAllRawHeaders())
+            headers = dict((k.lower(), v[0])
+                           for k, v in self.headers.getAllRawHeaders())
             ret = self.parser(self.buffer.getvalue(), self.code, headers)
         except:
             self.finished.errback()
