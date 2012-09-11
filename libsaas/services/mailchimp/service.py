@@ -98,9 +98,6 @@ class Mailchimp(base.Resource):
 
     @base.apimethod
     def campaignContent(self, cid, for_archive=True):
-        """
-        bla blaa
-        """
         return self.method_call(locals())
 
     @base.apimethod
