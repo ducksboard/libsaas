@@ -1,8 +1,9 @@
+import contextlib
 import inspect
 from functools import update_wrapper
 
 from libsaas import http, parsers
-from libsaas.executors import current
+from libsaas.executors import base, current
 
 decorator = None
 try:
@@ -95,6 +96,50 @@ def resource(*klasses):
         return f
 
     return wrapper
+
+
+@contextlib.contextmanager
+def extract_request():
+    """
+    A context manager that helps extracting the Request object from a function
+    decorated with the apimethod decorator.
+
+    Usage is:
+
+       with extract_request():
+           request = self.decorated_method()
+
+    It works by temporarily substituting the executor with a dummy one that
+    just returns the request unchanged.
+    """
+    prev = base.current_executor()
+    try:
+        base.use_executor(lambda request, _: request)
+        yield
+    finally:
+        base.use_executor(prev)
+
+
+@contextlib.contextmanager
+def change_parser(parser):
+    """
+    A context manager that allows overriding the function that will be used to
+    parse the response.
+
+    Usage is
+
+       with change_parser(new_parser):
+           result = service.resource().method()
+
+    It works by temporarily substituting the executor with one that replaces
+    the provided parser function with the one the context manager received.
+    """
+    prev = base.current_executor()
+    try:
+        base.use_executor(lambda request, _: prev(request, parser))
+        yield
+    finally:
+        base.use_executor(prev)
 
 
 def methods_with_attribute(cls, attribute):
