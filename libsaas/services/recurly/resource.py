@@ -2,6 +2,12 @@ from libsaas import http, parsers
 from libsaas.services import base
 
 
+def parse_count(body, count, headers):
+    # default to 1 if the header is not present - usually it means that the
+    # endpoint returns a single resource and not a collection
+    return int(headers.get('x-records', 1))
+
+
 class RecurlyResource(base.RESTResource):
 
     @base.apimethod
@@ -22,6 +28,24 @@ class RecurlyResource(base.RESTResource):
         request = http.Request('GET', self.get_url(), params)
 
         return request, parsers.parse_xml
+
+    @base.apimethod
+    def count(self, *args, **kwargs):
+        """
+        Fetch an integer count of the number of objects of a collection. This
+        is an absolute number, regardless of paging limits, so use this if you
+        want to tally up a collection instead of iterating through all of its
+        objects.
+
+        For single-object resources, returns one.
+
+        Accepts the same arguments as `get`.
+        """
+        with base.extract_request():
+            kwargs['per_page'] = 1
+            request = self.get(*args, **kwargs)
+
+        return request, parse_count
 
     @base.apimethod
     def create(self, obj):
