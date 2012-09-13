@@ -2,7 +2,10 @@ from libsaas import http, parsers
 from libsaas.services import base
 
 
-def parse_count(body, count, headers):
+def parse_count(body, code, headers):
+    if not 200 <= code < 300:
+        raise http.HTTPError(body, code, headers)
+
     # default to 1 if the header is not present - usually it means that the
     # endpoint returns a single resource and not a collection
     return int(headers.get('x-records', 1))

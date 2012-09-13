@@ -2,7 +2,7 @@ import unittest
 
 from datetime import date
 
-from libsaas import xml
+from libsaas import http, xml
 from libsaas.executors import test_executor
 from libsaas.services import recurly
 
@@ -247,3 +247,22 @@ class RecurlyTestCase(unittest.TestCase):
 
         self.service.transaction('uuid').refund(amount_in_cents=1000)
         self.expect('DELETE', '/transactions/uuid?amount_in_cents=1000')
+
+    def test_count(self):
+        self.executor.set_response(
+            b'<?xml version="1.0" encoding="UTF-8"?><root/>', 200,
+            {'x-records': '10'})
+        res = self.service.accounts().count(state='active')
+        self.expect('GET', '/accounts', {'state': 'active', 'per_page': 1})
+        self.assertEqual(res, 10)
+
+        # no X-Records header, the count should come default to 1
+        self.executor.set_response(
+            b'<?xml version="1.0" encoding="UTF-8"?><root/>', 200, {})
+        res = self.service.accounts().count(state='active')
+        self.assertEqual(res, 1)
+
+        # no 2xx response, there should be an exception
+        self.executor.set_response(b'boom', 500, {})
+        self.assertRaises(http.HTTPError,
+                          self.service.accounts().count)
