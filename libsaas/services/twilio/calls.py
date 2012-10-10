@@ -84,9 +84,7 @@ class Calls(CallsBase):
             paging.
         :vartype AfterSid: str
         """
-        params = resource.get_params(
-            ('To', 'From', 'Status', 'StartTime', 'StartTimeGT', 'StartTimeLT',
-             'ParentCallSid', 'Page', 'PageSize', 'AfterSid'), locals())
+        params = resource.get_params(None, locals())
         request = http.Request('GET', self.get_url(), params)
 
         return request, parsers.parse_json

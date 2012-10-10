@@ -40,8 +40,7 @@ class Members(MembersBase):
             paging.
         :vartype AfterSid: str
         """
-        params = resource.get_params(
-            ('Page', 'PageSize', 'AfterSid'), locals())
+        params = resource.get_params(None, locals())
         request = http.Request('GET', self.get_url(), params)
 
         return request, parsers.parse_json
@@ -95,8 +94,7 @@ class Queues(QueuesBase):
             paging.
         :vartype AfterSid: str
         """
-        params = resource.get_params(
-            ('Page', 'PageSize', 'AfterSid'), locals())
+        params = resource.get_params(None, locals())
         request = http.Request('GET', self.get_url(), params)
 
         return request, parsers.parse_json

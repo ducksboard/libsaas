@@ -62,10 +62,7 @@ class Messages(MessagesBase):
             paging.
         :vartype AfterSid: str
         """
-        params = resource.get_params(
-            ('To', 'From', 'DateSent', 'DateSentGT', 'DateSentLT',
-             'Page', 'PageSize', 'AfterSid'),
-            locals())
+        params = resource.get_params(None, locals())
         request = http.Request('GET', self.get_url(), params)
 
         return request, parsers.parse_json
@@ -117,9 +114,7 @@ class ShortCodes(ShortCodesBase):
             paging.
         :vartype AfterSid: str
         """
-        params = resource.get_params(
-            ('ShortCode', 'FriendlyName', 'Page', 'PageSize', 'AfterSid'),
-            locals())
+        params = resource.get_params(None, locals())
         request = http.Request('GET', self.get_url(), params)
 
         return request, parsers.parse_json

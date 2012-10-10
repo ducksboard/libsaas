@@ -78,10 +78,7 @@ class AvailablePhoneNumbersLocal(AvailablePhoneNumbersBase):
             (US and Canada only)
         :vartype InDistance: int
         """
-        params = resource.get_params(
-            ('AreaCode', 'Contains', 'InRegion', 'InPostalCode', 'NearLatLong',
-             'NearNumber', 'InLata', 'InRateCenter', 'Distance'),
-            locals())
+        params = resource.get_params(None, locals())
         request = http.Request('GET', self.get_url(), params)
 
         return request, parsers.parse_json
@@ -104,7 +101,7 @@ class AvailablePhoneNumbersTollFree(AvailablePhoneNumbersBase):
             The `*` character will match any single digit.
         :vartype Contains: str
         """
-        params = resource.get_params(('AreaCode', 'Contains'), locals())
+        params = resource.get_params(None, locals())
         request = http.Request('GET', self.get_url(), params)
 
         return request, parsers.parse_json
@@ -178,9 +175,7 @@ class IncomingPhoneNumbersMixin(IncomingPhoneNumbersBase):
             paging.
         :vartype AfterSid: str
         """
-        params = resource.get_params(
-            ('PhoneNumber', 'FriendlyName', 'Page', 'PageSize', 'AfterSid'),
-            locals())
+        params = resource.get_params(None, locals())
         request = http.Request('GET', self.get_url(), params)
 
         return request, parsers.parse_json
@@ -254,9 +249,7 @@ class OutgoingCallerIds(OutgoingCallerIdsBase):
             paging.
         :vartype AfterSid: str
         """
-        params = resource.get_params(
-            ('PhoneNumber', 'FriendlyName', 'Page', 'PageSize', 'AfterSid'),
-            locals())
+        params = resource.get_params(None, locals())
         request = http.Request('GET', self.get_url(), params)
 
         return request, parsers.parse_json

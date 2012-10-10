@@ -59,9 +59,7 @@ class Notifications(NotificationsBase):
             paging.
         :vartype AfterSid: str
         """
-        params = resource.get_params(
-            ('Log', 'MessageDate', 'MessageDateGT', 'MessageDateLT',
-             'Page', 'PageSize', 'AfterSid'), locals())
+        params = resource.get_params(None, locals())
         request = http.Request('GET', self.get_url(), params)
 
         return request, parsers.parse_json

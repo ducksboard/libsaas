@@ -41,8 +41,7 @@ class Participants(ParticipantsBase):
             paging.
         :vartype AfterSid: str
         """
-        params = resource.get_params(
-            ('Muted', 'Page', 'PageSize', 'AfterSid'), locals())
+        params = resource.get_params(None, locals())
         request = http.Request('GET', self.get_url(), params)
 
         return request, parsers.parse_json
@@ -144,12 +143,7 @@ class Conferences(ConferencesBase):
             paging.
         :vartype AfterSid: str
         """
-        params = resource.get_params(
-            ('Status', 'FriendlyName',
-             'DateCreated', 'DateCreatedGT', 'DateCreatedLT',
-             'DateUpdated', 'DateUpdatedGT', 'DateUpdatedLT',
-             'Page', 'PageSize', 'AfterSid'),
-            locals())
+        params = resource.get_params(None, locals())
         request = http.Request('GET', self.get_url(), params)
 
         return request, parsers.parse_json

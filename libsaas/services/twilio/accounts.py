@@ -228,9 +228,7 @@ class Accounts(AccountsBase):
             paging.
         :vartype AfterSid: str
         """
-        params = resource.get_params(
-            ('FriendlyName', 'Status', 'Page', 'PageSize', 'AfterSid'),
-            locals())
+        params = resource.get_params(None, locals())
         request = http.Request('GET', self.get_url(), params)
 
         return request, parsers.parse_json
