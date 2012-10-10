@@ -9,15 +9,11 @@ def translate_inequality(param_name):
     Replace GT or LT at the end of a param name by '>' or '<' to
     achieve Twilio-like inequalities.
     """
-    def replace_inequality(match_obj):
-        replace_map = {
-            'GT': '>',
-            'LT': '<'
-        }
-        suffix = replace_map.get(match_obj.group(2), match_obj.group(2))
-        return '{0}{1}'.format(match_obj.group(1), suffix)
+    for suffix, replacement in (('GT', '>'), ('LT', '<')):
+        if param_name.endswith(suffix):
+            return param_name[:-len(suffix)] + replacement
 
-    return re.sub(r'(.*)(GT|LT)$', replace_inequality, param_name)
+    return param_name
 
 
 def get_params(param_names, param_store, translate_param=translate_inequality,
