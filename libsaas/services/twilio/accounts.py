@@ -158,6 +158,14 @@ class Account(AccountsBase):
         """
         return sms.SMS(self)
 
+    @base.resource(recordings.Transcription)
+    def transcription(self, sid):
+        """
+        Return a Transcription resource representation for call
+        made to of from this account.
+        """
+        return recordings.Transcription(self, sid)
+
     @base.resource(recordings.Transcriptions)
     def transcriptions(self):
         """
