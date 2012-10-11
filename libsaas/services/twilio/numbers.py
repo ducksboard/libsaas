@@ -107,7 +107,7 @@ class AvailablePhoneNumbersTollFree(AvailablePhoneNumbersBase):
         return request, parsers.parse_json
 
 
-class AvailablePhoneNumbers(resource.TwilioResource):
+class AvailablePhoneNumbers(AvailablePhoneNumbersBase):
 
     path = 'AvailablePhoneNumbers'
 
