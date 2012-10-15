@@ -37,7 +37,8 @@ class Request(object):
         :vartype params: dict or string, keys and values can be text, binary or
             integer and the executor will encode and quote them
 
-        :var headers: HTTP headers :vartype headers: dict of str to str, both
+        :var headers: HTTP headers
+        :vartype headers: dict of str to str, both
             keys and values using only ASCII characters
         """
         self.method = method
