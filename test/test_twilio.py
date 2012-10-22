@@ -644,3 +644,91 @@ class TwilioTestCase(unittest.TestCase):
         self.assertRaises(base.MethodNotSupported, notifications.create)
         self.assertRaises(base.MethodNotSupported, notifications.update)
         self.assertRaises(base.MethodNotSupported, notifications.delete)
+
+    def test_usage(self):
+        # Usage resource
+        usage = self.account.usage()
+
+        self.assertRaises(base.MethodNotSupported, usage.get)
+        self.assertRaises(base.MethodNotSupported, usage.create)
+        self.assertRaises(base.MethodNotSupported, usage.update)
+        self.assertRaises(base.MethodNotSupported, usage.delete)
+
+        # Records resource
+        records = usage.records()
+
+        records.get()
+        self.expect('GET', 'Accounts/foo/Usage/Records.json')
+
+        records.get(Category='calls', StartDate='-30days', Page=3)
+        self.expect('GET', 'Accounts/foo/Usage/Records.json',
+                    {'Category': 'calls', 'StartDate': '-30days',
+                     'Page': 3})
+
+        self.assertRaises(base.MethodNotSupported, records.create)
+        self.assertRaises(base.MethodNotSupported, records.update)
+        self.assertRaises(base.MethodNotSupported, records.delete)
+
+        # Records sub-resources
+        subresources = [
+            ('daily', 'Daily'),
+            ('monthly', 'Monthly'),
+            ('yearly', 'Yearly'),
+            ('all_time', 'AllTime'),
+            ('today', 'Today'),
+            ('yesterday', 'Yesterday'),
+            ('this_month', 'ThisMonth'),
+            ('last_month', 'LastMonth')
+        ]
+
+        for subresource in subresources:
+            resource = getattr(records, subresource[0])()
+            url = 'Accounts/foo/Usage/Records/{0}.json'.format(subresource[1])
+
+            resource.get()
+            self.expect('GET', url)
+
+            resource.get(Category='calls', StartDate='-30days', Page=3)
+            self.expect('GET', url, {'Category': 'calls',
+                                     'StartDate': '-30days',
+                                     'Page': 3})
+
+            self.assertRaises(base.MethodNotSupported, resource.create)
+            self.assertRaises(base.MethodNotSupported, resource.update)
+            self.assertRaises(base.MethodNotSupported, resource.delete)
+
+        # Trigger resource
+        trigger = usage.trigger('trigger')
+
+        self.assertRaises(TypeError, self.account.usage().trigger)
+
+        trigger.get()
+        self.expect('GET', 'Accounts/foo/Usage/Triggers/trigger.json')
+
+        update_trigger_data = {'CallbackUrl': 'http://foo/bar/'}
+        trigger.update(update_trigger_data)
+        self.expect('POST', 'Accounts/foo/Usage/Triggers/trigger.json',
+                    update_trigger_data)
+
+        trigger.delete()
+        self.expect('DELETE', 'Accounts/foo/Usage/Triggers/trigger.json')
+
+        self.assertRaises(base.MethodNotSupported, trigger.create)
+
+        # Triggers resource
+        triggers = usage.triggers()
+
+        triggers.get()
+        self.expect('GET', 'Accounts/foo/Usage/Triggers.json')
+
+        triggers.get(UsageCategory='calls', Page=3)
+        self.expect('GET', 'Accounts/foo/Usage/Triggers.json',
+                    {'UsageCategory': 'calls', 'Page': 3})
+
+        new_trigger_data = {'UsageCategory': 'calls', 'TriggerValue': '+30'}
+        triggers.create(new_trigger_data)
+        self.expect('POST', 'Accounts/foo/Usage/Triggers.json',
+                    new_trigger_data)
+
+        self.assertRaises(base.MethodNotSupported, triggers.update)
+        self.assertRaises(base.MethodNotSupported, triggers.delete)

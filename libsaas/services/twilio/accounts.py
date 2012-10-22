@@ -4,7 +4,7 @@ from libsaas.services import base
 from libsaas.services.twilio import resource
 from libsaas.services.twilio import (
     applications, calls, conferences, notifications, numbers, queues,
-    recordings, sms)
+    recordings, sms, usage)
 
 
 class AccountsBase(resource.TwilioResource):
@@ -205,6 +205,13 @@ class Account(AccountsBase):
         Return a list of notifications generated for this account.
         """
         return notifications.Notifications(self)
+
+    @base.resource(usage.Usage)
+    def usage(self):
+        """
+        Return a usage resource to query records and triggers resources.
+        """
+        return usage.Usage(self)
 
 
 class Accounts(AccountsBase):
