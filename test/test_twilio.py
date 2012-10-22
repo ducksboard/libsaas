@@ -616,7 +616,7 @@ class TwilioTestCase(unittest.TestCase):
         self.assertRaises(base.MethodNotSupported, transcriptions.update)
         self.assertRaises(base.MethodNotSupported, transcriptions.delete)
 
-    def notifications(self):
+    def test_notifications(self):
         # Notification resource
         notification = self.account.notification('noti')
 
