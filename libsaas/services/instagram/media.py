@@ -115,8 +115,7 @@ class LikedMedia(MediaBase):
     path = 'media/liked'
 
     @base.apimethod
-    def get(self, count=None, max_timestamp=None, min_timespan=None,
-            min_id=None, max_id=None):
+    def get(self, count=None, max_liked_id=None):
         """
         Fetch all of the objects.
 
