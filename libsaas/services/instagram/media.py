@@ -40,7 +40,7 @@ class Medias(MediaBase):
     path = 'media/search'
 
     @base.apimethod
-    def get(self, lat=None, max_timestamp=None, min_timespan=None,
+    def get(self, lat=None, max_timestamp=None, min_timestamp=None,
             lng=None, distance=None):
         """
         Fetch all of the objects.
@@ -49,13 +49,13 @@ class Medias(MediaBase):
             If used, lng is required.
         :vartype lat: float
 
-        :var max_timespan: A unix timestamp. All media returned will be
+        :var max_timestamp: A unix timestamp. All media returned will be
             taken later than this timestamp.
-        :vartype max_timespan: float
+        :vartype max_timestamp: int
 
-        :var min_timespan: A unix timestamp. All media returned will be
+        :var min_timestamp: A unix timestamp. All media returned will be
             taken earlier than this timestamp.
-        :vartype min_timespan: float
+        :vartype min_timestamp: int
 
         :var lng: Longitude of the center search coordinate.
             If used, lat is required.
@@ -65,7 +65,7 @@ class Medias(MediaBase):
         :vartype distance: int
         """
         params = base.get_params(
-            ('lat', 'max_timespan', 'min_timespan', 'lng', 'distance'),
+            ('lat', 'max_timestamp', 'min_timestamp', 'lng', 'distance'),
             locals())
         request = http.Request('GET', self.get_url(), params)
 
@@ -82,7 +82,7 @@ class RecentMedia(MediaBase):
     path = 'media/recent'
 
     @base.apimethod
-    def get(self, count=None, max_timestamp=None, min_timespan=None,
+    def get(self, count=None, max_timestamp=None, min_timestamp=None,
             min_id=None, max_id=None):
         """
         Fetch all of the objects.
@@ -90,11 +90,11 @@ class RecentMedia(MediaBase):
         :var count: Count of media to return.
         :vartype count: int
 
-        :var max_timespan: Return media before this UNIX timespan.
-        :vartype max_timespan: float
+        :var max_timestamp: Return media before this UNIX timestamp.
+        :vartype max_timestamp: int
 
-        :var min_timespan: Return media after this UNIX timespan.
-        :vartype min_timespan: float
+        :var min_timestamp: Return media after this UNIX timestamp.
+        :vartype min_timestamp: int
 
         :var min_id: Return media later than this min_id.
         :vartype min_id: int
@@ -103,7 +103,7 @@ class RecentMedia(MediaBase):
         :vartype max_id: int
         """
         params = base.get_params(
-            ('count', 'max_timespan', 'min_timespan', 'min_id', 'max_id'),
+            ('count', 'max_timestamp', 'min_timestamp', 'min_id', 'max_id'),
             locals())
         request = http.Request('GET', self.get_url(), params)
 
@@ -115,8 +115,7 @@ class LikedMedia(MediaBase):
     path = 'media/liked'
 
     @base.apimethod
-    def get(self, count=None, max_timestamp=None, min_timespan=None,
-            min_id=None, max_id=None):
+    def get(self, count=None, max_liked_id=None):
         """
         Fetch all of the objects.
 
