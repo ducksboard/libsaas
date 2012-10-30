@@ -14,41 +14,14 @@ def translate_inequality(param_name):
     return param_name
 
 
-def get_params(param_names, param_store, translate_param=translate_inequality,
-               serialize_param=base.serialize_param):
+def get_params(param_names, param_store, serialize_param=base.serialize_param,
+               translate_param=translate_inequality):
     """
-    Return a dictionary suitable to be used as params in a libsaas.http.Request
-    object.
-
-    Arguments are a tuple of parameter names, a dictionary mapping those names
-    to parameter values and an optional custom parameter serialization
-    function. This is useful for constructs like
-
-    def apifunc(self, p1, p2, p3=None):
-        params = get_params(('p1', 'p2', 'p3'), locals())
-
-    which will extract parameters from the called method's environment.
-
-    As an additional convenience, if param_names is None, all parameters from
-    the param store will be considered, except for 'self'. This allows for even
-    shorter code in the common situation.
-
-    The translation function allows changing the param name before serializing
-    it. For instance, param names abused to provide inequalities, like
-    'start_time<=' need such translation since 'start_time<' is not a valid
-    variable name in Python. The function is expected to return the name
-    to use as the query param in the URL.
-
-    The serialization function can be used for instance when the service
-    expects boolean values to be represented as '0' and '1' instead of 'true'
-    and 'false' or when it accepts types that can be mapped to Python types and
-    mandates a specific way of encoding them as strings.
+    Return the dictionary of params using by default translate_inequality
+    as translation function
     """
-    if param_names is None:
-        param_names = [name for name in param_store.keys() if name != 'self']
-
-    return dict((translate_param(name), serialize_param(param_store[name]))
-                for name in param_names if param_store.get(name) is not None)
+    return base.get_params(param_names, param_store, serialize_param,
+                           translate_param)
 
 
 class TwilioResource(base.RESTResource):
