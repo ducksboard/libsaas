@@ -31,7 +31,12 @@ def serialize_param(val):
     return val
 
 
-def get_params(param_names, param_store, serialize_param=serialize_param):
+def translate_identity(val):
+    return val
+
+
+def get_params(param_names, param_store, serialize_param=serialize_param,
+               translate_param=translate_identity):
     """
     Return a dictionary suitable to be used as params in a libsaas.http.Request
     object.
@@ -53,11 +58,17 @@ def get_params(param_names, param_store, serialize_param=serialize_param):
     expects boolean values to be represented as '0' and '1' instead of 'true'
     and 'false' or when it accepts types that can be mapped to Python types and
     mandates a specific way of encoding them as strings.
+
+    The translation function allows changing the param name before serializing
+    it. For instance, param names abused to provide inequalities, like
+    'start_time<=' need such translation since 'start_time<' is not a valid
+    variable name in Python. The function is expected to return the name
+    to use as the query param in the URL.
     """
     if param_names is None:
         param_names = [name for name in param_store.keys() if name != 'self']
 
-    return dict((name, serialize_param(param_store[name]))
+    return dict((translate_param(name), serialize_param(param_store[name]))
                 for name in param_names if param_store.get(name) is not None)
 
 
