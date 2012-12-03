@@ -1,6 +1,8 @@
 """
 HTTP utilities.
 """
+from itertools import chain
+
 from libsaas import port
 
 URLENCODE_METHODS = ('GET', 'HEAD', 'OPTIONS')
@@ -76,3 +78,48 @@ def urlencode_any(d):
     as_bytes = dict((port.to_b(key), port.to_b(value))
                     for key, value in d.items())
     return port.urlencode(as_bytes)
+
+
+def serialize_flatten(name, value):
+    """
+    Transform a parameter name and a value (which can by any Python object)
+    into a flat dict of params. This is a common way of serializing parameters
+    in PHP applications.
+
+    >>> serialize_flatten('p1', ['v1', 'v2', 'v3']
+    {'p1[0]': 'v1', 'p1[1]': 'v2', 'p1[2]': 'v3'}
+
+    >>> serialize_flatten('p1', [{'k1': 'v1', 'k2': True},
+    ...                          {'k1': 'v2', 'k2': False}])
+    {'p1[0][k1]': 'v1', 'p1[0][k2]': 'true',
+     'p1[1][k1]': 'v2', 'p1[1][k2]': 'false'}
+    """
+    # call the recursive function that returns a tuple of tuples
+    return dict(serialize_flatten_rec(name, value))
+
+
+def serialize_flatten_rec(prefix, value):
+    """
+    Recursive helper for serialize_flatten.
+    """
+    if isinstance(value, dict):
+        # serializing a dictionary, use prefix[key] as the prefix, recurse for
+        # all dict items and flatten the result
+        return chain.from_iterable(
+            (serialize_flatten_rec('{0}[{1}]'.format(port.to_u(prefix),
+                                                     port.to_u(key)), val) for
+             key, val in value.items()))
+    elif isinstance(value, list):
+        # serializing a list, use prefix[i] as the prefix, recurse for
+        # all items and flatten the result
+        return chain.from_iterable(
+            (serialize_flatten_rec('{0}[{1}]'.format(port.to_u(prefix),
+                                                     port.to_u(num)), val) for
+             num, val in enumerate(value)))
+    elif isinstance(value, bool):
+        # serializing a boolean, take the prefix as-is and serialize the value
+        # to string
+        return ((port.to_u(prefix), 'true' if value else 'false'), )
+    else:
+        # anything else, just use the prefix and value as-is
+        return ((port.to_u(prefix), port.to_u(value)), )

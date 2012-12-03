@@ -1,52 +1,7 @@
 import inspect
-from itertools import chain
 
 from libsaas import http, parsers, port
 from libsaas.services import base
-
-
-def serialize_param(name, value):
-    """
-    Transform a parameter name and a value (which can by any Python object)
-    into a dict of params suitable for passing to Mailchimp.
-
-    >>> serialize_param('p1', ['v1', 'v2', 'v3']
-    {'p1[0]': 'v1', 'p1[1]': 'v2', 'p1[2]': 'v3'}
-
-    >>> serialize_param('p1', [{'k1', 'v1', 'k2': True},
-    ...                        {'k1', 'v2', 'k2': False}])
-    {'p1[0][k1]': 'v1', 'p1[0][k2]': 'true',
-     'p1[1][k1]': 'v2', 'p1[1][k2]': 'false'}
-    """
-    # call the recursive function that returns a tuple of tuples
-    return dict(serialize(name, value))
-
-
-def serialize(prefix, value):
-    """
-    Recursive helper for serialize_param.
-    """
-    if isinstance(value, dict):
-        # serializing a dictionary, use prefix[key] as the prefix, recurse for
-        # all dict items and flatten the result
-        return chain.from_iterable(
-            (serialize('{0}[{1}]'.format(port.to_u(prefix),
-                                         port.to_u(key)), val)for
-             key, val in value.items()))
-    elif isinstance(value, list):
-        # serializing a list, use prefix[i] as the prefix, recurse for
-        # all items and flatten the result
-        return chain.from_iterable(
-            (serialize('{0}[{1}]'.format(port.to_u(prefix),
-                                         port.to_u(num)), val) for
-             num, val in enumerate(value)))
-    elif isinstance(value, bool):
-        # serializing a boolean, take the prefix as-is and serialize the value
-        # to string
-        return ((port.to_u(prefix), 'true' if value else 'false'), )
-    else:
-        # anything else, just use the prefix and value as-is
-        return ((port.to_u(prefix), port.to_u(value)), )
 
 
 class Mailchimp(base.Resource):
@@ -91,7 +46,7 @@ class Mailchimp(base.Resource):
                 continue
             if value is None:
                 continue
-            serialized.update(serialize_param(name, value))
+            serialized.update(http.serialize_flatten(name, value))
 
         request = http.Request('POST', self.get_url(method), serialized)
         return request, parsers.parse_json
