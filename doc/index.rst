@@ -23,6 +23,7 @@ help us make using APIs less painful!
 .. toctree::
     :maxdepth: 2
 
+    requirements
     usage
     unicode
     generated/services
