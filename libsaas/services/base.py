@@ -234,8 +234,8 @@ class RESTResource(HierarchicalResource):
         Create a new resource.
 
         :var obj: a Python object representing the resource to be created,
-            usually in the same as returned from `get`. Refer to the upstream
-            documentation for details.
+            usually in the same format as returned from `get`. Refer to the
+            upstream documentation for details.
         """
         self.require_collection()
         request = http.Request('POST', self.get_url(), self.wrap_object(obj))
