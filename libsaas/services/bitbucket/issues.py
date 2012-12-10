@@ -12,22 +12,6 @@ class IssueComponentsBase(resource.BitBucketResource):
         return {'name': obj}
 
 
-port.method_func(IssueComponentsBase, 'create').__doc__ = """
-Add a component for issues.
-
-:var obj: The component name.
-:vartype obj: str
-"""
-
-
-port.method_func(IssueComponentsBase, 'update').__doc__ = """
-Update a component.
-
-:var obj: The component namt.
-:vartype obj: str
-"""
-
-
 class IssueComponents(IssueComponentsBase):
     pass
 
@@ -42,22 +26,6 @@ class IssueCommentsBase(resource.BitBucketResource):
 
     def wrap_object(self, obj):
         return {'content': obj}
-
-
-port.method_func(IssueCommentsBase, 'create').__doc__ = """
-Add a comment to the issue.
-
-:var obj: The comment text.
-:vartype obj: str
-"""
-
-
-port.method_func(IssueCommentsBase, 'update').__doc__ = """
-Update a comment of an issue.
-
-:var obj: The comment text.
-:vartype obj: str
-"""
 
 
 class IssueComments(IssueCommentsBase):
@@ -76,22 +44,6 @@ class IssueMilestonesBase(resource.BitBucketResource):
         return {'name': obj}
 
 
-port.method_func(IssueMilestonesBase, 'create').__doc__ = """
-Create a new milestone for issues.
-
-:var obj: The milestone name.
-:vartype obj: str
-"""
-
-
-port.method_func(IssueMilestonesBase, 'update').__doc__ = """
-Update the name of the milestone.
-
-:var obj: The milestone name.
-:vartype obj: str
-"""
-
-
 class IssueMilestone(IssueMilestonesBase):
     pass
 
@@ -106,22 +58,6 @@ class IssueVersionsBase(resource.BitBucketResource):
 
     def wrap_object(self, obj):
         return {'name': obj}
-
-
-port.method_func(IssueVersionsBase, 'create').__doc__ = """
-Create a new issue version.
-
-:var obj: The version name.
-:vartype obj: str
-"""
-
-
-port.method_func(IssueVersionsBase, 'update').__doc__ = """
-Update the name of the issue version.
-
-:var obj: The version name.
-:vartype obj: str
-"""
 
 
 class IssueVersion(IssueVersionsBase):
