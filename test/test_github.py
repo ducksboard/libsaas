@@ -312,6 +312,19 @@ class GithubTestCase(unittest.TestCase):
         self.service.repo('myuser', 'myrepo').commits().comment(2).delete()
         self.expect('DELETE', '/repos/myuser/myrepo/comments/2')
 
+    def test_repo_contents(self):
+        self.service.repo('myuser', 'myrepo').contents().readme()
+        self.expect('GET', '/repos/myuser/myrepo/readme')
+        
+        self.service.repo('myuser', 'myrepo').contents().get()
+        self.expect('GET', '/repos/myuser/myrepo/contents')
+
+        self.service.repo('myuser', 'myrepo').contents().get('file', 'myref')
+        self.expect('GET', '/repos/myuser/myrepo/contents', {'path': 'file', 'ref': 'myref'})
+
+        link = self.service.repo('myuser', 'myrepo').contents().get_archivelink('tarball', 'myref')
+        self.assertEqual(link, 'https://api.github.com/repos/myuser/myrepo/tarball/myref')
+
     def test_downloads(self):
         self.service.repo('myuser', 'myrepo').downloads().get(page=2)
         self.expect('GET', '/repos/myuser/myrepo/downloads', {'page': 2})

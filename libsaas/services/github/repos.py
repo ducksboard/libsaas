@@ -2,7 +2,7 @@ from libsaas import http, parsers
 from libsaas.services import base
 
 from . import resource
-from . import downloads, forks, issues, keys, labels, milestones, repocommits
+from . import downloads, forks, issues, keys, labels, milestones, repocommits, repocontents
 
 
 class Repos(resource.GitHubResource):
@@ -208,6 +208,13 @@ class Repo(resource.GitHubResource):
         Return a resource corresponding to all commits in this repo.
         """
         return repocommits.RepoCommits(self)
+
+    @base.resource(repocontents.RepoContents)
+    def contents(self):
+        """
+        Return a resource corresponding to repo contents.
+        """
+        return repocontents.RepoContents(self)
 
     @base.resource(downloads.Download)
     def download(self, download_id):
