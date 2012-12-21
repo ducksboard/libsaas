@@ -315,15 +315,23 @@ class GithubTestCase(unittest.TestCase):
     def test_repo_contents(self):
         self.service.repo('myuser', 'myrepo').contents().readme()
         self.expect('GET', '/repos/myuser/myrepo/readme')
-        
+
+        self.service.repo('myuser', 'myrepo').contents().readme('myref')
+        self.expect('GET', '/repos/myuser/myrepo/readme', {'ref': 'myref'})
+
         self.service.repo('myuser', 'myrepo').contents().get()
         self.expect('GET', '/repos/myuser/myrepo/contents')
 
         self.service.repo('myuser', 'myrepo').contents().get('file', 'myref')
-        self.expect('GET', '/repos/myuser/myrepo/contents', {'path': 'file', 'ref': 'myref'})
+        self.expect('GET', '/repos/myuser/myrepo/contents/file',
+                    {'ref': 'myref'})
 
-        link = self.service.repo('myuser', 'myrepo').contents().get_archivelink('tarball', 'myref')
-        self.assertEqual(link, 'https://api.github.com/repos/myuser/myrepo/tarball/myref')
+        self.executor.set_response(b'{}', 302,
+                                   {'location': 'http://example.org'})
+        link = self.service.repo('myuser', 'myrepo').contents().archivelink(
+            'tarball', 'myref')
+        self.expect('GET', '/repos/myuser/myrepo/tarball/myref')
+        self.assertEqual(link, 'http://example.org')
 
     def test_downloads(self):
         self.service.repo('myuser', 'myrepo').downloads().get(page=2)
