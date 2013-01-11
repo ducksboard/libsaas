@@ -337,6 +337,33 @@ class GithubTestCase(unittest.TestCase):
         self.expect('GET', '/repos/myuser/myrepo/tarball/myref')
         self.assertEqual(link, 'http://example.org')
 
+    def test_pullrequests(self):
+        self.service.repo("myuser", "myrepo").pullrequests().get()
+        self.expect('GET', '/repos/myuser/myrepo/pulls')
+
+        self.service.repo("myuser", "myrepo").pullrequests().get('closed')
+        self.expect('GET', '/repos/myuser/myrepo/pulls', {'state': 'closed'})
+
+        self.service.repo("myuser", "myrepo").pullrequests().get('closed', 0)
+        self.expect('GET', '/repos/myuser/myrepo/pulls/0',
+                    {'state': 'closed'})
+
+        self.service.repo("myuser", "myrepo").pullrequests().get_commits(4)
+        self.expect('GET', '/repos/myuser/myrepo/pulls/4/commits')
+
+        self.service.repo("myuser", "myrepo").pullrequests().files(4)
+        self.expect('GET', '/repos/myuser/myrepo/pulls/4/files')
+
+        self.executor.set_response(b'{}', 204, {})
+        res = self.service.repo('myuser', 'myrepo').pullrequests().is_merged(0)
+        self.expect('GET', '/repos/myuser/myrepo/pulls/0/merge')
+        self.assertTrue(res)
+
+        self.executor.set_response(b'', 404, {})
+        res = self.service.repo('myuser', 'myrepo').pullrequests().is_merged(0)
+        self.expect('GET', '/repos/myuser/myrepo/pulls/0/merge')
+        self.assertFalse(res)
+
     def test_downloads(self):
         self.service.repo('myuser', 'myrepo').downloads().get(page=2)
         self.expect('GET', '/repos/myuser/myrepo/downloads', {'page': 2})
