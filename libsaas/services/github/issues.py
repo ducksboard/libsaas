@@ -74,16 +74,6 @@ class IssueEvents(IssueEventsBase):
 
 class RepoIssue(RepoIssuesBase):
 
-    @base.resource(IssueComment)
-    def comment(self, comment_id):
-        """
-        Return the resource corresponding to a single comment of this issue.
-
-        When updating comments, use a simple string as the parameter to
-        `update`, you don't have to use `{"body": <comment body>}`.
-        """
-        return IssueComment(self, comment_id)
-
     @base.resource(IssueComments)
     def comments(self):
         """
@@ -143,6 +133,16 @@ class RepoIssues(RepoIssuesBase):
         headers = resource.mimetype_accept(format)
 
         return http.Request('GET', url, params, headers), parsers.parse_json
+
+    @base.resource(IssueComment)
+    def comment(self, comment_id):
+        """
+        Return the resource corresponding to a single comment of an issue.
+
+        When updating comments, use a simple string as the parameter to
+        `update`, you don't have to use `{"body": <comment body>}`.
+        """
+        return IssueComment(self, comment_id)
 
     @base.resource(IssueEvents)
     def events(self):

@@ -168,8 +168,12 @@ class GithubTestCase(unittest.TestCase):
         self.service.repo('myuser', 'myrepo').issue(4).comments().get()
         self.expect('GET', '/repos/myuser/myrepo/issues/4/comments')
 
-        self.service.repo('myuser', 'myrepo').issue(4).comment(5).get()
-        self.expect('GET', '/repos/myuser/myrepo/issues/4/comments/5')
+        self.assertRaises(AttributeError, getattr,
+                          self.service.repo('myuser', 'myrepo')
+                          .issue(4), 'comment')
+
+        self.service.repo('myuser', 'myrepo').issues().comment(5).get()
+        self.expect('GET', '/repos/myuser/myrepo/issues/comments/5')
 
         (self.service.repo('myuser', 'myrepo')
          .issue(5).comments()
@@ -178,15 +182,15 @@ class GithubTestCase(unittest.TestCase):
                     json.dumps({'body': 'comment text'}))
 
         (self.service.repo('myuser', 'myrepo')
-         .issue(5).comment(6)
+         .issues().comment(6)
          .update('comment text'))
-        self.expect('PATCH', '/repos/myuser/myrepo/issues/5/comments/6',
+        self.expect('PATCH', '/repos/myuser/myrepo/issues/comments/6',
                     json.dumps({'body': 'comment text'}))
 
         (self.service.repo('myuser', 'myrepo')
-         .issue(5).comment(6)
+         .issues().comment(6)
          .delete())
-        self.expect('DELETE', '/repos/myuser/myrepo/issues/5/comments/6')
+        self.expect('DELETE', '/repos/myuser/myrepo/issues/comments/6')
 
     def test_issue_events(self):
         self.service.repo('myuser', 'myrepo').issue(4).events().get()
