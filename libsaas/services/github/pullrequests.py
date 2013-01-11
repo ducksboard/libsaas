@@ -4,63 +4,53 @@ from libsaas.services import base
 from . import resource
 
 
-class PullRequests(base.HierarchicalResource):
+class PullRequestsBase(resource.GitHubResource):
 
     path = 'pulls'
 
+
+class PullRequests(PullRequestsBase):
+
     @base.apimethod
-    def get(self, state=None, number=None):
+    def get(self, state=None, page=None, per_page=None):
         """
-        Method lists pull requests.
+        Fetch pull requests.
 
         :var state: Optional filter pull requests by state  state:
-        open or closed (default is open)
+            open or closed (default is open)
         :vartype path: str
-
-        :var number: Optional gets a single pull request
-        :vartype number: int
         """
-        params = base.get_params(('state',), locals())
+        params = base.get_params(None, locals())
         url = self.get_url()
-
-        if number != None:
-            url = '{0}/{1}'.format(url, number)
 
         return http.Request('GET', url, params), parsers.parse_json
 
-    @base.apimethod
-    def get_commits(self, number):
-        """
-        Method lists commits on a pull request.
 
-        :var number: pull request number
-        :vartype number: int
+class PullRequest(PullRequestsBase):
+
+    @base.apimethod
+    def commits(self):
         """
-        url = '{0}/{1}/commits'.format(self.get_url(), number)
+        Fetch commits on this pull request.
+        """
+        url = '{0}/commits'.format(self.get_url())
 
         return http.Request('GET', url), parsers.parse_json
 
     @base.apimethod
-    def files(self, number):
+    def files(self):
         """
-        Method lists pull requests files.
-
-        :var number: pull request number
-        :vartype number: int
+        Fetch files on this pull request.
         """
-        url = '{0}/{1}/files'.format(self.get_url(), number)
+        url = '{0}/files'.format(self.get_url())
 
         return http.Request('GET', url), parsers.parse_json
 
     @base.apimethod
-    def is_merged(self, number):
+    def is_merged(self):
         """
-        Method gets if a pull request has been merged.
-
-        :var number: pull request number
-        :vartype number: int
+        Check if this pull request has been merged.
         """
-        url = '{0}/pulls/{1}/merge'.format(self.parent.get_url(), number)
+        url = '{0}/merge'.format(self.get_url())
 
         return http.Request('GET', url), resource.parse_boolean
-
