@@ -57,11 +57,17 @@ class XMLParserTestCase(unittest.TestCase):
         resp = xml.parse_xml(u_test, 200, None)
         self.assertEqual(resp['team']['name'], b'Bar\xe7a'.decode('latin1'))
 
-        u_test = (b'<?xml version="1.0" encoding="UTF-8"?>'
-                  b'<team><boolean>True</boolean>'
-                  b'<name>Bar\xc3\xa7a</name>'
-                  b'<nil />'
-                  b'<number>1234</number></team>')
+        u_test_part1 = (b'<?xml version="1.0" encoding="UTF-8"?>'
+                        b'<team><boolean>True</boolean>'
+                        b'<name>Bar\xc3\xa7a</name>')
+        u_test_part2 = b'<number>1234</number></team>'
+
+        # some versions of libxml2 produce <nil /> for empty tags, others
+        # produce <nil></nil> - we don't care when serializing and we'll just
+        # check for both
+        u_test = u_test_part1 + b'<nil />' + u_test_part2
+        u_test_alt = u_test_part1 + b'<nil></nil>' + u_test_part2
+
         resp = xml.parse_xml(u_test, 200, None)
         self.assertEqual(resp['team']['name'], b'Bar\xc3\xa7a'.decode('utf-8'))
 
@@ -71,7 +77,13 @@ class XMLParserTestCase(unittest.TestCase):
             'number': 1234,
             'nil': None
         }})
-        self.assertEqual(resp, u_test)
+
+        # accept both <nil /> and <nil></nil>; can't use assertIn, as it only
+        # got added in Python 2.7
+        try:
+            self.assertEqual(resp, u_test)
+        except AssertionError:
+            self.assertEqual(resp, u_test_alt)
 
     def test_syntax_error(self):
         wrong_xml = (b'<?xml version="1.0" encoding="UTF-8"?>'
