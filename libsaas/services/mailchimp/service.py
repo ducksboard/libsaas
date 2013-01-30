@@ -254,7 +254,7 @@ class Mailchimp(base.Resource):
         return self.method_call(locals())
 
     @base.apimethod
-    def ping(self, cid, email_address=[]):
+    def ping(self):
         return self.method_call(locals())
 
     @base.apimethod
