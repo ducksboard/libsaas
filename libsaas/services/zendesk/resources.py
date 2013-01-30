@@ -266,7 +266,7 @@ class Views(ViewsBase):
 
         def serializer(val):
             if isinstance(val, (list, tuple)):
-                return ','.join(map(port.to_b, val))
+                return port.to_b(',').join(map(port.to_b, val))
             return base.serialize_param(val)
 
         url = '{0}/{1}'.format(self.get_url(), 'count_many')

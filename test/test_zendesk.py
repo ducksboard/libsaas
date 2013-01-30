@@ -14,7 +14,7 @@ class ZendeskTestCase(unittest.TestCase):
         self.service = zendesk.Zendesk('mydomain', 'user', 'pass')
 
     def serialize(self, data):
-        return json.dumps(data).encode('utf-8')
+        return json.dumps(data)
 
     def expect(self, method=None, uri=None, params=None, headers=None):
         if method:
@@ -140,7 +140,7 @@ class ZendeskTestCase(unittest.TestCase):
         self.expect('GET', '/views/active.json')
 
         self.service.views().count_many([1, 2])
-        self.expect('GET', '/views/count_many.json', {'ids': '1,2'})
+        self.expect('GET', '/views/count_many.json', {'ids': b'1,2'})
 
         conditions = {
             "all": [
