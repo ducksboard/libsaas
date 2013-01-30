@@ -63,7 +63,7 @@ class UserVoice(base.Resource):
     def authenticate(self, request):
         if not self.oauth:
             # not using OAuth, make an unauthenticated request
-            request.params['client'] = self.api_key
+            request.params += (('client', self.api_key), )
         else:
             # using OAuth, sign the request
             self.oauth(request)
@@ -73,12 +73,11 @@ class UserVoice(base.Resource):
         request.uri += '.json'
 
     def serialize_flatten(self, request):
-        # use serialize_flatten to flatten params in POST and PUT
-        if request.method.upper() not in http.URLENCODE_METHODS:
-            serialized = {}
-            for name, value in request.params.items():
-                serialized.update(http.serialize_flatten(name, value))
-            request.params = serialized
+        # use serialize_flatten to flatten params
+        serialized = ()
+        for name, value in request.params.items():
+            serialized += http.serialize_flatten(name, value)
+        request.params = serialized
 
     def urlencode_put(self, request):
         # UserVoice adheres to the OAuth 1.0 specification as published on

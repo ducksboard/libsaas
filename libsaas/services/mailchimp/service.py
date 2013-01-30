@@ -28,8 +28,7 @@ class Mailchimp(base.Resource):
         request.uri = self.apiroot + request.uri
 
     def add_params(self, request):
-        request.params.update({'output': 'json',
-                               'apikey': self.api_key})
+        request.params += (('output', 'json'), ('apikey', self.api_key))
 
     def get_url(self, method):
         return '?method={0}'.format(method)
@@ -40,13 +39,13 @@ class Mailchimp(base.Resource):
         method = inspect.stack()[1][3]
 
         # serialize the parameters
-        serialized = {}
+        serialized = ()
         for name, value in params.items():
             if name == 'self':
                 continue
             if value is None:
                 continue
-            serialized.update(http.serialize_flatten(name, value))
+            serialized += http.serialize_flatten(name, value)
 
         request = http.Request('POST', self.get_url(method), serialized)
         return request, parsers.parse_json

@@ -30,7 +30,7 @@ def encode_data(request):
     if not request.params:
         return b''
 
-    if not isinstance(request.params, dict):
+    if isinstance(request.params, (port.text_type, port.binary_type)):
         return port.to_b(request.params)
 
     return http.urlencode_any(request.params)

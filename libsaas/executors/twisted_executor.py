@@ -130,7 +130,7 @@ class TwistedExecutor(object):
             return None
 
         payload = params
-        if isinstance(params, dict):
+        if not isinstance(params, (port.text_type, port.binary_type)):
             payload = our_http.urlencode_any(params)
 
         return StringBodyProducer(payload)
