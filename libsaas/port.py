@@ -17,7 +17,7 @@ if PY3:
     numeric_types = int, float
 
     from urllib import request as urllib_request
-    from urllib.parse import urlencode, quote
+    from urllib.parse import urlencode, urlparse, urlunparse, quote, parse_qsl
 
     from io import StringIO
 
@@ -30,6 +30,7 @@ else:
 
     import urllib2 as urllib_request
     from urllib import urlencode, quote
+    from urlparse import urlparse, urlunparse, parse_qsl
 
     try:
         from cStringIO import StringIO
