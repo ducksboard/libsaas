@@ -97,7 +97,7 @@ class GoogleSpreadsheetsXMLTestCase(GoogleSpreadsheetsTestCase):
         with self.assertRaises(MethodNotSupported):
             (self.service.spreadsheet('key').worksheet('id', 'v', 'p').cells()
                                             .create({}))
-            (self.service.spreadsheet('key').worksheet('id', 'v', 'p')\
+            (self.service.spreadsheet('key').worksheet('id', 'v', 'p')
                                             .cell('cell').delete('v1'))
 
         cell = {
