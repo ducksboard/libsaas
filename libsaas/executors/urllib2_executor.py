@@ -70,7 +70,7 @@ def urllib2_executor(request, parser):
     body = resp.read()
     headers = dict(resp.info())
     logger.debug('response code: %r, body: %r, headers: %r',
-                 body, resp.code, headers)
+                 resp.code, body, headers)
 
     return parser(body, resp.code, headers)
 
