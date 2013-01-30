@@ -15,7 +15,8 @@ class TicketsBase(resource.UserVoiceResource):
 class Tickets(TicketsBase):
 
     @base.apimethod
-    def get(self, page=None, per_page=None, assigne_id=None, filter=None,
+    def get(self, page=None, per_page=None, assigne_id=None,
+            support_queue_id=None, support_queue=None, filter=None,
             sort=None, state=None, updated_after_date=None):
         """
         Fetch all of the tickets.
@@ -30,6 +31,12 @@ class Tickets(TicketsBase):
 
         :var assignee_id: The ID of the user assigned to the ticket.
         :vartype assignee_id: int
+
+        :var support_queue_id: The ID of the support queue the ticket is in.
+        :vartype support_queue_id: int
+
+        :var support_queue: The name of the support queue the ticket is in.
+        :vartype support_queue: str
 
         :var filter: Either `all` or `assigned_after`.
         :vartype filter: str

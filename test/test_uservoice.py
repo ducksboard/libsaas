@@ -143,6 +143,24 @@ class UserVoiceTestCase(unittest.TestCase):
         self.service.forum(2).delete()
         self.expect('DELETE', '/forums/2.json')
 
+    def test_support_queues(self):
+        self.service.support_queues().get()
+        self.expect('GET', '/support_queues.json')
+
+        self.service.support_queue(2).get()
+        self.expect('GET', '/support_queues/2.json')
+
+        self.service.support_queues().create({'foo': 'bar'})
+        self.expect('POST', '/support_queues.json',
+                    {'support_queue[foo]': 'bar'})
+
+        self.service.support_queues().sort([3, 2, 1])
+        self.expect('PUT', '/support_queues/sort.json',
+                    (('order[]', '3'), ('order[]', '2'), ('order[]', '1')))
+
+        self.service.support_queue(2).delete()
+        self.expect('DELETE', '/support_queues/2.json')
+
     def test_gadgets(self):
         self.service.gadgets().get()
         self.expect('GET', '/gadgets.json')

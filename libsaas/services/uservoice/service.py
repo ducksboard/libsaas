@@ -7,6 +7,7 @@ from libsaas.services import base
 
 from . import articles, forums, gadgets, streams, notes, custom_fields
 from . import comments, faqs, subdomains, suggestions, tickets, topics, users
+from . import support_queues
 
 
 class UserVoice(base.Resource):
@@ -175,6 +176,20 @@ class UserVoice(base.Resource):
         Return the resource corresponding to all the forums.
         """
         return forums.Forums(self)
+
+    @base.resource(support_queues.SupportQueue)
+    def support_queue(self, queue_id):
+        """
+        Return the resource corresponding to a single support queue.
+        """
+        return support_queues.SupportQueue(self, queue_id)
+
+    @base.resource(support_queues.SupportQueues)
+    def support_queues(self):
+        """
+        Return the resource corresponding to all the support queues.
+        """
+        return support_queues.SupportQueues(self)
 
     @base.resource(notes.Notes)
     def notes(self):
