@@ -1,5 +1,6 @@
 import unittest
 
+from libsaas import port
 from libsaas.executors import test_executor
 from libsaas.services import youtube
 from libsaas.services.base import MethodNotSupported, get_params
@@ -44,7 +45,7 @@ class YouTubeTestCase(unittest.TestCase):
                            'start-index': 1, 'sort': 'm1'})
 
     def test_activities(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.activities().create()
             self.service.activities().update()
             self.service.activities().delete()
@@ -55,7 +56,7 @@ class YouTubeTestCase(unittest.TestCase):
         self.expect('activities', get_params(None, kwargs))
 
     def test_channels(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.channels().create()
             self.service.channels().update()
             self.service.channels().delete()
@@ -66,7 +67,7 @@ class YouTubeTestCase(unittest.TestCase):
         self.expect('channels', get_params(None, kwargs))
 
     def test_guide_categories(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.guide_categories().create()
             self.service.guide_categories().update()
             self.service.guide_categories().delete()
@@ -77,7 +78,7 @@ class YouTubeTestCase(unittest.TestCase):
         self.expect('guideCategories', get_params(None, kwargs))
 
     def test_playlist_items(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.playlist_items().create()
             self.service.playlist_items().update()
             self.service.playlist_items().delete()
@@ -88,7 +89,7 @@ class YouTubeTestCase(unittest.TestCase):
         self.expect('playlistItems', get_params(None, kwargs))
 
     def test_playlists(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.playlists().create()
             self.service.playlists().update()
             self.service.playlists().delete()
@@ -99,7 +100,7 @@ class YouTubeTestCase(unittest.TestCase):
         self.expect('playlists', get_params(None, kwargs))
 
     def test_search(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.search().create()
             self.service.search().update()
             self.service.search().delete()
@@ -110,7 +111,7 @@ class YouTubeTestCase(unittest.TestCase):
         self.expect('search', get_params(None, kwargs))
 
     def test_subscriptions(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.subscriptions().create()
             self.service.subscriptions().update()
             self.service.subscriptions().delete()
@@ -121,7 +122,7 @@ class YouTubeTestCase(unittest.TestCase):
         self.expect('subscriptions', get_params(None, kwargs))
 
     def test_video_categories(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.video_categories().create()
             self.service.video_categories().update()
             self.service.video_categories().delete()
@@ -132,7 +133,7 @@ class YouTubeTestCase(unittest.TestCase):
         self.expect('videoCategories', get_params(None, kwargs))
 
     def test_videos(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.videos().create()
             self.service.videos().update()
             self.service.videos().delete()

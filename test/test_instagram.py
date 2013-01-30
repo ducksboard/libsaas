@@ -1,5 +1,6 @@
 import unittest
 
+from libsaas import port
 from libsaas.executors import test_executor
 from libsaas.services import instagram
 from libsaas.services.base import MethodNotSupported
@@ -32,7 +33,7 @@ class InstagramTestCase(unittest.TestCase):
             self.assertEqual(self.executor.request.headers, headers)
 
     def test_users(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.user('1234').create()
             self.service.user('1234').update()
             self.service.user('1234').delete()
@@ -55,7 +56,7 @@ class InstagramTestCase(unittest.TestCase):
         self.service.user('1234').relationship().update('unfollow')
         self.expect('POST', '/users/1234/relationship', {'action': 'unfollow'})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.authenticated_user().create()
             self.service.authenticated_user().update()
             self.service.authenticated_user().delete()
@@ -75,7 +76,7 @@ class InstagramTestCase(unittest.TestCase):
         self.service.authenticated_user().requested_by().get()
         self.expect('GET', '/users/self/requested-by', {})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.users().create()
             self.service.users().update()
             self.service.users().delete()
@@ -86,7 +87,7 @@ class InstagramTestCase(unittest.TestCase):
         self.expect('GET', '/users/search', {'q': 'test', 'count': 3})
 
     def test_media(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.media('1234').create()
             self.service.media('1234').update()
             self.service.media('1234').delete()
@@ -106,7 +107,7 @@ class InstagramTestCase(unittest.TestCase):
         self.service.media('1234').likes().delete()
         self.expect('DELETE', '/media/1234/likes', {})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.medias().create()
             self.service.medias().update()
             self.service.medias().delete()
@@ -116,7 +117,7 @@ class InstagramTestCase(unittest.TestCase):
         self.service.medias().get(lat=48.858844, lng=2.294351)
         self.expect('GET', '/media/search', {'lat': 48.858844, 'lng':2.294351})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.popular_media().create()
             self.service.popular_media().update()
             self.service.popular_media().delete()
@@ -125,7 +126,7 @@ class InstagramTestCase(unittest.TestCase):
         self.expect('GET', '/media/popular', {})
 
     def test_tags(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.tag('1234').create()
             self.service.tag('1234').update()
             self.service.tag('1234').delete()
@@ -137,7 +138,7 @@ class InstagramTestCase(unittest.TestCase):
         self.service.tag('1234').recent_media().get(min_id=1)
         self.expect('GET', '/tags/1234/media/recent', {'min_id': 1})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.tags().create()
             self.service.tags().update()
             self.service.tags().delete()
@@ -146,7 +147,7 @@ class InstagramTestCase(unittest.TestCase):
         self.expect('GET', '/tags/search', {'q': 'tag-name'})
 
     def test_locations(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.location('1234').create()
             self.service.location('1234').update()
             self.service.location('1234').delete()
@@ -158,7 +159,7 @@ class InstagramTestCase(unittest.TestCase):
         self.service.location('1234').recent_media().get(min_id=1)
         self.expect('GET', '/locations/1234/media/recent', {'min_id': 1})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.locations().create()
             self.service.locations().update()
             self.service.locations().delete()
@@ -170,7 +171,7 @@ class InstagramTestCase(unittest.TestCase):
                     {'lat': 48.858844, 'lng':2.294351})
 
     def test_geographies(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.geography('1234').get()
             self.service.geography('1234').create()
             self.service.geography('1234').update()

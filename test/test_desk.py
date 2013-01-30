@@ -1,5 +1,6 @@
 import unittest
 
+from libsaas import port
 from libsaas.executors import test_executor
 from libsaas.services import base, desk
 
@@ -41,7 +42,7 @@ class DeskTestCase(unittest.TestCase):
         self.service.case(10).update({'foo': 'bar'})
         self.expect('PUT', '/cases/10.json', {'foo': 'bar'})
 
-        with self.assertRaises(base.MethodNotSupported):
+        with port.assertRaises(base.MethodNotSupported):
             self.service.cases().create()
             self.service.cases().update()
             self.service.cases().delete()
@@ -75,7 +76,7 @@ class DeskTestCase(unittest.TestCase):
         self.service.customer(4).phone(1).update(obj)
         self.expect('PUT', '/customers/4/phones/1.json', obj)
 
-        with self.assertRaises(base.MethodNotSupported):
+        with port.assertRaises(base.MethodNotSupported):
             self.service.customer(4).delete()
             self.service.customer(4).phone(1).delete()
             self.service.customer(4).phones().get()
@@ -102,7 +103,7 @@ class DeskTestCase(unittest.TestCase):
         self.service.group(10).get()
         self.expect('GET', '/groups/10.json')
 
-        with self.assertRaises(base.MethodNotSupported):
+        with port.assertRaises(base.MethodNotSupported):
             self.service.groups().create({'foo': 'bar'})
             self.service.group(10).delete()
             self.service.group(10).update()
@@ -118,7 +119,7 @@ class DeskTestCase(unittest.TestCase):
         self.service.user(10).get()
         self.expect('GET', '/users/10.json')
 
-        with self.assertRaises(base.MethodNotSupported):
+        with port.assertRaises(base.MethodNotSupported):
             self.service.users().create({'foo': 'bar'})
             self.service.user(10).delete()
             self.service.user(10).update()
@@ -185,5 +186,5 @@ class DeskTestCase(unittest.TestCase):
         self.service.macro(4).action(1).update(obj)
         self.expect('PUT', '/macros/4/actions/1.json', obj)
 
-        with self.assertRaises(base.MethodNotSupported):
+        with port.assertRaises(base.MethodNotSupported):
             self.service.macro(4).action(1).delete()

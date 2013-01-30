@@ -1,6 +1,7 @@
 import json
 import unittest
 
+from libsaas import port
 from libsaas.executors import test_executor
 from libsaas.services import googlecalendar
 from libsaas.services.base import MethodNotSupported
@@ -28,48 +29,48 @@ class GoogleCalendarTestCase(unittest.TestCase):
             self.assertEqual(self.executor.request.headers, headers)
 
     def test_user(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.me().get()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.me().create()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.me().update()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.me().patch()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.me().delete()
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.me().settings().create()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.me().settings().update()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.me().settings().patch()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.me().settings().delete()
 
         self.service.me().settings().get()
         self.expect('GET', '/users/me/settings', {})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.me().setting('1234').create()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.me().setting('1234').update()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.me().setting('1234').patch()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.me().setting('1234').delete()
 
         self.service.me().setting('1234').get()
         self.expect('GET', '/users/me/settings/1234', {})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.me().calendar_lists().update()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.me().calendar_lists().patch()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.me().calendar_lists().delete()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.me().calendar_list('1234').create()
 
         self.service.me().calendar_lists().get()
@@ -88,28 +89,28 @@ class GoogleCalendarTestCase(unittest.TestCase):
         self.expect('DELETE', '/users/me/calendarList/1234', {})
 
     def test_colors(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.colors().create()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.colors().update()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.colors().patch()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.colors().delete()
 
         self.service.colors().get()
         self.expect('GET', '/colors', {})
 
     def test_freebusy(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.freebusy().get()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.freebusy().create()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.freebusy().update()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.freebusy().patch()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.freebusy().delete()
 
         obj = {'foo': 'bar'}
@@ -117,20 +118,20 @@ class GoogleCalendarTestCase(unittest.TestCase):
         self.expect('POST', '/freeBusy', json.dumps(obj))
 
     def test_calendar(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.calendars().get()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.calendars().update()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.calendars().patch()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.calendars().delete()
 
         obj = {'foo': 'bar'}
         self.service.calendars().create(obj)
         self.expect('POST', '/calendars', json.dumps(obj))
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.calendar('1234').create()
 
         self.service.calendar('1234').get()
@@ -145,11 +146,11 @@ class GoogleCalendarTestCase(unittest.TestCase):
         self.service.calendar('1234').clear()
         self.expect('POST', '/calendars/1234/clear', {})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.calendar('1234').rules().update()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.calendar('1234').rules().patch()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.calendar('1234').rules().delete()
 
         self.service.calendar('1234').rules().get()
@@ -158,7 +159,7 @@ class GoogleCalendarTestCase(unittest.TestCase):
         self.service.calendar('1234').rules().create(obj)
         self.expect('POST', '/calendars/1234/acl', json.dumps(obj))
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.calendar('1234').rule('1234').create()
 
         self.service.calendar('1234').rule('1234').get()
@@ -170,11 +171,11 @@ class GoogleCalendarTestCase(unittest.TestCase):
         self.service.calendar('1234').rule('1234').delete()
         self.expect('DELETE', '/calendars/1234/acl/1234', {})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.calendar('1234').events().update()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.calendar('1234').events().patch()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.calendar('1234').events().delete()
 
         self.service.calendar('1234').events().get()
@@ -190,7 +191,7 @@ class GoogleCalendarTestCase(unittest.TestCase):
         self.expect('POST',
             '/calendars/1234/events/quickAdd?text=text&sendNotifications=true')
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.calendar('1234').event('1234').create()
 
         self.service.calendar('1234').event('1234').get()

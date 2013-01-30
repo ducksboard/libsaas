@@ -1,5 +1,6 @@
 import unittest
 
+from libsaas import port
 from libsaas.services import stripe
 from libsaas.executors import test_executor
 from libsaas.services.base import MethodNotSupported
@@ -27,7 +28,7 @@ class StripeTestCase(unittest.TestCase):
             self.assertEqual(self.executor.request.headers, headers)
 
     def test_account(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.account().create()
             self.service.account().update()
             self.service.account().delete()
@@ -36,7 +37,7 @@ class StripeTestCase(unittest.TestCase):
         self.expect('GET', '/account', {})
 
     def test_plans(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.plans().update()
             self.service.plans().delete()
 
@@ -48,7 +49,7 @@ class StripeTestCase(unittest.TestCase):
         self.service.plans().create({'key':'value'})
         self.expect('POST', '/plans', {'key': 'value'})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.plan('123').create()
 
         self.service.plan('123').get()
@@ -61,7 +62,7 @@ class StripeTestCase(unittest.TestCase):
         self.expect('DELETE', '/plans/123', {})
 
     def test_charges(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.charges().update()
             self.service.charges().delete()
 
@@ -73,7 +74,7 @@ class StripeTestCase(unittest.TestCase):
         self.service.charges().create({'key':'value'})
         self.expect('POST', '/charges', {'key': 'value'})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.charge('123').create()
             self.service.charge('123').update()
             self.service.charge('123').delete()
@@ -90,7 +91,7 @@ class StripeTestCase(unittest.TestCase):
         self.expect('POST', '/charges/123/refund', {'amount': 23})
 
     def test_customers(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.customers().update()
             self.service.customers().delete()
 
@@ -102,7 +103,7 @@ class StripeTestCase(unittest.TestCase):
         self.service.customers().create({'key':'value'})
         self.expect('POST', '/customers', {'key': 'value'})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.customer('123').create()
             self.service.customer('123').subscription().create()
             self.service.customer('123').discount().get()
@@ -131,7 +132,7 @@ class StripeTestCase(unittest.TestCase):
         self.expect('DELETE', '/customers/123/discount', {})
 
     def test_tokens(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.tokens().get()
             self.service.tokens().update()
             self.service.tokens().delete()
@@ -139,7 +140,7 @@ class StripeTestCase(unittest.TestCase):
         self.service.tokens().create({'key':'value'})
         self.expect('POST', '/tokens', {'key': 'value'})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.token('123').create()
             self.service.token('123').update()
             self.service.token('123').delete()
@@ -148,7 +149,7 @@ class StripeTestCase(unittest.TestCase):
         self.expect('GET', '/tokens/123', {})
 
     def test_invoices(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.invoices().update()
             self.service.invoices().delete()
 
@@ -163,7 +164,7 @@ class StripeTestCase(unittest.TestCase):
         self.service.invoices().create({'key':'value'})
         self.expect('POST', '/invoices', {'key': 'value'})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.invoice('123').create()
             self.service.invoice('123').delete()
 
@@ -176,7 +177,7 @@ class StripeTestCase(unittest.TestCase):
         self.service.invoice('123').pay()
         self.expect('POST', '/invoices/123/pay', {})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.invoice('123').lines().create()
             self.service.invoice('123').lines().update()
             self.service.invoice('123').lines().delete()
@@ -187,7 +188,7 @@ class StripeTestCase(unittest.TestCase):
         self.expect('GET', '/invoices/123/lines', {'offset': 1})
 
     def test_events(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.events().create()
             self.service.events().update()
             self.service.events().delete()
@@ -197,7 +198,7 @@ class StripeTestCase(unittest.TestCase):
         self.service.events().get(type='type')
         self.expect('GET', '/events', {'type': 'type'})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.event('123').create()
             self.service.event('123').update()
             self.service.event('123').delete()
@@ -206,7 +207,7 @@ class StripeTestCase(unittest.TestCase):
         self.expect('GET', '/events/123', {})
 
     def test_coupons(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.coupons().update()
             self.service.coupons().delete()
 
@@ -218,7 +219,7 @@ class StripeTestCase(unittest.TestCase):
         self.service.coupons().create({'key':'value'})
         self.expect('POST', '/coupons', {'key': 'value'})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.coupon('123').create()
             self.service.coupon('123').update()
 
@@ -229,7 +230,7 @@ class StripeTestCase(unittest.TestCase):
         self.expect('DELETE', '/coupons/123', {})
 
     def test_invoiceitems(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.invoiceitems().update()
             self.service.invoiceitems().delete()
 
@@ -241,7 +242,7 @@ class StripeTestCase(unittest.TestCase):
         self.service.invoiceitems().create({'key':'value'})
         self.expect('POST', '/invoiceitems', {'key': 'value'})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.invoiceitem('123').create()
             self.service.invoiceitem('123').update()
 

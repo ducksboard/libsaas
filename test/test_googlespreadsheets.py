@@ -1,6 +1,6 @@
 import unittest
 
-from libsaas import xml
+from libsaas import port, xml
 from libsaas.executors import test_executor
 from libsaas.services import googlespreadsheets
 from libsaas.services.base import MethodNotSupported
@@ -118,7 +118,7 @@ class GoogleSpreadsheetsXMLTestCase(GoogleSpreadsheetsTestCase):
             # unittest doesn't have skip on Python 2.6...
             return
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             (self.service.spreadsheet('key').worksheet('id', 'v', 'p').cells()
                                             .create({}))
             (self.service.spreadsheet('key').worksheet('id', 'v', 'p')
@@ -153,7 +153,7 @@ class GoogleSpreadsheetsJSONTestCase(GoogleSpreadsheetsTestCase):
         self.expect('GET', '/feeds/spreadsheets/private/full',
                     {'alt': 'json'})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.spreadsheet('key').get()
 
         self.service.spreadsheet('key').worksheets('v', 'p').get()
@@ -178,7 +178,7 @@ class GoogleSpreadsheetsJSONTestCase(GoogleSpreadsheetsTestCase):
         self.expect('GET', '/feeds/list/key/id/v/p',
                     {'alt': 'json', 'sq': 'height>100'})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             (self.service.spreadsheet('key').worksheet('id', 'v', 'p')
                                             .row('row').get())
 

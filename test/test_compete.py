@@ -1,6 +1,7 @@
 import json
 import unittest
 
+from libsaas import port
 from libsaas.executors import test_executor
 from libsaas.services import compete
 from libsaas.services.base import MethodNotSupported
@@ -25,13 +26,13 @@ class CompeteTestCase(unittest.TestCase):
         self.assertEqual(self.executor.request.params, params)
 
     def test_sites(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.site('libsaas.net').get()
             self.service.site('libsaas.net').create()
             self.service.site('libsaas.net').update()
             self.service.site('libsaas.net').delete()
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.site('libsaas.net').metric('rank').create()
             self.service.site('libsaas.net').metric('rank').update()
             self.service.site('libsaas.net').metric('rank').delete()

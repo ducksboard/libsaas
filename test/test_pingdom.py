@@ -1,5 +1,6 @@
 import unittest
 
+from libsaas import port
 from libsaas.executors import test_executor
 from libsaas.services import base, pingdom
 
@@ -31,7 +32,7 @@ class PingdomTestCase(unittest.TestCase):
         self.service.actions().get(limit=100, offset=50)
         self.expect('GET', '/actions', paging)
 
-        with self.assertRaises(base.MethodNotSupported):
+        with port.assertRaises(base.MethodNotSupported):
             self.service.actions().create()
             self.service.actions().update()
             self.service.actions().delete()
@@ -53,7 +54,7 @@ class PingdomTestCase(unittest.TestCase):
         self.service.check(4).analysis().get_raw_analysis(10)
         self.expect('GET', '/analysis/4/10')
 
-        with self.assertRaises(base.MethodNotSupported):
+        with port.assertRaises(base.MethodNotSupported):
             self.service.analysis(4).create()
             self.service.analysis(4).update()
             self.service.analysis(4).delete()
@@ -82,14 +83,14 @@ class PingdomTestCase(unittest.TestCase):
         self.service.contacts().update(delcontacts)
         self.expect('PUT', '/contacts', delcontacts)
 
-        with self.assertRaises(base.MethodNotSupported):
+        with port.assertRaises(base.MethodNotSupported):
             self.service.contact(4).get()
 
     def test_credits(self):
         self.service.credits().get()
         self.expect('GET', '/credits')
 
-        with self.assertRaises(base.MethodNotSupported):
+        with port.assertRaises(base.MethodNotSupported):
             self.service.credits().create()
             self.service.credits().update()
             self.service.credits().delete()
@@ -102,7 +103,7 @@ class PingdomTestCase(unittest.TestCase):
         self.service.probes().get(limit=100, offset=50)
         self.expect('GET', '/probes', paging)
 
-        with self.assertRaises(base.MethodNotSupported):
+        with port.assertRaises(base.MethodNotSupported):
             self.service.probes().create()
             self.service.probes().update()
             self.service.probes().delete()
@@ -111,7 +112,7 @@ class PingdomTestCase(unittest.TestCase):
         self.service.reference().get()
         self.expect('GET', '/reference')
 
-        with self.assertRaises(base.MethodNotSupported):
+        with port.assertRaises(base.MethodNotSupported):
             self.service.reference().create()
             self.service.reference().update()
             self.service.reference().delete()
@@ -131,7 +132,7 @@ class PingdomTestCase(unittest.TestCase):
         self.service.reports_email().create(obj)
         self.expect('POST', '/reports.email', obj)
 
-        with self.assertRaises(base.MethodNotSupported):
+        with port.assertRaises(base.MethodNotSupported):
             self.service.report_email(4).get()
 
     def test_reports_public(self):
@@ -149,7 +150,7 @@ class PingdomTestCase(unittest.TestCase):
         self.service.reports_public().create(obj)
         self.expect('POST', '/reports.public', obj)
 
-        with self.assertRaises(base.MethodNotSupported):
+        with port.assertRaises(base.MethodNotSupported):
             self.service.report_public(4).get()
 
     def test_reports_shared(self):
@@ -167,7 +168,7 @@ class PingdomTestCase(unittest.TestCase):
         self.service.reports_shared().create(obj)
         self.expect('POST', '/reports.shared', obj)
 
-        with self.assertRaises(base.MethodNotSupported):
+        with port.assertRaises(base.MethodNotSupported):
             self.service.report_shared(4).get()
 
     def test_results(self):
@@ -181,7 +182,7 @@ class PingdomTestCase(unittest.TestCase):
         self.service.check(4).results().get(limit=100, offset=50)
         self.expect('GET', '/results/4', paging)
 
-        with self.assertRaises(base.MethodNotSupported):
+        with port.assertRaises(base.MethodNotSupported):
             self.service.results(4).create()
             self.service.results(4).update()
             self.service.results(4).delete()
@@ -190,7 +191,7 @@ class PingdomTestCase(unittest.TestCase):
         self.service.servertime().get()
         self.expect('GET', '/servertime')
 
-        with self.assertRaises(base.MethodNotSupported):
+        with port.assertRaises(base.MethodNotSupported):
             self.service.servertime().create()
             self.service.servertime().update()
             self.service.servertime().delete()
@@ -203,7 +204,7 @@ class PingdomTestCase(unittest.TestCase):
         self.service.settings().update(obj)
         self.expect('PUT', '/settings', obj)
 
-        with self.assertRaises(base.MethodNotSupported):
+        with port.assertRaises(base.MethodNotSupported):
             self.service.settings().create()
             self.service.settings().delete()
 
@@ -244,7 +245,7 @@ class PingdomTestCase(unittest.TestCase):
         self.service.single().get(**p)
         self.expect('GET', '/single', p)
 
-        with self.assertRaises(base.MethodNotSupported):
+        with port.assertRaises(base.MethodNotSupported):
             self.service.single().create()
             self.service.single().update()
             self.service.single().delete()
@@ -254,7 +255,7 @@ class PingdomTestCase(unittest.TestCase):
         self.service.traceroute().get(**p)
         self.expect('GET', '/traceroute', p)
 
-        with self.assertRaises(base.MethodNotSupported):
+        with port.assertRaises(base.MethodNotSupported):
             self.service.traceroute().create()
             self.service.traceroute().update()
             self.service.traceroute().delete()

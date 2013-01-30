@@ -1,6 +1,7 @@
 import json
 import unittest
 
+from libsaas import port
 from libsaas.services.base import MethodNotSupported
 from libsaas.executors import test_executor
 from libsaas.services import basecamp
@@ -49,11 +50,11 @@ class BasecampTestCase(unittest.TestCase):
         self.service.project('1234').accesses().get()
         self.expect('GET', '/projects/1234/accesses', {})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.project(1234).accesses().create({})
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.project(1234).access(1234).update({})
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.project(1234).access(1234).delete({})
 
         self.service.project(1234).accesses().grant(obj)
@@ -70,10 +71,10 @@ class BasecampTestCase(unittest.TestCase):
         self.service.project('1234').topics().get(page=2)
         self.expect('GET', '/projects/1234/topics', {'page': 2})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.project(1234).topics().create({})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.project(1234).messages().get()
 
         self.service.project(1234).messages().create(obj)
@@ -86,7 +87,7 @@ class BasecampTestCase(unittest.TestCase):
         self.service.project('1234').message(1234).delete()
         self.expect('DELETE', '/projects/1234/messages/1234', {})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.project(1234).message(1234).comments().get()
 
         self.service.project(1234).message(1234).comments().create(obj)
@@ -96,9 +97,9 @@ class BasecampTestCase(unittest.TestCase):
         self.service.project(1234).comment(1234).delete()
         self.expect('DELETE', '/projects/1234/comments/1234', {})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.project(1234).comment(1234).get()
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.project(1234).comment(1234).update(obj)
 
         self.service.project(1234).todolists().get()
@@ -119,7 +120,7 @@ class BasecampTestCase(unittest.TestCase):
         self.service.project(1234).todolist(1234).delete()
         self.expect('DELETE', '/projects/1234/todolists/1234', {})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.project(1234).todolist(1234).todos().get()
 
         self.service.project(1234).todolist(1234).todos().create(obj)
@@ -150,14 +151,14 @@ class BasecampTestCase(unittest.TestCase):
         self.service.project(1234).document(1234).delete()
         self.expect('DELETE', '/projects/1234/documents/1234', {})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.project(1234).document(1234).comments().get()
 
         self.service.project(1234).document(1234).comments().create(obj)
         self.expect('POST', '/projects/1234/documents/1234/comments',
                     json.dumps(obj))
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.project(1234).uploads().get()
 
         self.service.project(1234).uploads().create(obj)
@@ -166,7 +167,7 @@ class BasecampTestCase(unittest.TestCase):
         self.service.project(1234).upload(1234).get()
         self.expect('GET', '/projects/1234/uploads/1234', {})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.project(1234).upload(1234).comments().get()
 
         self.service.project(1234).upload(1234).comments().create(obj)
@@ -176,7 +177,7 @@ class BasecampTestCase(unittest.TestCase):
         self.service.project(1234).attachments().get()
         self.expect('GET', '/projects/1234/attachments', {})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.project(1234).attachments().create(obj)
 
         self.service.project('1234').calendar_events().get()
@@ -208,9 +209,9 @@ class BasecampTestCase(unittest.TestCase):
         self.service.person('1234').get()
         self.expect('GET', '/people/1234', {})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.people().create({})
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.person(1234).update({})
 
         self.service.person(1234).delete()
@@ -225,7 +226,7 @@ class BasecampTestCase(unittest.TestCase):
         self.service.events().get(since='2013-01-01', page=3)
         self.expect('GET', '/events', {'since': '2013-01-01', 'page': 3})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.events().create({})
 
     def test_calendars(self):
@@ -242,11 +243,11 @@ class BasecampTestCase(unittest.TestCase):
         self.service.calendar('1234').accesses().get()
         self.expect('GET', '/calendars/1234/accesses', {})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.calendar(1234).accesses().create({})
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.calendar(1234).access(1234).update({})
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.calendar(1234).access(1234).delete({})
 
         self.service.calendar(1234).accesses().grant(obj)
@@ -285,17 +286,17 @@ class BasecampTestCase(unittest.TestCase):
         self.service.todolists().completed()
         self.expect('GET', '/todolists/completed', {})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.todolists().create({})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.todolists().create({})
 
     def test_documents(self):
         self.service.documents().get()
         self.expect('GET', '/documents', {})
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.documents().create({})
 
     def test_attachments(self):

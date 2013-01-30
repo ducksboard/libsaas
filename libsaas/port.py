@@ -76,3 +76,33 @@ def method_func(klass, method_name):
     # in Python 2 method will be an instancemethod, try to get its __func__
     # attribute and fall back to what we already have (for Python 3)
     return getattr(method, '__func__', method)
+
+
+# copy-pasted from Python 2.7 sources, with the regex parameter removed
+
+class _AssertRaisesContext(object):
+    """A context manager used to implement TestCase.assertRaises* methods."""
+
+    def __init__(self, expected):
+        self.expected = expected
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, tb):
+        if exc_type is None:
+            try:
+                exc_name = self.expected.__name__
+            except AttributeError:
+                exc_name = str(self.expected)
+            raise self.failureException(
+                "{0} not raised".format(exc_name))
+        if not issubclass(exc_type, self.expected):
+            # let unexpected exceptions pass through
+            return False
+        self.exception = exc_value # store for later retrieval
+        return True
+
+
+def assertRaises(exception):
+    return _AssertRaisesContext(exception)

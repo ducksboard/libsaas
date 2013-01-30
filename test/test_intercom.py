@@ -1,6 +1,7 @@
 import json
 import unittest
 
+from libsaas import port
 from libsaas.executors import test_executor
 from libsaas.services import intercom
 from libsaas.services.base import MethodNotSupported
@@ -26,7 +27,7 @@ class IntercomTestCase(unittest.TestCase):
             self.assertEqual(self.executor.request.headers, headers)
 
     def test_users(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.users().delete()
 
         self.service.users().get()
@@ -42,10 +43,10 @@ class IntercomTestCase(unittest.TestCase):
         self.service.users().update(user)
         self.expect('PUT', '/users', json.dumps(user))
 
-        with self.assertRaises(TypeError):
+        with port.assertRaises(TypeError):
             self.service.user().get()
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.user().create()
             self.service.user().update()
             self.service.user().delete()
@@ -56,7 +57,7 @@ class IntercomTestCase(unittest.TestCase):
         self.expect('GET', '/users', {'email': 'name@domain.com'})
 
     def test_impressions(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.impressions().get()
             self.service.impressions().update()
             self.service.impressions().delete()
@@ -66,11 +67,11 @@ class IntercomTestCase(unittest.TestCase):
         self.expect('POST', '/users/impressions', json.dumps(impression))
 
     def test_messages(self):
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.message_threads().update()
             self.service.message_threads().delete()
 
-        with self.assertRaises(TypeError):
+        with port.assertRaises(TypeError):
             self.service.message_threads().get()
 
         self.service.message_threads().get(user_id=1)
@@ -87,12 +88,12 @@ class IntercomTestCase(unittest.TestCase):
         self.expect('PUT', '/users/message_threads',
                     json.dumps(message_thread))
 
-        with self.assertRaises(MethodNotSupported):
+        with port.assertRaises(MethodNotSupported):
             self.service.message_thread().create()
             self.service.message_thread().update()
             self.service.message_thread().delete()
 
-        with self.assertRaises(TypeError):
+        with port.assertRaises(TypeError):
             self.service.message_thread().get(1234)
 
         self.service.message_thread().get(1234, user_id=1)
