@@ -42,8 +42,8 @@ class UserVoice(base.Resource):
         self.oauth = None
 
         if api_secret and access_token and access_token_secret:
-            self.oauth = auth.OAuth(access_token, access_token_secret,
-                                    api_key, api_secret)
+            self.oauth = auth.OAuth1a(access_token, access_token_secret,
+                                      api_key, api_secret)
 
         tmpl = '{0}.uservoice.com/api/v1'
         self.apiroot = http.quote_any(tmpl.format(port.to_u(subdomain)))
@@ -51,7 +51,6 @@ class UserVoice(base.Resource):
 
         self.add_filter(self.use_json)
         self.add_filter(self.serialize_flatten)
-        self.add_filter(self.urlencode_put)
         # authenticate has to be the last filter, because anything that
         # modifies the request after it's signed will make the signature
         # invalid!

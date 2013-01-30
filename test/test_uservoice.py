@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from libsaas import http
+from libsaas import http, port
 from libsaas.executors import test_executor
 from libsaas.services import base, uservoice
 
@@ -22,6 +22,10 @@ class UserVoiceTestCase(unittest.TestCase):
             self.assertEqual(self.executor.request.uri,
                              'http://domain.uservoice.com/api/v1' + uri)
         if params is not None:
+            try:
+                params = tuple(params.items())
+            except AttributeError:
+                pass
             self.assertEqual(self.executor.request.params, params)
         if headers is not None:
             self.assertEqual(self.executor.request.headers, headers)
@@ -42,10 +46,8 @@ class UserVoiceTestCase(unittest.TestCase):
         self.service.article(10).get()
         self.expect('GET', '/articles/10.json')
 
-        # PUT requests get pre-urlencoded
         self.service.article(10).update({'foo': 'bar'})
-        self.expect('PUT', '/articles/10.json',
-                    http.urlencode_any({'article[foo]': 'bar'}))
+        self.expect('PUT', '/articles/10.json', {'article[foo]': 'bar'})
 
         self.service.article(10).useful()
         self.expect('POST', '/articles/10/useful.json')
@@ -64,10 +66,9 @@ class UserVoiceTestCase(unittest.TestCase):
         self.expect('POST', '/forums/4/categories.json',
                     {'category[foo]': 'bar'})
 
-        # PUT requests get pre-urlencoded
         self.service.forum(4).category(3).update({'foo': 'bar'})
         self.expect('PUT', '/forums/4/categories/3.json',
-                    http.urlencode_any({'category[foo]': 'bar'}))
+                    {'category[foo]': 'bar'})
 
         self.service.forum(4).category(3).delete()
         self.expect('DELETE', '/forums/4/categories/3.json')
@@ -86,10 +87,9 @@ class UserVoiceTestCase(unittest.TestCase):
         self.expect('POST', '/forums/3/suggestions/5/comments.json',
                     {'comment[text]': 'foo'})
 
-        # PUT requests get pre-urlencoded
         self.service.forum(3).suggestion(5).comment(6).update('bar')
         self.expect('PUT', '/forums/3/suggestions/5/comments/6.json',
-                    http.urlencode_any({'comment[text]': 'bar'}))
+                    {'comment[text]': 'bar'})
 
         self.service.forum(3).suggestion(5).comment(6).delete()
         self.expect('DELETE', '/forums/3/suggestions/5/comments/6.json')
@@ -137,10 +137,8 @@ class UserVoiceTestCase(unittest.TestCase):
         self.service.forums().create({'foo': 'bar'})
         self.expect('POST', '/forums.json', {'forum[foo]': 'bar'})
 
-        # PUT requests get pre-urlencoded
         self.service.forum(2).update({'foo': 'bar'})
-        self.expect('PUT', '/forums/2.json',
-                    http.urlencode_any({'forum[foo]': 'bar'}))
+        self.expect('PUT', '/forums/2.json', {'forum[foo]': 'bar'})
 
         self.service.forum(2).delete()
         self.expect('DELETE', '/forums/2.json')
@@ -155,10 +153,8 @@ class UserVoiceTestCase(unittest.TestCase):
         self.service.gadgets().create({'foo': 'bar'})
         self.expect('POST', '/gadgets.json', {'gadget[foo]': 'bar'})
 
-        # PUT requests get pre-urlencoded
         self.service.gadget(2).update({'foo': 'bar'})
-        self.expect('PUT', '/gadgets/2.json',
-                    http.urlencode_any({'gadget[foo]': 'bar'}))
+        self.expect('PUT', '/gadgets/2.json', {'gadget[foo]': 'bar'})
 
         self.service.gadget(2).delete()
         self.expect('DELETE', '/gadgets/2.json')
@@ -170,10 +166,9 @@ class UserVoiceTestCase(unittest.TestCase):
         self.service.forum(6).suggestion(3).notes().get()
         self.expect('GET', '/forums/6/suggestions/3/notes.json')
 
-        # PUT requests get pre-urlencoded
         self.service.forum(6).suggestion(3).note(4).update('note')
         self.expect('PUT', '/forums/6/suggestions/3/notes/4.json',
-                    http.urlencode_any({'note[text]': 'note'}))
+                    {'note[text]': 'note'})
 
         self.service.forum(6).suggestion(3).notes().create('note')
         self.expect('POST', '/forums/6/suggestions/3/notes.json',
@@ -243,10 +238,9 @@ class UserVoiceTestCase(unittest.TestCase):
         self.expect('GET', '/forums/2/suggestions/search.json',
                     {'query': 'foo'})
 
-        # PUT requests get pre-urlencoded
         self.service.forum(5).suggestion(2).respond({'status': 'foo'})
         self.expect('PUT', '/forums/5/suggestions/2/respond.json',
-                    http.urlencode_any({'response[status]': 'foo'}))
+                    {'response[status]': 'foo'})
 
         self.service.forum(6).suggestion(5).vote()
         self.expect('POST', '/forums/6/suggestions/5/votes.json',
@@ -273,10 +267,8 @@ class UserVoiceTestCase(unittest.TestCase):
         self.expect('POST', '/tickets/4/notes.json',
                     {'note[text]': 'note text'})
 
-        # PUT requests get pre-urlencoded
         self.service.ticket(2).note(3).update('new text')
-        self.expect('PUT', '/tickets/2/notes/3.json',
-                    http.urlencode_any({'note[text]': 'new text'}))
+        self.expect('PUT', '/tickets/2/notes/3.json', {'note[text]': 'new text'})
 
         self.service.ticket(2).note(6).delete()
         self.expect('DELETE', '/tickets/2/notes/6.json')
@@ -291,21 +283,17 @@ class UserVoiceTestCase(unittest.TestCase):
         self.service.tickets().create({'foo': 'bar'})
         self.expect('POST', '/tickets.json', {'ticket[foo]': 'bar'})
 
-        # PUT requests get pre-urlencoded
         self.service.ticket(2).update({'foo': 'bar'})
-        self.expect('PUT', '/tickets/2.json',
-                    http.urlencode_any({'ticket[foo]': 'bar'}))
+        self.expect('PUT', '/tickets/2.json', {'ticket[foo]': 'bar'})
 
         self.service.ticket(2).delete()
         self.expect('DELETE', '/tickets/2.json')
 
-        # PUT requests get pre-urlencoded
         self.service.tickets().upsert({'foo': 'bar'})
-        self.expect('PUT', '/tickets/upsert.json',
-                    http.urlencode_any({'ticket[foo]': 'bar'}))
+        self.expect('PUT', '/tickets/upsert.json', {'ticket[foo]': 'bar'})
 
         self.service.tickets().search(query='foo', page=2)
-        self.expect('GET', '/tickets/search.json', {'query': 'foo', 'page': 2})
+        self.expect('GET', '/tickets/search.json', {'query': 'foo', 'page': '2'})
 
     def test_topics(self):
         self.service.topics().get()
@@ -319,7 +307,7 @@ class UserVoiceTestCase(unittest.TestCase):
 
         self.service.topic(4).articles(sort='newest', page=3)
         self.expect('GET', '/topics/4/articles.json',
-                    {'sort': 'newest', 'page': 3})
+                    {'sort': 'newest', 'page': '3'})
 
     def test_users(self):
         self.service.users().get()
@@ -334,13 +322,11 @@ class UserVoiceTestCase(unittest.TestCase):
         self.service.users().create({'foo': 'bar'})
         self.expect('POST', '/users.json', {'user[foo]': 'bar'})
 
-        # PUT requests get pre-urlencoded
         self.service.user(2).update({'foo': 'bar'})
-        self.expect('PUT', '/users/2.json',
-                    http.urlencode_any({'user[foo]': 'bar'}))
+        self.expect('PUT', '/users/2.json', {'user[foo]': 'bar'})
 
         self.service.user(2).delete()
         self.expect('DELETE', '/users/2.json')
 
         self.service.users().search(query='foo', page=2)
-        self.expect('GET', '/users/search.json', {'query': 'foo', 'page': 2})
+        self.expect('GET', '/users/search.json', {'query': 'foo', 'page': '2'})
