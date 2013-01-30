@@ -15,7 +15,7 @@ class Desk(base.Resource):
         Create a Desk service.
 
         :var subdomain: The account-specific part of the Desk domain, for
-            instance use `mycompany` if your Zendesk domain is
+            instance use `mycompany` if your Desk domain is
             `mycompany.desk.com`.
         :vartype subdomain: str
 
