@@ -65,7 +65,7 @@ class Request(object):
 
 def quote_any(val):
     """
-    Percent quite any value, be it binary, text or integer.
+    Percent quote any value, be it binary, text or integer.
     """
     return port.quote(port.to_b(val))
 
