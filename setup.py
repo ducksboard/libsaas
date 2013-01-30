@@ -65,7 +65,8 @@ class Test(Command):
 
     def run(self):
         from test.test_libsaas import main
-        main()
+        if not main().wasSuccessful():
+            raise SystemExit(1)
 
 
 setup(name="libsaas",

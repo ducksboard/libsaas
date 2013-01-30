@@ -16,7 +16,7 @@ def get_suite():
 
 
 def main():
-    unittest.TextTestRunner(verbosity=2).run(get_suite())
+    return unittest.TextTestRunner(verbosity=2).run(get_suite())
 
 
 if __name__ == "__main__":
