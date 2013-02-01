@@ -59,6 +59,9 @@ class Basecamp(base.Resource):
     def set_access_token(self, access_token):
         self.access_token = access_token
 
+    def set_account_id(self, account_id):
+        self.account_id = account_id
+
     @base.resource(p.Projects)
     def projects(self):
         """
