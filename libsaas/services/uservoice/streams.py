@@ -7,7 +7,7 @@ class Stream(base.HierarchicalResource):
     path = 'stream'
 
     @base.apimethod
-    def public(self, date=None, filter=[], since=None):
+    def public(self, date=None, filter=None, since=None):
         """
         Fetch all public events.
 
@@ -17,7 +17,7 @@ class Stream(base.HierarchicalResource):
 
         :var filter: Specify which event types you want. See upstream
             documentation for allowed values.
-        :var filter: list
+        :var filter: str
 
         :var since: Fetch events from that moment onward. If set, the `date`
             parameter is ignored See upstream documentation for details.
@@ -29,7 +29,7 @@ class Stream(base.HierarchicalResource):
         return http.Request('GET', url, params), parsers.parse_json
 
     @base.apimethod
-    def private(self, date=None, filter=[], since=None):
+    def private(self, date=None, filter=None, since=None):
         """
         Fetch all private events.
 
@@ -39,7 +39,7 @@ class Stream(base.HierarchicalResource):
 
         :var filter: Specify which event types you want. See upstream
             documentation for allowed values.
-        :var filter: list
+        :var filter: str
 
         :var since: Fetch events from that moment onward. If set, the `date`
             parameter is ignored See upstream documentation for details.
