@@ -76,7 +76,7 @@ class UserVoice(base.Resource):
         # use serialize_flatten to flatten params
         serialized = ()
         for name, value in request.params.items():
-            serialized += http.serialize_flatten(name, value)
+            serialized += http.serialize_flatten(name, value, False)
         request.params = serialized
 
     def urlencode_put(self, request):

@@ -84,25 +84,40 @@ def urlencode_any(d):
     return port.urlencode(as_bytes)
 
 
-def serialize_flatten(name, value):
+def serialize_flatten(name, value, array_indices=True):
     """
     Transform a parameter name and a value (which can by any Python object)
     into a flat tuple of param tuples. This is a common way of serializing
     parameters in PHP applications.
 
-    >>> serialize_flatten('p1', ['v1', 'v2', 'v3']
+    If array_indices is True, lists are serialized as:
+
+        param[0]=val1&param[1]=val2
+
+    whereas is it's False, they are serialized as:
+
+        param[]=val1&param[]=val2
+
+    The former is more generic and allows list values to be objects, while the
+    latter is there for compatibility with services that don't understand
+    numeric indices.
+
+    >>> serialize_flatten('p1', ['v1', 'v2', 'v3'], True)
+    (('p1[0]', 'v1'), ('p1[1]', 'v2'), ('p1[2]', 'v3'))
+
+    >>> serialize_flatten('p1', ['v1', 'v2', 'v3'], False)
     (('p1[]', 'v1'), ('p1[]', 'v2'), ('p1[]', 'v3'))
 
     >>> serialize_flatten('p1', [{'k1': 'v1', 'k2': True},
     ...                          {'k1': 'v2', 'k2': False}])
-    (('p1[][k1]', 'v1'), ('p1[][k2]', 'true'),
-     ('p1[][k1]', 'v2'), ('p1[][k2]', 'false'))
+    (('p1[0][k1]', 'v1'), ('p1[0][k2]', 'true'),
+     ('p1[1][k1]', 'v2'), ('p1[1][k2]', 'false'))
     """
     # call the recursive function that returns a tuple of tuples
-    return tuple(serialize_flatten_rec(name, value))
+    return tuple(serialize_flatten_rec(name, value, array_indices))
 
 
-def serialize_flatten_rec(prefix, value):
+def serialize_flatten_rec(prefix, value, array_indices):
     """
     Recursive helper for serialize_flatten.
     """
@@ -110,15 +125,18 @@ def serialize_flatten_rec(prefix, value):
         # serializing a dictionary, use prefix[key] as the prefix, recurse for
         # all dict items and flatten the result
         return chain.from_iterable(
-            (serialize_flatten_rec('{0}[{1}]'.format(port.to_u(prefix),
-                                                     port.to_u(key)), val)
+            (serialize_flatten_rec('{0}[{1}]'.format(
+                        port.to_u(prefix), port.to_u(key)),
+                                   val, array_indices)
              for key, val in value.items()))
     elif isinstance(value, list):
         # serializing a list, use prefix[] as the prefix, recurse for
         # all items and flatten the result
         return chain.from_iterable(
-            (serialize_flatten_rec('{0}[]'.format(port.to_u(prefix)), val)
-             for val in value))
+            (serialize_flatten_rec('{0}[{1}]'.format(
+                        port.to_u(prefix), i if array_indices else ''),
+                                   val, array_indices)
+             for i, val in enumerate(value)))
     elif isinstance(value, bool):
         # serializing a boolean, take the prefix as-is and serialize the value
         # to string

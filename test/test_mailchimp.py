@@ -30,7 +30,7 @@ class MailchimpTestCase(unittest.TestCase):
         self.service.listBatchSubscribe(3, [{'EMAIL': 'foo@example.com'},
                                             {'EMAIL': 'bar@example.com'}])
         self.expect('POST', '/?method=listBatchSubscribe',
-                    (('id', '3'), ('batch[][EMAIL]', 'foo@example.com'),
-                     ('batch[][EMAIL]', 'bar@example.com'), ('output', 'json'),
+                    (('id', '3'), ('batch[0][EMAIL]', 'foo@example.com'),
+                     ('batch[1][EMAIL]', 'bar@example.com'), ('output', 'json'),
                      ('double_optin', 'true'), ('update_existing', 'false'),
                      ('replace_interests', 'true'), ('apikey', 'apikey')))
