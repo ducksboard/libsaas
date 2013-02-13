@@ -2,12 +2,7 @@ import base64
 from hashlib import sha1
 import hmac
 import time
-
-try:
-    # try using real crypto before falling back to pseudo crypto
-    from Crypto.Random import random
-except ImportError:
-    import random
+import random
 
 from libsaas import http, port
 
