@@ -124,6 +124,10 @@ class ZendeskTestCase(unittest.TestCase):
         self.service.satisfaction_ratings().received(page=3)
         self.expect('GET', '/satisfaction_ratings/received.json', {'page': 3})
 
+        self.service.satisfaction_ratings().received(page=3, sort_order='desc')
+        self.expect('GET', '/satisfaction_ratings/received.json',
+                    {'page': 3, 'sort_order': 'desc'})
+
         self.service.satisfaction_rating(3).get()
         self.expect('GET', '/satisfaction_ratings/3.json')
 

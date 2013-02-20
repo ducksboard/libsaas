@@ -213,12 +213,12 @@ class SatisfactionRatingsBase(ZendeskResource):
 class SatisfactionRatings(SatisfactionRatingsBase):
 
     @base.apimethod
-    def received(self, page=None, per_page=None):
+    def received(self, page=None, per_page=None, sort_order=None):
         """
         Fetch ratings provided by customers.
         """
         url = '{0}/{1}'.format(self.get_url(), 'received')
-        params = base.get_params(('page', 'per_page'), locals())
+        params = base.get_params(('page', 'per_page', 'sort_order'), locals())
 
         return http.Request('GET', url, params), parsers.parse_json
 
