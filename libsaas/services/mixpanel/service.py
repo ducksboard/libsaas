@@ -119,7 +119,37 @@ class Mixpanel(base.Resource):
     track.__doc__ = track.__doc__.format(
         'https://mixpanel.com/docs/api-documentation/'
         'http-specification-insert-data')
+    
+    @base.apimethod
+    def engage(self, distinct_id, data):
+        """
+        Store people properties
 
+        Upstream documentation: {0}
+
+        :var properties: The user properties, your access token will be
+            inserted into it automatically.
+        :vartype properties: dict
+
+        :return: A boolean that tells if the event has been logged.
+        """
+        if not self.token:
+            raise InsufficientSettings('token is required for this method')
+
+        data['$token'] = self.token
+        data['$distinct_id'] = distinct_id
+        
+        params = {'data': base64.b64encode(port.to_b(json.dumps(data)))}
+
+        request = http.Request('GET', 'http://api.mixpanel.com/engage/', params)
+        request.nosign = True
+
+        return request, resources.parse_boolean
+
+    engage.__doc__ = engage.__doc__.format(
+        'https://mixpanel.com/docs/people-analytics/'
+        'people-http-specification-insert-data')
+    
     @base.apimethod
     def export(self, from_date, to_date, event=None, where=None, bucket=None):
         """

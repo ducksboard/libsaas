@@ -49,6 +49,14 @@ class MixpanelTestCase(unittest.TestCase):
         self.expect('track/', {'data': data, 'ip': '0', 'test': '1'}, 'api')
         self.assertTrue(ret)
 
+    def test_engage(self):
+        ret = self.service.engage(42, {"$set": {"$first_name": "John", "$last_name": "Smith"}})
+        data = self.serialize({'$token': 'my-token', '$distinct_id': 42, 
+                               "$set": {"$first_name": "John", "$last_name": "Smith"}})
+        
+        self.expect('engage/', {'data': data}, 'api')
+        self.assertTrue(ret)
+
     def test_track_failure(self):
         self.executor.set_response(b'0', 200, {})
 
