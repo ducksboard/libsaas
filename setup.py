@@ -13,7 +13,7 @@ It's like an ORM for SaaS!
 
 Libsaas is built by Ducksboard_ and distributed under the MIT license. You can
 file bugs in the `issue tracker`_, browse the documentation_ or help out by
-constributing support for new services.
+contributing support for new services.
 
 .. _Ducksboard: http://ducksboard.com/
 .. _issue tracker: https://github.com/ducksboard/libsaas/issues
