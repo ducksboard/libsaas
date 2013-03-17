@@ -19,9 +19,13 @@ class BasicAuth(object):
         auth = '{0}:{1}'.format(self.username, self.password)
         # According to RFC2617 the username and password are *TEXT, which
         # RFC2616 says may contain characters from outside of ISO-8859-1 if
-        # they are MIME-encoded. Let's make life easier and assume this means
-        # that the username and password will be latin-1
-        encoded = base64.b64encode(auth.encode('latin-1')).decode('latin-1')
+        # they are MIME-encoded. Our first approach was to assume latin-1 in
+        # username and password, but practice has proved us wrong (services
+        # like Zendesk allow non-latin-1 characters in both, which are used
+        # in basic auth for their API). To be as compatible as possible,
+        # allow unicode in username and password, but keep resulting base64
+        # in latin-1.
+        encoded = port.to_u(base64.b64encode(port.to_b(auth)), 'latin-1')
         header = 'Basic {0}'.format(encoded)
         request.headers['Authorization'] = header
 
