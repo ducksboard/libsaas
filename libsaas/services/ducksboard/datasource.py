@@ -22,7 +22,7 @@ class Datasource(base.Resource):
         self.url_tmpl = 'https://{0}.ducksboard.com/values/{1}'
         self.label = label
 
-        self.add_filter(auth.BasicAuth(apikey, None))
+        self.add_filter(auth.BasicAuth(apikey, 'x'))
         self.add_filter(self.use_json)
 
     def use_json(self, request):
