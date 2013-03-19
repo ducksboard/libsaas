@@ -5,3 +5,4 @@ dist
 MANIFEST
 doc/generated
 doc/_build
+_trial_temp/
