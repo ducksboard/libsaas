@@ -2,6 +2,7 @@ import base64
 import json
 import unittest
 
+from libsaas import port
 from libsaas.executors import test_executor
 from libsaas.services import mixpanel
 
@@ -40,7 +41,8 @@ class MixpanelTestCase(unittest.TestCase):
         params_used.pop('expire', None)
 
         for name in b64params:
-            params_used[name] = json.loads(base64.b64decode(params_used[name]))
+            decoded = base64.b64decode(params_used[name])
+            params_used[name] = json.loads(port.to_u(decoded))
 
         self.assertEqual(params_used, params_expected)
 
