@@ -16,7 +16,6 @@ class BasicAuth(object):
         self.password = password
 
     def __call__(self, request):
-        auth = u'{0}:{1}'.format(self.username, self.password)
         # According to RFC2617 the username and password are *TEXT, which
         # RFC2616 says may contain characters from outside of ISO-8859-1 if
         # they are MIME-encoded. Our first approach was to assume latin-1 in
@@ -25,6 +24,8 @@ class BasicAuth(object):
         # in basic auth for their API). To be as compatible as possible,
         # allow unicode in username and password, but keep resulting base64
         # in latin-1.
+        auth = port.to_u('{0}:{1}').format(port.to_u(self.username),
+                                           port.to_u(self.password))
         encoded = port.to_u(base64.b64encode(port.to_b(auth)), 'latin-1')
         header = 'Basic {0}'.format(encoded)
         request.headers['Authorization'] = header
