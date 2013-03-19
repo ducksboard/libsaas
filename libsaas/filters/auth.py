@@ -16,7 +16,7 @@ class BasicAuth(object):
         self.password = password
 
     def __call__(self, request):
-        auth = '{0}:{1}'.format(self.username, self.password)
+        auth = u'{0}:{1}'.format(self.username, self.password)
         # According to RFC2617 the username and password are *TEXT, which
         # RFC2616 says may contain characters from outside of ISO-8859-1 if
         # they are MIME-encoded. Our first approach was to assume latin-1 in
