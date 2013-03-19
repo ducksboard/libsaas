@@ -17,7 +17,7 @@ class MixpanelTestCase(unittest.TestCase):
     def serialize(self, data):
         return base64.b64encode(json.dumps(data).encode('utf-8'))
 
-    def expect(self, uri, params=None, subdomain=None):
+    def expect(self, uri, params_expected=None, subdomain=None, b64params=()):
         if not subdomain:
             domain = 'mixpanel.com'
         else:
@@ -28,12 +28,21 @@ class MixpanelTestCase(unittest.TestCase):
 
         self.assertEqual(self.executor.request.uri,
                          'http://{0}/{1}'.format(domain, uri))
-        if params:
-            self.executor.request.params.pop('sig', None)
-            self.executor.request.params.pop('expire', None)
-            if 'api_key' in self.executor.request.params:
-                params['api_key'] = 'api-key'
-            self.assertEqual(self.executor.request.params, params)
+        if not params_expected:
+            return
+
+        params_used = self.executor.request.params.copy()
+
+        if 'api_key' in params_used:
+            params_expected['api_key'] = 'api-key'
+
+        params_used.pop('sig', None)
+        params_used.pop('expire', None)
+
+        for name in b64params:
+            params_used[name] = json.loads(base64.b64decode(params_used[name]))
+
+        self.assertEqual(params_used, params_expected)
 
     def test_track(self):
         ret = self.service.track('login', {'user': 'foo', 'important': True,
@@ -47,17 +56,18 @@ class MixpanelTestCase(unittest.TestCase):
         self.assertTrue(ret)
 
         ret = self.service.track('logout', test=True)
-        data = self.serialize({'event': 'logout',
-                               'properties': {'token': 'my-token'}})
-        self.expect('track/', {'data': data, 'ip': '0', 'test': '1'}, 'api')
+        data = {'event': 'logout', 'properties': {'token': 'my-token'}}
+        self.expect('track/', {'data': data, 'ip': '0', 'test': '1'}, 'api',
+                    b64params=('data', ))
         self.assertTrue(ret)
 
     def test_engage(self):
-        ret = self.service.engage(42, {"$set": {"$first_name": "John", "$last_name": "Smith"}})
-        data = self.serialize({'$token': 'my-token', '$distinct_id': 42, 
-                               "$set": {"$first_name": "John", "$last_name": "Smith"}})
+        ret = self.service.engage(42, {"$set": {"$first_name": "John",
+                                                "$last_name": "Smith"}})
+        data = {'$token': 'my-token', '$distinct_id': 42,
+                "$set": {"$first_name": "John", "$last_name": "Smith"}}
         
-        self.expect('engage/', {'data': data}, 'api')
+        self.expect('engage/', {'data': data}, 'api', b64params=('data', ))
         self.assertTrue(ret)
 
     def test_track_failure(self):
@@ -150,9 +160,9 @@ class MixpanelTestCase(unittest.TestCase):
 
         # tracking is allowed without setting the api key and api secret
         self.service.track('login')
-        data = self.serialize({'event': 'login',
-                               'properties': {'token': 'my-token'}})
-        self.expect('track/', {'data': data, 'ip': '0', 'test': '0'}, 'api')
+        data = {'event': 'login', 'properties': {'token': 'my-token'}}
+        self.expect('track/', {'data': data, 'ip': '0', 'test': '0'}, 'api',
+                    b64params=('data', ))
 
         # but data export methods fail
         exc = mixpanel.InsufficientSettings
@@ -173,7 +183,6 @@ class MixpanelTestCase(unittest.TestCase):
         # try a unicode event name
         self.executor.set_response(b'1', 200, {})
         self.service.track(b'\xce\xbb'.decode('utf-8'))
-        data = json.dumps({'event': b'\xce\xbb'.decode('utf-8'),
-                           'properties': {'token': 'my-token'}})
-        data = base64.b64encode(data.encode('utf-8'))
-        self.expect('track/', {'data': data, 'ip': '0', 'test': '0'}, 'api')
+        data = {'event': b'\xce\xbb'.decode('utf-8'), 'properties': {'token': 'my-token'}}
+        self.expect('track/', {'data': data, 'ip': '0', 'test': '0'}, 'api',
+                    b64params=('data', ))
