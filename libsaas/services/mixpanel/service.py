@@ -20,6 +20,8 @@ class Mixpanel(base.Resource):
     """
     """
     USE_EXPIRE = True
+    LITERAL_PROPERTY_TYPES = port.numeric_types + (list, bool)
+
 
     def __init__(self, token=None, api_key=None, api_secret=None):
         """
@@ -73,6 +75,18 @@ class Mixpanel(base.Resource):
 
         request.uri = 'http://mixpanel.com/api/2.0/' + request.uri
 
+    def serialize_property(self, value):
+        """
+        Serialize a Mixpanel property value. According to
+        https://mixpanel.com/docs/properties-or-segments/property-data-types
+        the allowed types are string, numeric, boolean, date (represented as a
+        string) and list.
+        """
+        if isinstance(value, self.LITERAL_PROPERTY_TYPES):
+            return value
+
+        return port.to_u(value)
+
     @base.apimethod
     def track(self, event, properties=None, ip=False, test=False):
         """
@@ -102,7 +116,7 @@ class Mixpanel(base.Resource):
             properties = {}
         properties['token'] = self.token
 
-        properties = dict((port.to_u(key), port.to_u(value))for
+        properties = dict((port.to_u(key), self.serialize_property(value)) for
                           key, value in properties.items())
 
         params = base.get_params(('ip', 'test'), locals(),

@@ -36,10 +36,13 @@ class MixpanelTestCase(unittest.TestCase):
             self.assertEqual(self.executor.request.params, params)
 
     def test_track(self):
-        ret = self.service.track('login', {'user': 'foo'}, ip=True)
+        ret = self.service.track('login', {'user': 'foo', 'important': True,
+                                           'widgets': ['foo', 'bar']}, ip=True)
         data = self.serialize({'event': 'login',
                                'properties': {'token': 'my-token',
-                                              'user': 'foo'}})
+                                              'user': 'foo',
+                                              'important': True,
+                                              'widgets': ['foo', 'bar']}})
         self.expect('track/', {'data': data, 'ip': '1', 'test': '0'}, 'api')
         self.assertTrue(ret)
 
