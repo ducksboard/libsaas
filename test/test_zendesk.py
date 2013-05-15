@@ -164,6 +164,9 @@ class ZendeskTestCase(unittest.TestCase):
         self.service.view(1).execute(sort_by='status')
         self.expect('GET', '/views/1/execute.json', {'sort_by': 'status'})
 
+        self.service.view(1).tickets(page=3)
+        self.expect('GET', '/views/1/tickets.json', {'page': 3})
+
     def test_exports(self):
         self.service.exports().tickets(start_time=1340184927)
         self.expect('GET', '/exports/tickets.json',

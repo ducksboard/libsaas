@@ -351,6 +351,16 @@ class View(ViewsBase):
 
         return http.Request('GET', url), parsers.parse_json
 
+    @base.apimethod
+    def tickets(self, page=None, per_page=None):
+        """
+        Returns the ticket for a single view.
+        """
+        params = base.get_params(None, locals())
+        url = '{0}/{1}'.format(self.get_url(), 'tickets')
+
+        return http.Request('GET', url, params), parsers.parse_json
+
 
 class Exports(ZendeskResource):
 
