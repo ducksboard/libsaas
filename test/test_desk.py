@@ -188,3 +188,10 @@ class DeskTestCase(unittest.TestCase):
 
         with port.assertRaises(base.MethodNotSupported):
             self.service.macro(4).action(1).delete()
+
+    def test_full_domain(self):
+        service = desk.Desk('support.domain.com', 'key', 'secret',
+                            'token', 'token_secret')
+        service.users().get()
+        self.assertEqual(self.executor.request.uri,
+                         'https://support.domain.com/api/v1/users.json')

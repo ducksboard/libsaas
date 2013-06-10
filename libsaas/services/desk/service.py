@@ -16,7 +16,9 @@ class Desk(base.Resource):
 
         :var subdomain: The account-specific part of the Desk domain, for
             instance use `mycompany` if your Desk domain is
-            `mycompany.desk.com`.
+            `mycompany.desk.com`, or the full domain if using Desk whitelabel,
+            for instance `support.mycompany.com`. If the parameter contains a
+            dot, it is treated as a full domain, otherwise as a subdomain.
         :vartype subdomain: str
 
         :var api_key: The API key.
@@ -32,7 +34,9 @@ class Desk(base.Resource):
             requests.
         :vartype access_token_secret: str
         """
-        tmpl = '{0}.desk.com/api/v1'
+        tmpl = '{0}/api/v1'
+        if '.' not in subdomain:
+            subdomain += '.desk.com'
         self.apiroot = http.quote_any(tmpl.format(port.to_u(subdomain)))
         self.apiroot = 'https://' + self.apiroot
 
