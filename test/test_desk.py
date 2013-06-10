@@ -12,7 +12,7 @@ class DeskTestCase(unittest.TestCase):
         self.executor.set_response(b'{}', 200, {})
 
         self.service = desk.Desk('domain', 'key', 'secret',
-                                           'token', 'token_secret')
+                                 'token', 'token_secret')
 
     def expect(self, method=None, uri=None, params=None, headers=None):
         if method is not None:
