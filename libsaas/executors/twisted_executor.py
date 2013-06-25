@@ -82,7 +82,8 @@ class HTTPResponseProtocol(protocol.Protocol):
 
     def cancel(self, d):
         self.finished = None
-        self.stopProducing()
+        if self.transport:
+            self.transport.stopProducing()
 
 
 class TwistedExecutor(object):
