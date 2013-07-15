@@ -68,7 +68,7 @@ class MixpanelTestCase(unittest.TestCase):
                                                 "$last_name": "Smith"}})
         data = {'$token': 'my-token', '$distinct_id': 42,
                 "$set": {"$first_name": "John", "$last_name": "Smith"}}
-        
+
         self.expect('engage/', {'data': data}, 'api', b64params=('data', ))
         self.assertTrue(ret)
 
@@ -139,6 +139,14 @@ class MixpanelTestCase(unittest.TestCase):
         self.expect('segmentation/average/',
                     {'event': 'pay', 'from_date': '2011-01-01',
                      'to_date': '2012-01-01', 'on': on, 'unit': 'day'})
+
+        inner = 'property["amount"]'
+        outer = 'property["succeeded"]'
+        self.service.segmentation().multiseg('pay', 'general', '2011-01-01',
+                                            '2012-01-01', inner, outer, 'day')
+        self.expect('segmentation/multiseg/',
+                    {'event': 'pay', 'type': 'general', 'from_date': '2011-01-01',
+                     'to_date': '2012-01-01', 'inner': inner, 'outer': outer, 'unit': 'day'})
 
     def test_retention(self):
         self.service.retention().get('2011-01-01', '2012-01-01',
