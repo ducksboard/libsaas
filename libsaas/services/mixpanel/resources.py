@@ -188,6 +188,18 @@ class Segmentation(base.Resource):
 
         return request, parsers.parse_json
 
+    @base.apimethod
+    def multiseg(self, event, type, from_date, to_date, inner, outer, unit=None):
+        """
+        Fetch the average of an expression for an event per time unit.
+        """
+        params = base.get_params(('event', 'type', 'from_date', 'to_date', 'inner', 'outer',
+                                  'unit'), locals(), serialize_param)
+
+        request = http.Request('GET', 'segmentation/multiseg/', params)
+
+        return request, parsers.parse_json
+
 
 class Retention(base.Resource):
 
