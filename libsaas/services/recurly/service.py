@@ -32,7 +32,7 @@ class Recurly(base.Resource):
 
     def use_xml(self, request):
         request.headers['Content-Type'] = 'application/xml'
-        request.headers['Accept'] = 'application/xml'
+        request.headers.setdefault('Accept', 'application/xml')
 
         if request.method.upper() not in http.URLENCODE_METHODS:
             request.params = xml.dict_to_xml(request.params)

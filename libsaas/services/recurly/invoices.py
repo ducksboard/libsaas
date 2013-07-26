@@ -4,6 +4,13 @@ from libsaas.services import base
 from . import resource
 
 
+def parse_passthrough(body, code, headers):
+    if not 200 <= code < 300:
+        raise http.HTTPError(body, code, headers)
+
+    return body
+
+
 class InvoicesBase(resource.RecurlyResource):
 
     path = 'invoices'
@@ -39,6 +46,21 @@ class Invoice(InvoicesBase):
 
     def create(self, *args, **kwargs):
         raise base.MethodNotSupported()
+
+    @base.apimethod
+    def get_pdf(self, language='en-US'):
+        """
+        Fetch a PDF blob for the invoice.
+
+        :var language: The language for the invoice, defaults to "en-US'.
+        :vartype language: str
+        """
+        self.require_item()
+
+        headers = {'Accept': 'application/pdf', 'Accept-Language': language}
+        request = http.Request('GET', self.get_url(), {}, headers)
+
+        return request, parse_passthrough
 
     @base.apimethod
     def mark_successful(self):

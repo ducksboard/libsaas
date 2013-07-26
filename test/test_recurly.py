@@ -24,7 +24,8 @@ class RecurlyTestCase(unittest.TestCase):
         if params:
             self.assertEqual(self.executor.request.params, params)
         if headers:
-            self.assertEqual(self.executor.request.headers, headers)
+            for key, val in headers.items():
+                self.assertEqual(self.executor.request.headers[key], val)
 
     def test_accounts(self):
         self.service.accounts().get(per_page=3)
@@ -149,6 +150,13 @@ class RecurlyTestCase(unittest.TestCase):
 
         self.service.invoice('1980').mark_failed()
         self.expect('PUT', '/invoices/1980/mark_failed')
+
+        blob = b'PDFBLOB'
+        self.executor.set_response(blob, 200, {})
+        ret = self.service.invoice('1980').get_pdf(language='en-GB')
+        self.expect('GET', '/invoices/1980', {},
+                    {'Accept': 'application/pdf', 'Accept-Language': 'en-GB'})
+        self.assertEqual(ret, blob)
 
     def test_plans(self):
         self.service.plans().get(per_page=3)
