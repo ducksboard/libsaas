@@ -143,10 +143,10 @@ class MixpanelTestCase(unittest.TestCase):
         inner = 'property["amount"]'
         outer = 'property["succeeded"]'
         self.service.segmentation().multiseg('pay', 'general', '2011-01-01',
-                                            '2012-01-01', inner, outer, 'day')
+                                            '2012-01-01', inner, outer, 25, 'day')
         self.expect('segmentation/multiseg/',
                     {'event': 'pay', 'type': 'general', 'from_date': '2011-01-01',
-                     'to_date': '2012-01-01', 'inner': inner, 'outer': outer, 'unit': 'day'})
+                     'to_date': '2012-01-01', 'inner': inner, 'outer': outer, 'limit': 25, 'unit': 'day'})
 
     def test_retention(self):
         self.service.retention().get('2011-01-01', '2012-01-01',
