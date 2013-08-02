@@ -5,7 +5,7 @@ import hmac
 import json
 import time
 
-from libsaas import parsers, http
+from libsaas import parsers, http, port
 from libsaas.services import base
 
 from . import resources
@@ -42,12 +42,12 @@ class Mozscape(base.Resource):
             return
 
         expires = str(calendar.timegm(self.timesource()) + self.EXPIRES)
-        to_sign = self.access_id + '\n' + expires
-        signature = hmac.new(self.secret_key, to_sign, hashlib.sha1).digest()
+        to_sign = port.to_b(self.access_id + '\n' + expires)
+        signature = hmac.new(port.to_b(self.secret_key), to_sign, hashlib.sha1).digest()
 
         request.params['AccessID'] = self.access_id
         request.params['Expires'] = expires
-        request.params['Signature'] = base64.b64encode(signature)
+        request.params['Signature'] = port.to_u(base64.b64encode(signature))
 
     @base.apimethod
     def urlmetrics(self, urls, cols):
