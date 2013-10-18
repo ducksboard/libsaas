@@ -19,7 +19,7 @@ class Datasource(base.Resource):
         :var label: data source label
         :vartype label: str
         """
-        self.url_tmpl = 'https://{0}.ducksboard.com/values/{1}'
+        self.url_tmpl = port.to_u('https://{0}.ducksboard.com/values/{1}')
         self.label = label
 
         self.add_filter(auth.BasicAuth(apikey, 'x'))

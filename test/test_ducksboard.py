@@ -132,3 +132,13 @@ class DucksboardTestCase(unittest.TestCase):
         self.expect('label/timespan', 'GET',
                     {'timespan': 'daily', 'timezone': 'UTC'},
                     subdomain='pull')
+
+        # try binary and unicode labels
+        _lambda = b'\xce\xbb'
+        _ulambda = _lambda.decode('utf-8')
+
+        ds = self.service.data_source(_lambda)
+        ds.delete()
+
+        ds = self.service.data_source(_ulambda)
+        ds.delete()
