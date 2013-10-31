@@ -68,6 +68,15 @@ class Ticket(TicketsBase):
 
         return http.Request('GET', url, params), parsers.parse_json
 
+    @base.apimethod
+    def metrics(self):
+        """
+        Fetch the ticket metrics.
+        """
+        url = '{0}/{1}'.format(self.get_url(), 'metrics')
+
+        return http.Request('GET', url), parsers.parse_json
+
 
 class UsersBase(ZendeskResource):
 
@@ -317,6 +326,29 @@ class Views(ViewsBase):
     preview.__doc__ = preview.__doc__.format(
         'http://developer.zendesk.com/documentation/'
         'rest_api/views.html#previewing-views',
+        'http://developer.zendesk.com/documentation/'
+        'rest_api/views.html#conditions')
+
+
+    @base.apimethod
+    def preview_count(self, conditions):
+        """
+        Returns the ticket count for a single preview. See {0}.
+
+        :var conditions: A representation of the conditions that constitute the
+            view. See {1}.
+        :vartype conditions: dict
+        """
+
+        url = '{0}/{1}'.format(self.get_url(), 'preview/count')
+
+        view = {'view': conditions.copy()}
+        request = http.Request('POST', url, view)
+        return request, parsers.parse_json
+
+    preview_count.__doc__ = preview.__doc__.format(
+        'http://developer.zendesk.com/documentation/'
+        'rest_api/views.html#preview-count',
         'http://developer.zendesk.com/documentation/'
         'rest_api/views.html#conditions')
 
