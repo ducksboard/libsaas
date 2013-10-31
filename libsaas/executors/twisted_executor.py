@@ -109,7 +109,7 @@ class TwistedExecutor(object):
         else:
             producer = self.body_producer(request.params)
             content_type = 'application/x-www-form-urlencoded'
-            request.headers['Content-Type'] = content_type
+            request.headers.setdefault('Content-Type', content_type)
 
         logger.debug('request uri: %r, producer: %r, headers: %r',
                      uri, producer, request.headers)
