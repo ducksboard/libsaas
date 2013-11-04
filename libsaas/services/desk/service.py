@@ -1,9 +1,11 @@
+import json
+
 from libsaas import http, port
 
 from libsaas.services import base
 from libsaas.filters import auth
 
-from . import cases, customers, interactions, users, contents, macros
+from . import cases, customers, users, contents, macros, insights
 
 
 class Desk(base.Resource):
@@ -34,7 +36,7 @@ class Desk(base.Resource):
             requests.
         :vartype access_token_secret: str
         """
-        tmpl = '{0}/api/v1'
+        tmpl = '{0}/api/v2'
         if '.' not in subdomain:
             subdomain += '.desk.com'
         self.apiroot = http.quote_any(tmpl.format(port.to_u(subdomain)))
@@ -56,10 +58,11 @@ class Desk(base.Resource):
         self.oauth(request)
 
     def use_json(self, request):
-        request.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-        request.headers['Accept'] = '*/*'
+        request.headers['Content-Type'] = 'application/json'
+        request.headers['Accept'] = 'application/json'
 
-        request.uri += '.json'
+        if request.method.upper() not in http.URLENCODE_METHODS:
+            request.params = json.dumps(request.params)
 
     @base.resource(cases.Case)
     def case(self, case_id, is_external=False):
@@ -96,13 +99,6 @@ class Desk(base.Resource):
         """
         return customers.Customers(self)
 
-    @base.resource(interactions.Interactions)
-    def interactions(self):
-        """
-        Return the resource corresponding to all interactions.
-        """
-        return interactions.Interactions(self)
-
     @base.resource(users.Group)
     def group(self, group_id):
         """
@@ -117,12 +113,12 @@ class Desk(base.Resource):
         """
         return users.Groups(self)
 
-    @base.resource(users.Account)
-    def account(self):
+    @base.resource(users.SiteSettings)
+    def site_settings(self):
         """
-        Return the resource corresponding to a single user.
+        Return the resource corresponding to the site settings.
         """
-        return users.Account(self)
+        return users.SiteSettings(self)
 
     @base.resource(users.User)
     def user(self, user_id):
@@ -137,6 +133,13 @@ class Desk(base.Resource):
         Return the resource corresponding to all users.
         """
         return users.Users(self)
+
+    @base.resource(insights.Insights)
+    def insights(self):
+        """
+        Return the resource corresponding to insights.
+        """
+        return insights.Insights(self)
 
     @base.resource(contents.Topic)
     def topic(self, topic_id):

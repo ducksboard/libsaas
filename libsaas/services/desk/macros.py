@@ -12,6 +12,9 @@ class Action(resource.DeskResource):
 
     path = 'actions'
 
+    def delete(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
 
 class Macros(resource.PaginatedDeskResource):
 
@@ -21,7 +24,7 @@ class Macros(resource.PaginatedDeskResource):
         raise base.MethodNotSupported()
 
 
-class Macro(base.RESTResource):
+class Macro(resource.DeskResource):
 
     path = 'macros'
 
