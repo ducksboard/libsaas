@@ -117,7 +117,8 @@ class RepoIssues(RepoIssuesBase):
 
     @base.apimethod
     def get(self, milestone=None, state='open', assignee=None, mentioned=None,
-            labels=None, sort='created', direction='desc', since=None):
+            labels=None, sort='created', direction='desc', since=None,
+            page=None, per_page=None):
         """
         Fetch issues for this repository based on the filter parameters and
         using the specified format.
