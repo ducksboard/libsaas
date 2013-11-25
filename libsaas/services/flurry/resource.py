@@ -264,6 +264,10 @@ class Metrics(base.HierarchicalResource):
 
 
 class EventResource(base.HierarchicalResource):
+    def __init__(self, parent, object_id=None):
+        self.parent = parent
+        self.object_id = object_id
+
     def get_url(self):
         grandparent = self.parent.parent
         return '{0}/eventMetrics/{1}'.format(grandparent.get_url(), self.path)
