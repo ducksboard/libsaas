@@ -162,3 +162,10 @@ class Zendesk(base.Resource):
         Return the resource corresponding to exports.
         """
         return resources.Exports(self)
+
+    @base.resource(resources.Tags)
+    def tags(self):
+        """
+        Return the resource corresponding to tags.
+        """
+        return resources.Tags(self)

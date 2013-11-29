@@ -26,6 +26,20 @@ class ZendeskResource(base.RESTResource):
         return request, parsers.parse_json
 
 
+class Tags(ZendeskResource):
+
+    path = 'tags'
+
+    def create(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
+    def update(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
+    def delete(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
+
 class TicketsBase(ZendeskResource):
 
     path = 'tickets'
@@ -76,6 +90,13 @@ class Ticket(TicketsBase):
         url = '{0}/{1}'.format(self.get_url(), 'metrics')
 
         return http.Request('GET', url), parsers.parse_json
+
+    @base.resource(Tags)
+    def tags(self):
+        """
+        Return the resource corresponding to tags.
+        """
+        return Tags(self)
 
 
 class UsersBase(ZendeskResource):

@@ -171,3 +171,10 @@ class ZendeskTestCase(unittest.TestCase):
         self.service.exports().tickets(start_time=1340184927)
         self.expect('GET', '/exports/tickets.json',
                     {'start_time': 1340184927})
+
+    def test_tags(self):
+        self.service.tags().get(page=10)
+        self.expect('GET', '/tags.json', {'page': 10})
+
+        self.service.ticket(23).tags().get()
+        self.expect('GET', '/tickets/23/tags.json')
