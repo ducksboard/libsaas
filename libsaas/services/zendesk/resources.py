@@ -445,3 +445,20 @@ class Exports(ZendeskResource):
         params = base.get_params(('start_time',), locals())
 
         return http.Request('GET', url, params), parsers.parse_json
+
+    @base.apimethod
+    def sample(self, start_time):
+        """
+        This end point is only to be used for testing the incremental export
+        format. It is more relaxed in terms of rate limiting,
+        but will only return up to 50 records.
+
+        :var start_time:  The time of the oldest ticket you are interested in.
+            Tickets modified on or since this time will be returned. The start
+            time is provided as the number of seconds since epoch UTC.
+        :vartype start_time: int
+        """
+        url = '{0}/{1}'.format(self.get_url(), 'tickets/sample')
+        params = base.get_params(('start_time',), locals())
+
+        return http.Request('GET', url, params), parsers.parse_json
