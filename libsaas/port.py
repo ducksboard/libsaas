@@ -20,6 +20,7 @@ if PY3:
     from urllib.parse import urlencode, urlparse, urlunparse, quote, parse_qsl
 
     from io import StringIO
+    from http import client
 
 else:
 
@@ -36,6 +37,8 @@ else:
         from cStringIO import StringIO
     except ImportError:
         from StringIO import StringIO
+
+    import httplib as client
 
 
 def to_u(val, encoding='utf-8'):
