@@ -31,3 +31,41 @@ class GoogleAnalyticsTestCase(unittest.TestCase):
         self.service.reporting().core('ga:1111', '1992-05-20', '1992-05-21',
                                           'm1,m2', 'dim1')
         self.expect('GET', '/data/ga', params)
+
+    def test_management(self):
+        params = {'quotaUser': 'foo'}
+
+        self.service.management().segments().get(quotaUser='foo')
+        self.expect('GET', '/management/segments', params)
+
+        self.service.management().accounts().get(quotaUser='foo')
+        self.expect('GET', '/management/accounts', params)
+        self.service.management().account('1').get(quotaUser='foo')
+        self.expect('GET', '/management/accounts/1', params)
+
+        (self.service.management().account('1')
+         .webproperties().get(quotaUser='foo'))
+        self.expect('GET', '/management/accounts/1/webproperties', params)
+        (self.service.management().account('1')
+         .webproperty('1').get(quotaUser='foo'))
+        self.expect('GET', '/management/accounts/1/webproperties/1', params)
+
+        (self.service.management().account('1')
+            .webproperty('1').views().get(quotaUser='foo'))
+        self.expect(
+            'GET', '/management/accounts/1/webproperties/1/profiles', params)
+        (self.service.management().account('1')
+            .webproperty('1').view(1).get(quotaUser='foo'))
+        self.expect(
+            'GET', '/management/accounts/1/webproperties/1/profiles/1', params)
+
+        (self.service.management().account('1')
+            .webproperty('1').view(1).goals().get(quotaUser='foo'))
+        self.expect(
+            'GET', '/management/accounts/1/webproperties/1/profiles/1/goals',
+            params)
+        (self.service.management().account('1')
+            .webproperty('1').view(1).goal(1).get(quotaUser='foo'))
+        self.expect(
+            'GET', '/management/accounts/1/webproperties/1/profiles/1/goals/1',
+            params)

@@ -3,7 +3,7 @@ import json
 from libsaas import http
 from libsaas.services import base
 
-from . import reporting
+from . import management, reporting
 
 
 class GoogleAnalytics(base.Resource):
@@ -37,6 +37,13 @@ class GoogleAnalytics(base.Resource):
 
     def set_access_token(self, access_token):
         self.access_token = access_token
+
+    @base.resource(management.Management)
+    def management(self):
+        """
+        Return the resource corresponding to the management API
+        """
+        return management.Management(self)
 
     @base.resource(reporting.Reporting)
     def reporting(self):

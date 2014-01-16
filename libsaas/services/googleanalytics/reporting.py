@@ -1,10 +1,7 @@
 from libsaas import http, parsers
 from libsaas.services import base
 
-
-def translate_param(val):
-    return val.replace('_', '-')
-
+from .resources import translate_param
 
 class Reporting(base.HierarchicalResource):
 
