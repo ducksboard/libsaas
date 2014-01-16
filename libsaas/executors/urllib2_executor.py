@@ -44,36 +44,70 @@ class ErrorSwallower(port.urllib_request.HTTPErrorProcessor):
     https_response = http_response
 
 
-def urllib2_executor(request, parser):
+class HTTPSClientAuthHandler(port.urllib_request.HTTPSHandler):
+    """HTTPS Client Auth Handler.
+
+    (c) Kalys Osmonov - http://www.osmonov.com/2009/04/client-certificates-with-urllib2.html
     """
-    The default executor, using Python's builtin urllib2 module.
-    """
-    logger.info('requesting %r', request)
+    def __init__(self, key_file, cert_file):
+        port.urllib_request.HTTPSHandler.__init__(self)
+        self.key_file = key_file
+        self.cert_file = cert_file
 
-    uri = request.uri
-    data = None
+    def https_open(self, req):
+        # Rather than pass in a reference to a connection class, we pass in
+        # a reference to a function which, for all intents and purposes,
+        # will behave as a constructor
+        return self.do_open(self.getConnection, req)
 
-    if request.method.upper() in http.URLENCODE_METHODS:
-        uri = encode_uri(request)
-    else:
-        data = encode_data(request)
-
-    logger.debug('request uri: %r, data: %r, headers: %r',
-                 uri, data, request.headers)
-
-    req = RequestWithMethod(uri, data, request.headers)
-    req.set_method(request.method)
-
-    opener = port.urllib_request.build_opener(ErrorSwallower)
-    resp = opener.open(req)
-
-    body = resp.read()
-    headers = dict(resp.info())
-    logger.debug('response code: %r, body: %r, headers: %r',
-                 resp.code, body, headers)
-
-    return parser(body, resp.code, headers)
+    def getConnection(self, host, timeout=300):
+        return port.client.HTTPSConnection(host, key_file=self.key_file,
+                                           cert_file=self.cert_file)
 
 
-def use():
-    base.use_executor(urllib2_executor)
+class urllib2_executor(object):
+
+    def __init__(self, key_file=None, cert_file=None):
+        self.key_file = key_file
+        self.cert_file = cert_file
+
+    def __call__(self, request, parser):
+        """
+        The default executor, using Python's builtin urllib2 module.
+        """
+        logger.info('requesting %r', request)
+
+        uri = request.uri
+        data = None
+
+        if request.method.upper() in http.URLENCODE_METHODS:
+            uri = encode_uri(request)
+        else:
+            data = encode_data(request)
+
+        logger.debug('request uri: %r, data: %r, headers: %r',
+                     uri, data, request.headers)
+
+        req = RequestWithMethod(uri, data, request.headers)
+        req.set_method(request.method)
+
+        handlers = (ErrorSwallower,)
+
+        if self.cert_file or self.key_file:
+            logger.debug('using HTTPSClientAuthHandler key: %s cert: %s',
+                            self.key_file, self.cert_file)
+            handlers += (HTTPSClientAuthHandler(self.key_file, self.cert_file),)
+
+        opener = port.urllib_request.build_opener(*handlers)
+        resp = opener.open(req)
+
+        body = resp.read()
+        headers = dict(resp.info())
+        logger.debug('response code: %r, body: %r, headers: %r',
+                     resp.code, body, headers)
+
+        return parser(body, resp.code, headers)
+
+
+def use(key_file=None, cert_file=None):
+    base.use_executor(urllib2_executor(key_file, cert_file))
