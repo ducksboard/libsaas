@@ -23,12 +23,16 @@ class CartoDBTestCase(unittest.TestCase):
 
         if uri:
             self.assertEqual(self.executor.request.uri,
-                              'https://mydomain.cartodb.com/api/v2' + uri)
+                              'https://mydomain.cartodb.com/api/' + uri)
         if params:
             params['api_key'] = self.api_key
             self.assertEqual(self.executor.request.params, params)
 
+    def test_viz(self):
+        self.service.viz(type='foo')
+        self.expect('GET', 'v1/viz', {'type': 'foo'})
+
     def test_sql(self):
         query = 'select * from test'
         self.service.sql(q=query)
-        self.expect('POST', '/sql', {'q': query})
+        self.expect('POST', 'v2/sql', {'q': query})
