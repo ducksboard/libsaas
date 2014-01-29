@@ -44,32 +44,11 @@ class ErrorSwallower(port.urllib_request.HTTPErrorProcessor):
     https_response = http_response
 
 
-class HTTPSClientAuthHandler(port.urllib_request.HTTPSHandler):
-    """HTTPS Client Auth Handler.
-
-    (c) Kalys Osmonov - http://www.osmonov.com/2009/04/client-certificates-with-urllib2.html
-    """
-    def __init__(self, key_file, cert_file):
-        port.urllib_request.HTTPSHandler.__init__(self)
-        self.key_file = key_file
-        self.cert_file = cert_file
-
-    def https_open(self, req):
-        # Rather than pass in a reference to a connection class, we pass in
-        # a reference to a function which, for all intents and purposes,
-        # will behave as a constructor
-        return self.do_open(self.getConnection, req)
-
-    def getConnection(self, host, timeout=300):
-        return port.client.HTTPSConnection(host, key_file=self.key_file,
-                                           cert_file=self.cert_file)
-
-
 class urllib2_executor(object):
 
-    def __init__(self, key_file=None, cert_file=None):
-        self.key_file = key_file
-        self.cert_file = cert_file
+    def __init__(self, *handlers):
+        # Settup ErrorSwallower handler
+        self.handlers = (ErrorSwallower, ) + handlers
 
     def __call__(self, request, parser):
         """
@@ -91,14 +70,7 @@ class urllib2_executor(object):
         req = RequestWithMethod(uri, data, request.headers)
         req.set_method(request.method)
 
-        handlers = (ErrorSwallower,)
-
-        if self.cert_file or self.key_file:
-            logger.debug('using HTTPSClientAuthHandler key: %s cert: %s',
-                            self.key_file, self.cert_file)
-            handlers += (HTTPSClientAuthHandler(self.key_file, self.cert_file),)
-
-        opener = port.urllib_request.build_opener(*handlers)
+        opener = port.urllib_request.build_opener(*self.handlers)
         resp = opener.open(req)
 
         body = resp.read()
@@ -109,5 +81,5 @@ class urllib2_executor(object):
         return parser(body, resp.code, headers)
 
 
-def use(key_file=None, cert_file=None):
-    base.use_executor(urllib2_executor(key_file, cert_file))
+def use(*handlers):
+    base.use_executor(urllib2_executor(*handlers))
