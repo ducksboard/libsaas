@@ -44,7 +44,7 @@ class ErrorSwallower(port.urllib_request.HTTPErrorProcessor):
     https_response = http_response
 
 
-class urllib2_executor(object):
+class Urllib2Executor(object):
 
     def __init__(self, extra_handlers):
         self.handlers = (ErrorSwallower, ) + extra_handlers
@@ -81,4 +81,4 @@ class urllib2_executor(object):
 
 
 def use(extra_handlers=()):
-    base.use_executor(urllib2_executor(extra_handlers=extra_handlers))
+    base.use_executor(Urllib2Executor(extra_handlers=extra_handlers))
