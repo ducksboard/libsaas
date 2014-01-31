@@ -46,9 +46,8 @@ class ErrorSwallower(port.urllib_request.HTTPErrorProcessor):
 
 class urllib2_executor(object):
 
-    def __init__(self, *handlers):
-        # Settup ErrorSwallower handler
-        self.handlers = (ErrorSwallower, ) + handlers
+    def __init__(self, extra_handlers):
+        self.handlers = (ErrorSwallower, ) + extra_handlers
 
     def __call__(self, request, parser):
         """
@@ -81,5 +80,5 @@ class urllib2_executor(object):
         return parser(body, resp.code, headers)
 
 
-def use(*handlers):
-    base.use_executor(urllib2_executor(*handlers))
+def use(extra_handlers=()):
+    base.use_executor(urllib2_executor(extra_handlers=extra_handlers))
