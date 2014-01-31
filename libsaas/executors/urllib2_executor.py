@@ -44,36 +44,42 @@ class ErrorSwallower(port.urllib_request.HTTPErrorProcessor):
     https_response = http_response
 
 
-def urllib2_executor(request, parser):
-    """
-    The default executor, using Python's builtin urllib2 module.
-    """
-    logger.info('requesting %r', request)
+class urllib2_executor(object):
 
-    uri = request.uri
-    data = None
+    def __init__(self, *handlers):
+        # Settup ErrorSwallower handler
+        self.handlers = (ErrorSwallower, ) + handlers
 
-    if request.method.upper() in http.URLENCODE_METHODS:
-        uri = encode_uri(request)
-    else:
-        data = encode_data(request)
+    def __call__(self, request, parser):
+        """
+        The default executor, using Python's builtin urllib2 module.
+        """
+        logger.info('requesting %r', request)
 
-    logger.debug('request uri: %r, data: %r, headers: %r',
-                 uri, data, request.headers)
+        uri = request.uri
+        data = None
 
-    req = RequestWithMethod(uri, data, request.headers)
-    req.set_method(request.method)
+        if request.method.upper() in http.URLENCODE_METHODS:
+            uri = encode_uri(request)
+        else:
+            data = encode_data(request)
 
-    opener = port.urllib_request.build_opener(ErrorSwallower)
-    resp = opener.open(req)
+        logger.debug('request uri: %r, data: %r, headers: %r',
+                     uri, data, request.headers)
 
-    body = resp.read()
-    headers = dict(resp.info())
-    logger.debug('response code: %r, body: %r, headers: %r',
-                 resp.code, body, headers)
+        req = RequestWithMethod(uri, data, request.headers)
+        req.set_method(request.method)
 
-    return parser(body, resp.code, headers)
+        opener = port.urllib_request.build_opener(*self.handlers)
+        resp = opener.open(req)
+
+        body = resp.read()
+        headers = dict(resp.info())
+        logger.debug('response code: %r, body: %r, headers: %r',
+                     resp.code, body, headers)
+
+        return parser(body, resp.code, headers)
 
 
-def use():
-    base.use_executor(urllib2_executor)
+def use(*handlers):
+    base.use_executor(urllib2_executor(*handlers))
