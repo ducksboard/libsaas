@@ -99,6 +99,11 @@ def apimethod(f):
     return wrapped
 
 
+def mark_apimethod(f):
+    f.is_apimethod = True
+    return f
+
+
 def resource(*klasses):
 
     def wrapper(f):
