@@ -51,7 +51,7 @@ class Pingdom(base.Resource):
         """
         return analysis.Analysis(self, checkid)
 
-    @base.resource(checks.Checks)
+    @base.resource(checks.Check)
     def check(self, checkid):
         """
         Return the resource corresponding to a single check
@@ -68,7 +68,7 @@ class Pingdom(base.Resource):
         """
         return checks.Checks(self)
 
-    @base.resource(contacts.Contacts)
+    @base.resource(contacts.Contact)
     def contact(self, contactid):
         """
         Return the resource corresponding to a single contact

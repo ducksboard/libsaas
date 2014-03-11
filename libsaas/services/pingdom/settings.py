@@ -15,6 +15,13 @@ class Settings(base.RESTResource):
     def require_item(self):
         pass
 
+    # redefine methods to set docstring later
+
+    @base.mark_apimethod
+    def update(self, obj):
+        return super(Settings, self).update(obj)
+
+
 port.method_func(Settings, 'update').__doc__ = """
 Modify account-specific settings.
 

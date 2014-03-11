@@ -29,6 +29,20 @@ class Checks(ChecksBase):
         'https://www.pingdom.com/services/api-documentation-rest/'
         '#ResourceChecks')
 
+    # redefine methods to set docstring later
+
+    @base.mark_apimethod
+    def create(self, obj):
+        return super(Checks, self).create(obj)
+
+    @base.mark_apimethod
+    def update(self, obj):
+        return super(Checks, self).update(obj)
+
+    @base.mark_apimethod
+    def delete(self):
+        return super(Checks, self).delete()
+
 
 port.method_func(Checks, 'create').__doc__ = """
 Creates a new check with settings specified by provided parameters.
@@ -78,6 +92,20 @@ class Check(ChecksBase):
         Return the resource corresponding to the summary for the check.
         """
         return summary.Summary(self.parent, self.object_id)
+
+    # redefine methods to set docstring later
+
+    @base.mark_apimethod
+    def get(self):
+        return super(Check, self).get()
+
+    @base.mark_apimethod
+    def update(self, obj):
+        return super(Check, self).update(obj)
+
+    @base.mark_apimethod
+    def delete(self):
+        return super(Check, self).delete()
 
 
 port.method_func(Check, 'get').__doc__ = """

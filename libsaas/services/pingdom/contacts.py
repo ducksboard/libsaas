@@ -28,6 +28,20 @@ class Contacts(ContactsBase):
         'https://www.pingdom.com/services/api-documentation-rest/'
         '#ResourceContacts')
 
+    # redefine methods to set docstring later
+
+    @base.mark_apimethod
+    def create(self, obj):
+        return super(Contacts, self).create(obj)
+
+    @base.mark_apimethod
+    def update(self, obj):
+        return super(Contacts, self).update(obj)
+
+    @base.mark_apimethod
+    def delete(self):
+        return super(Contacts, self).delete()
+
 
 port.method_func(Contacts, 'create').__doc__ = """
 Creates a new contact with settings specified by provided parameters.
@@ -58,6 +72,17 @@ class Contact(ContactsBase):
 
     def get(self, *args, **kwargs):
         raise base.MethodNotSupported()
+
+    # redefine methods to set docstring later
+
+    @base.mark_apimethod
+    def update(self, obj):
+        return super(Contact, self).update(obj)
+
+    @base.mark_apimethod
+    def delete(self):
+        return super(Contact, self).delete()
+
 
 port.method_func(Contact, 'update').__doc__ = """
 Modify a contact.
