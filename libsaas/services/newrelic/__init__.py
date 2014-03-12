@@ -1,1 +1,1 @@
-from .service import Rubicon
+from .service import Insights

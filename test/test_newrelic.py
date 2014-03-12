@@ -5,7 +5,7 @@ from libsaas.executors import test_executor
 from libsaas.services import newrelic
 
 
-class RubiconTestCase(unittest.TestCase):
+class InsightsTestCase(unittest.TestCase):
 
     def setUp(self):
         self.executor = test_executor.use()
@@ -13,7 +13,7 @@ class RubiconTestCase(unittest.TestCase):
 
         self.insert_key = 'insert_key'
         self.query_key = 'query_key'
-        self.service = newrelic.Rubicon('account_id', self.query_key,
+        self.service = newrelic.Insights('account_id', self.query_key,
                                         self.insert_key)
 
     def serialize(self, data):

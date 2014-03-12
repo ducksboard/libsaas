@@ -4,14 +4,14 @@ from libsaas import http, parsers
 from libsaas.services import base
 
 
-class Rubicon(base.Resource):
+class Insights(base.Resource):
     """
     """
     version = 'beta_api'
 
     def __init__(self, account_id, query_key=None, insert_key=None):
         """
-        Create a Rubicon service.
+        Create a New Relic Insights service.
 
         :var account_id: The account id
         :vartype account_id: str
