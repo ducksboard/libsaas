@@ -22,7 +22,7 @@ class Insights(base.Resource):
         :var insert_key: The insert key.
         :vartype insert_key: str
         """
-        tmpl = 'https://rubicon.newrelic.com/{0}/accounts/{1}'
+        tmpl = 'https://insights.newrelic.com/{0}/accounts/{1}'
         self.apiroot = tmpl.format(self.version, account_id)
 
         self.query_key = query_key

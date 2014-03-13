@@ -32,7 +32,7 @@ class InsightsTestCase(unittest.TestCase):
 
         if uri:
             self.assertEqual(self.executor.request.uri,
-                             'https://rubicon.newrelic.com/beta_api/' +
+                             'https://insights.newrelic.com/beta_api/' +
                              'accounts/account_id/' + uri)
         if params:
             self.assertEqual(self.executor.request.params, params)
