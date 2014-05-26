@@ -20,7 +20,7 @@ class SegmentIOTestCase(unittest.TestCase):
                          'https://api.segment.io/v1' + uri)
 
         params.update({'secret': 'my-api-secret'})
-        self.assertEqual(self.executor.request.params, json.dumps(params))
+        self.assertEqual(json.loads(self.executor.request.params), params)
 
     def test_identify(self):
         self.service.user('user_id').identify()
