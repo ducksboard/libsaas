@@ -42,9 +42,9 @@ class StripeTestCase(unittest.TestCase):
             self.service.plans().delete()
 
         self.service.plans().get()
-        self.expect('GET', '/plans', {})
-        self.service.plans().get(count=23)
-        self.expect('GET', '/plans', {'count': 23})
+        self.expect('GET', '/plans', {'limit': 10})
+        self.service.plans().get(limit=23)
+        self.expect('GET', '/plans', {'limit': 23})
 
         self.service.plans().create({'key':'value'})
         self.expect('POST', '/plans', {'key': 'value'})
