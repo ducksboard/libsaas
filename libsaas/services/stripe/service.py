@@ -9,6 +9,7 @@ from .charges import Charges, Charge
 from .coupons import Coupons, Coupon
 from .customers import Customers, Customer
 from .invoices import Invoices, Invoice, InvoiceItems, InvoiceItem
+from .balance_history import BalanceHistory
 
 
 class Stripe(base.Resource):
@@ -146,3 +147,10 @@ class Stripe(base.Resource):
         Return the resource corresponding to a single invoiceitem.
         """
         return InvoiceItem(self, id)
+
+    @base.resource(BalanceHistory)
+    def balance_history(self):
+        """
+        Return the resource corresponding to the balance history.
+        """
+        return BalanceHistory(self)
