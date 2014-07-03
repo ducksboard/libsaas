@@ -69,3 +69,14 @@ class SegmentIOTestCase(unittest.TestCase):
             'from': 'from_user_id',
             'to': 'to_user_id',
         })
+
+    def test_import(self):
+        actions = [{'action': 'track'}, {'action': 'identify'}]
+        context = {'providers': {'all': False}}
+
+        self.service.batch_import(actions)
+        self.expect('/import', {'batch': actions})
+
+        self.service.batch_import(actions, context)
+        self.expect('/import', {'batch': actions,
+                                'context': context})

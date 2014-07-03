@@ -65,3 +65,20 @@ class SegmentIO(base.Resource):
         request = http.Request('POST', url, params)
         return request, parsers.parse_json
 
+    @base.apimethod
+    def batch_import(self, batch, context=None):
+        """
+        The import method lets you send a series of identify,
+        group, track, page and screen requests in a single batch
+
+        :var batch: List of actions.
+        :vartype batch: dict
+
+        :var context: A dictionary of provider specific options.
+        :vartype context: dict
+        """
+        params = base.get_params(None, locals())
+        url = '{0}/{1}'.format(self.get_url(), 'import')
+
+        request = http.Request('POST', url, params)
+        return request, parsers.parse_json
