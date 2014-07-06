@@ -10,7 +10,7 @@ from . import resources, datasource
 class Ducksboard(base.Resource):
     """
     """
-    def __init__(self, apikey_or_username, password=None):
+    def __init__(self, apikey_or_username, password=''):
         """
         Create a Ducksboard service.
 
