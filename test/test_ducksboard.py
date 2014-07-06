@@ -29,6 +29,13 @@ class DucksboardTestCase(unittest.TestCase):
         if params:
             self.assertEqual(self.executor.request.params, params)
 
+    def test_default_password(self):
+        s = ducksboard.Ducksboard('apikey')
+        s.user().get()
+
+        self.assertEqual(self.executor.request.headers['Authorization'],
+                         'Basic YXBpa2V5Og==')
+
     def test_dashboard(self):
         self.service.dashboards().get()
         self.expect('dashboards/', 'GET')
