@@ -20,10 +20,11 @@ class Intercom(base.Resource):
         :var api_key: The API key.
         :vartype api_key: str
         """
-        self.apiroot = 'https://api.intercom.io/v1'
+        self.apiroot = 'https://api.intercom.io'
 
         self.add_filter(auth.BasicAuth(app_id, api_key))
         self.add_filter(self.use_json)
+        self.add_filter(self.add_accept_header)
 
     def get_url(self):
         return self.apiroot
@@ -31,6 +32,9 @@ class Intercom(base.Resource):
     def use_json(self, request):
         if request.method.upper() not in http.URLENCODE_METHODS:
             request.params = json.dumps(request.params)
+
+    def add_accept_header(self, request):
+        request.headers['Accept'] = 'application/json'
 
     @base.resource(resource.Users)
     def users(self):
@@ -66,3 +70,10 @@ class Intercom(base.Resource):
         Return the resource corresponding to a single message thread.
         """
         return resource.MessageThread(self)
+
+    @base.resource(resource.Counts)
+    def counts(self):
+        """
+        Return the resource corresponding to all counts.
+        """
+        return resource.Counts(self)

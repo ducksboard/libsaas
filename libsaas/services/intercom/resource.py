@@ -171,3 +171,33 @@ class MessageThread(MessageThreadBase):
 
     def create(self, *args, **kwargs):
         raise base.MethodNotSupported()
+
+
+class Counts(IntercomResource):
+
+    path = 'counts'
+
+    @base.apimethod
+    def get(self, type=None, count=None):
+        """
+        Get counts of users and companies filtered by certain criteria.
+
+        :var type: The count's type
+        :vartype type: str
+
+        :var count: The count's filter criteria
+        :vartype count: str
+        """
+        params = base.get_params(None, locals())
+        request = http.Request('GET', self.get_url(), params)
+
+        return request, parsers.parse_json
+
+    def create(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
+    def update(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
+    def delete(self, *args, **kwargs):
+        raise base.MethodNotSupported()
