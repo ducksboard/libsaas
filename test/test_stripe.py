@@ -119,14 +119,20 @@ class StripeTestCase(unittest.TestCase):
         self.service.customer('123').delete()
         self.expect('DELETE', '/customers/123', {})
 
-        self.service.customer('123').subscription().get()
-        self.expect('GET', '/customers/123/subscription', {})
+        self.service.customer('123').subscriptions().get()
+        self.expect('GET', '/customers/123/subscriptions', {})
 
-        self.service.customer('123').subscription().update({'key': 'value'})
-        self.expect('POST', '/customers/123/subscription', {'key': 'value'})
+        self.service.customer('123').subscription('ducks').get()
+        self.expect('GET', '/customers/123/subscriptions/ducks', {})
 
-        self.service.customer('123').subscription().delete()
-        self.expect('DELETE', '/customers/123/subscription', {})
+        self.service.customer('123').subscription('ducks').update(
+            {'key': 'value'})
+        self.expect('POST', '/customers/123/subscriptions/ducks',
+            {'key': 'value'})
+
+        self.service.customer('123').subscription('ducks').delete()
+        self.expect('DELETE', '/customers/123/subscriptions/ducks',
+            {})
 
         self.service.customer('123').discount().delete()
         self.expect('DELETE', '/customers/123/discount', {})
