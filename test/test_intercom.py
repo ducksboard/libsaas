@@ -20,7 +20,7 @@ class IntercomTestCase(unittest.TestCase):
             self.assertEqual(method, self.executor.request.method)
         if uri:
             self.assertEqual(self.executor.request.uri,
-                              'https://api.intercom.io/v1' + uri)
+                              'https://api.intercom.io' + uri)
         if params:
             self.assertEqual(self.executor.request.params, params)
         if headers:
@@ -102,3 +102,12 @@ class IntercomTestCase(unittest.TestCase):
         self.service.message_thread().get(1234, email='name@domain.com')
         self.expect('GET', '/users/message_threads',
                     {'thread_id': 1234, 'email': 'name@domain.com'})
+
+    def test_counts(self):
+        with port.assertRaises(MethodNotSupported):
+            self.service.counts().update()
+            self.service.counts().delete()
+
+        self.service.counts().get(type='company', count='user')
+        self.expect('GET', '/counts', {'type': 'company', 'count': 'user'})
+        self.service.counts().get()
