@@ -20,10 +20,12 @@ class Zendesk(base.Resource):
             `mycompany.zendesk.com`.
         :vartype subdomain: str
 
-        :var username: The email of the authenticated agent.
+        :var username: The email of the authenticated agent. Use
+            `user@company.com/token` for token-based authentication.
         :vartype username: str
 
-        :var password: The password of the authenticated agent.
+        :var password: The password of the authenticated agent, or an API token
+            if using token-based authentication.
         :vartype password: str
         """
         tmpl = '{0}.zendesk.com/api/v2'
