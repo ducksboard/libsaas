@@ -36,6 +36,9 @@ class OAuthRFC5849(object):
     Signs each request according to RFC5849.
 
     Only supports header-based authentication and only uses HMAC-SHA1.
+
+    The oauth_token and oauth_token_secret parameters can be None. This is
+    useful for making Temporary Credentials requests (section 2.1 of the RFC).
     """
     def __init__(self, oauth_token, oauth_token_secret, key, secret):
         self.oauth_token = oauth_token
@@ -49,8 +52,9 @@ class OAuthRFC5849(object):
 
         base = self.get_base_string(request, nonce, timestamp)
 
-        key = (self.encode(self.secret) + '&' +
-               self.encode(self.oauth_token_secret))
+        key = self.encode(self.secret) + '&'
+        if self.oauth_token_secret:
+            key += self.encode(self.oauth_token_secret)
         digest = hmac.new(port.to_b(key), port.to_b(base), sha1).digest()
         signature = self.encode(base64.b64encode(digest))
 
@@ -141,8 +145,9 @@ class OAuthRFC5849(object):
     def oauth_params(self, nonce, timestamp, signature=None):
         params = (('oauth_nonce', nonce), ('oauth_timestamp', timestamp),
                   ('oauth_consumer_key', self.key),
-                  ('oauth_token', self.oauth_token),
                   ('oauth_signature_method', 'HMAC-SHA1'))
+        if self.oauth_token:
+            params += (('oauth_token', self.oauth_token), )
         if signature:
             params += (('oauth_signature', signature), )
 

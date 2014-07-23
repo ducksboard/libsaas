@@ -26,14 +26,17 @@ class OAuthTestCase(unittest.TestCase):
 
     def setUp(self):
         self.auth = FakeOAuth('key', 'secret', 'token', 'token_secret')
+        self.tmp_auth = FakeOAuth(None, None, 'token', 'token_secret')
         self.auth1a = FakeOAuth1a('key', 'secret', 'token', 'token_secret')
 
-    def check_signature(self, req, signature):
-        self.assertEquals(
-            req.headers['Authorization'],
-            ('OAuth oauth_consumer_key="token",oauth_nonce="987654321",'
-             'oauth_signature="%s",oauth_signature_method="HMAC-SHA1",'
-             'oauth_timestamp="123456789",oauth_token="key"' % signature))
+    def check_signature(self, req, signature, with_token=True):
+        expected = ('OAuth oauth_consumer_key="token",oauth_nonce="987654321",'
+                    'oauth_signature="%s",oauth_signature_method="HMAC-SHA1",'
+                    'oauth_timestamp="123456789"' % signature)
+        if with_token:
+            expected += ',oauth_token="key"'
+
+        self.assertEquals(req.headers['Authorization'], expected)
 
     def test_oauth(self):
         req = http.Request('GET', 'http://example.net/', {'arg': 'val'})
@@ -56,6 +59,15 @@ class OAuthTestCase(unittest.TestCase):
         req = http.Request('POST', 'http://example.net/', 'bar')
         self.auth(req)
         self.check_signature(req, no_body_sig)
+
+    def test_temporary_credentials_oauth(self):
+        req = http.Request('GET', 'http://example.net/', {'arg': 'val'})
+        self.tmp_auth(req)
+        self.check_signature(req, 'dtlFLYBqLEml4a0ud38C3g0ssDI%3D', False)
+
+        req = http.Request('POST', 'http://example.net/', {'arg': 'val'})
+        self.tmp_auth(req)
+        self.check_signature(req, 'sLjJPIJQ%2BmtnOWz4K3gfafR9kSU%3D', False)
 
     def test_base_string(self):
         # this test comes directly from RFC5849
