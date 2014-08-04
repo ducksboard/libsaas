@@ -10,7 +10,7 @@ class ActivitiesResource(base.RESTResource):
 class Activities(ActivitiesResource):
 
     @base.apimethod
-    def get(self, user_id=None, start=None, limit=None, start_data=None,
+    def get(self, user_id=None, start=None, limit=None, start_date=None,
             end_date=None):
         """
         Returns all activities assigned to a particular user
