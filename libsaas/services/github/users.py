@@ -2,6 +2,7 @@ from libsaas import http, parsers
 from libsaas.services import base
 
 from . import resource
+from . import organizations
 
 
 class UserRepos(resource.GitHubResource):
@@ -91,6 +92,13 @@ class UsersBase(resource.GitHubResource):
         params = base.get_params(('page', 'per_page'), locals())
 
         return http.Request('GET', url, params), parsers.parse_json
+
+    @base.resource(organizations.Organizations)
+    def orgs(self):
+        """
+        Return a resource corresponding to user's organizations.
+        """
+        return organizations.Organizations(self)
 
 
 class CurrentUser(UsersBase):

@@ -453,6 +453,32 @@ class GithubTestCase(unittest.TestCase):
         self.assertRaises(base.MethodNotSupported,
                           self.service.user('foo').repos().update, 'x')
 
+    def test_user_organizations(self):
+        self.service.user('foo').orgs().get()
+        self.expect('GET', '/users/foo/orgs')
+
+    def test_organizations(self):
+        self.service.org('abcdefg').get()
+        self.expect('GET', '/orgs/abcdefg')
+
+        self.service.org('abcdefg').update({'x': 'x'})
+        self.expect('PATCH', '/orgs/abcdefg', json.dumps({'x': 'x'}))
+
+        self.service.org('abcdefg').repos().get()
+        self.expect('GET', '/orgs/abcdefg/repos')
+
+        self.service.org('abcdefg').repo('foo').get()
+        self.expect('GET', '/repos/abcdefg/foo')
+
+        # cannot query every single GitHub org
+        self.assertRaises(TypeError, self.service.org)
+
+        self.assertRaises(base.MethodNotSupported,
+                          self.service.org('abcdefg').create)
+
+        self.assertRaises(base.MethodNotSupported,
+                          self.service.org('abcdefg').delete)
+
     def test_authorizations(self):
         self.service.authorizations().get()
         self.expect('GET', '/authorizations')
