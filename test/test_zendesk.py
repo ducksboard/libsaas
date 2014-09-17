@@ -27,6 +27,14 @@ class ZendeskTestCase(unittest.TestCase):
         if headers:
             self.assertEqual(self.executor.request.headers, headers)
 
+    def test_access_token(self):
+        service = zendesk.Zendesk('mydomain', access_token='foo')
+        service.users().get()
+        self.expect(headers={
+            'Authorization': 'Bearer foo',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'})
+
     def test_tickets(self):
         self.service.tickets().get(page=3)
         self.expect('GET', '/tickets.json', {'page': 3})

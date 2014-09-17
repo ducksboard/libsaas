@@ -11,7 +11,8 @@ from . import resources
 class Zendesk(base.Resource):
     """
     """
-    def __init__(self, subdomain, username, password):
+    def __init__(self, subdomain, username=None, password=None,
+                 access_token=None):
         """
         Create a Zendesk service.
 
@@ -27,13 +28,26 @@ class Zendesk(base.Resource):
         :var password: The password of the authenticated agent, or an API token
             if using token-based authentication.
         :vartype password: str
+
+        :var access_token: An OAuth Access token. Username and password are not
+            required if the OAuth Access token is provided.
+        :vartype access_token: str
         """
         tmpl = '{0}.zendesk.com/api/v2'
         self.apiroot = http.quote_any(tmpl.format(port.to_u(subdomain)))
         self.apiroot = 'https://' + self.apiroot
 
-        self.add_filter(auth.BasicAuth(username, password))
+        if access_token:
+            self.access_token = access_token
+            self.add_filter(self.add_authorization)
+        else:
+            self.add_filter(auth.BasicAuth(username, password))
+
         self.add_filter(self.use_json)
+
+    def add_authorization(self, request):
+        request.headers['Authorization'] = 'Bearer {0}'.format(
+            self.access_token)
 
     def get_url(self):
         return self.apiroot
@@ -46,6 +60,9 @@ class Zendesk(base.Resource):
 
         if request.method.upper() not in http.URLENCODE_METHODS:
             request.params = json.dumps(request.params)
+
+    def set_access_token(self, access_token):
+        self.access_token = access_token
 
     @base.resource(resources.Tickets)
     def tickets(self):
