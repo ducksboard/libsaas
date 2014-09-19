@@ -1,7 +1,10 @@
-import urllib
-
 from libsaas import http, parsers
 from libsaas.services import base
+from libsaas.port import urlencode
+
+
+def handle_realm(param):
+    return 'openid.realm' if param == 'openid_realm' else param
 
 
 class GoogleOAuth2(base.Resource):
@@ -36,7 +39,8 @@ class GoogleOAuth2(base.Resource):
         return '{0}/{1}'.format(self.APIROOT, api_endpoint)
 
     def get_auth_url(self, response_type, redirect_uri, scope, state=None,
-                     access_type=None, approval_prompt=None, login_hint=None):
+                     access_type=None, approval_prompt=None, login_hint=None,
+                     openid_realm=None):
         """
         This endpoint is the target of the initial request for an access token.
         It handles active session lookup, authenticating the user, and user
@@ -91,11 +95,17 @@ class GoogleOAuth2(base.Resource):
             email box on the sign-in form or select the proper multi-login
             session, thereby simplifying the login flow.
         :vartype login_hint: str
+
+        :var openid_realm: Parameter from the OpenID 2.0 protocol, not from
+            OAuth 2.0. It is used in OpenID 2.0 requests to signify the
+            URL-space for which an authentication request is valid.
+        :vartype openid_realm: str
         """
         params = {'client_id': self.client_id}
-        params.update(base.get_params(None, locals()))
-        return '{0}?{1}'.format(self.get_url('auth'), urllib.urlencode(params))
+        params.update(base.get_params(None, locals(),
+            translate_param=handle_realm))
 
+        return '{0}?{1}'.format(self.get_url('auth'), urlencode(params))
 
     @base.apimethod
     def access_token(self, code, redirect_uri):
@@ -135,4 +145,3 @@ class GoogleOAuth2(base.Resource):
         request = http.Request('POST', self.get_url('token'), params)
 
         return request, parsers.parse_json
-

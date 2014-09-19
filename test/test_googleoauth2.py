@@ -2,6 +2,7 @@ import unittest
 
 from libsaas.executors import test_executor
 from libsaas.services import googleoauth2
+from libsaas.port import urlencode
 
 
 class GoogleOauth2TestCase(unittest.TestCase):
@@ -39,3 +40,8 @@ class GoogleOauth2TestCase(unittest.TestCase):
 
         self.service.refresh_token('token')
         self.expect('POST', '/token', params)
+
+    def test_get_auth_url(self):
+        auth_url = self.service.get_auth_url('code', 'foo', 'openid',
+            openid_realm='bar')
+        self.assertTrue(urlencode({'openid.realm': 'bar'}) in auth_url)
