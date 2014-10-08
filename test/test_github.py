@@ -381,6 +381,41 @@ class GithubTestCase(unittest.TestCase):
                           self.service.repo('myuser', 'myrepo')
                           .download(1).update, {'x': 'x'})
 
+    def test_releases(self):
+        self.service.repo('myuser', 'myrepo').releases().get()
+        self.expect('GET', '/repos/myuser/myrepo/releases')
+
+        self.service.repo('myuser', 'myrepo').release(1).get()
+        self.expect('GET', '/repos/myuser/myrepo/releases/1')
+
+        self.service.repo('myuser', 'myrepo').releases().create({'x': 'x'})
+        self.expect('POST', '/repos/myuser/myrepo/releases',
+                    json.dumps({'x': 'x'}))
+
+        self.service.repo('myuser', 'myrepo').release(1).update({'x': 'x'})
+        self.expect('PATCH', '/repos/myuser/myrepo/releases/1',
+                    json.dumps({'x': 'x'}))
+
+        self.service.repo('myuser', 'myrepo').release(1).delete()
+        self.expect('DELETE', '/repos/myuser/myrepo/releases/1')
+
+        self.service.repo('myuser', 'myrepo').release(1).assets().get()
+        self.expect('GET', '/repos/myuser/myrepo/releases/1/assets')
+
+        self.service.repo('myuser', 'myrepo').release(1).asset(1).get()
+        self.expect('GET', '/repos/myuser/myrepo/releases/1/assets/1')
+
+        self.service.repo('myuser', 'myrepo').release(1).asset(1).update({'x': 'x'})
+        self.expect('PATCH', '/repos/myuser/myrepo/releases/1/assets/1',
+                    json.dumps({'x': 'x'}))
+
+        self.service.repo('myuser', 'myrepo').release(1).asset(1).delete()
+        self.expect('DELETE', '/repos/myuser/myrepo/releases/1/assets/1')
+
+        self.assertRaises(base.MethodNotSupported,
+                          self.service.repo('myuser', 'myrepo')
+                          .release(1).assets().create)
+
     def test_forks(self):
         self.service.repo('myuser', 'myrepo').forks().get(per_page=3)
         self.expect('GET', '/repos/myuser/myrepo/forks',
