@@ -3,7 +3,7 @@ from libsaas.services import base
 
 from . import resource
 from . import downloads, forks, issues, keys, labels, milestones, releases, repocommits
-from . import repocontents, pullrequests
+from . import repocontents, pullrequests, hooks
 
 
 class Repos(resource.GitHubResource):
@@ -279,3 +279,17 @@ class Repo(resource.GitHubResource):
         Return a resource corresponding to all SSH keys of this repo.
         """
         return keys.RepoKeys(self)
+
+    @base.resource(hooks.RepoHook)
+    def hook(self, hook_id):
+        """
+        Return a resource corresponding to a single hook in this repo.
+        """
+        return hooks.RepoHook(self, hook_id)
+
+    @base.resource(hooks.RepoHooks)
+    def hooks(self):
+        """
+        Return a resource corresponding to all hooks of this repo.
+        """
+        return hooks.RepoHooks(self)

@@ -542,3 +542,29 @@ class GithubTestCase(unittest.TestCase):
         # try a unicode parameter
         self.service.gists().comment('123').update(b'\xce\xbb'.decode('utf-8'))
         self.expect('PATCH', '/gists/comments/123', r'{"body": "\u03bb"}')
+
+    def test_hooks(self):
+        repo = self.service.repo('myuser', 'myrepo')
+
+        repo.hooks().get()
+        self.expect('GET', '/repos/myuser/myrepo/hooks')
+
+        repo.hook(1).get()
+        self.expect('GET', '/repos/myuser/myrepo/hooks/1')
+
+        repo.hooks().create({'hook': 'fun'})
+        self.expect('POST', '/repos/myuser/myrepo/hooks',
+                    json.dumps({'hook': 'fun'}))
+
+        repo.hook(1).update({'hook': 'fun!'})
+        self.expect('PATCH', '/repos/myuser/myrepo/hooks/1',
+                    json.dumps({'hook': 'fun!'}))
+
+        repo.hook(1).delete()
+        self.expect('DELETE', '/repos/myuser/myrepo/hooks/1')
+
+        repo.hook(1).test()
+        self.expect('POST', '/repos/myuser/myrepo/hooks/1/tests', '')
+
+        repo.hook(1).ping()
+        self.expect('POST', '/repos/myuser/myrepo/hooks/1/pings', '')
