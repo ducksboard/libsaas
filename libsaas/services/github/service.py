@@ -4,7 +4,7 @@ from libsaas import http
 from libsaas.filters import auth
 from libsaas.services import base
 
-from . import authorizations, gists, issues, organizations, repos, users
+from . import authorizations, gists, issues, organizations, repos, teams, users
 
 
 class GitHub(base.Resource):
@@ -100,6 +100,13 @@ class GitHub(base.Resource):
         Return the resource corresponding to all the repos.
         """
         return repos.Repos(self)
+
+    @base.resource(teams.Team)
+    def team(self, team):
+        """
+        Return the resource corresponding to a single team.
+        """
+        return teams.Team(self, team)
 
     @base.resource(users.User, users.CurrentUser)
     def user(self, name=None):

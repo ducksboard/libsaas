@@ -492,6 +492,20 @@ class GithubTestCase(unittest.TestCase):
         self.service.user('foo').orgs().get()
         self.expect('GET', '/users/foo/orgs')
 
+    def test_user_memberships(self):
+        self.service.user().memberships().get()
+        self.expect('GET', '/user/memberships/orgs')
+
+        self.service.user().memberships().get(state='active')
+        self.expect('GET', '/user/memberships/orgs', {'state': 'active'})
+
+        self.service.user().memberships().org('abcdefg').get()
+        self.expect('GET', '/user/memberships/orgs/abcdefg')
+
+        self.service.user().memberships().org('abcdefg').update({'x': 'x'})
+        self.expect('PATCH', '/user/memberships/orgs/abcdefg',
+                    json.dumps({'x': 'x'}))
+
     def test_organizations(self):
         self.service.org('abcdefg').get()
         self.expect('GET', '/orgs/abcdefg')
@@ -502,8 +516,12 @@ class GithubTestCase(unittest.TestCase):
         self.service.org('abcdefg').repos().get()
         self.expect('GET', '/orgs/abcdefg/repos')
 
-        self.service.org('abcdefg').repo('foo').get()
-        self.expect('GET', '/repos/abcdefg/foo')
+        self.service.org('abcdefg').teams().get()
+        self.expect('GET', '/orgs/abcdefg/teams')
+
+        self.service.org('abcdefg').teams().create({'x': 'x'})
+        self.expect('POST', '/orgs/abcdefg/teams',
+                    json.dumps({'x': 'x'}))
 
         # cannot query every single GitHub org
         self.assertRaises(TypeError, self.service.org)
@@ -513,6 +531,69 @@ class GithubTestCase(unittest.TestCase):
 
         self.assertRaises(base.MethodNotSupported,
                           self.service.org('abcdefg').delete)
+
+    def test_organization_members(self):
+        self.service.org('abcdefg').repo('foo').get()
+        self.expect('GET', '/repos/abcdefg/foo')
+
+        self.service.org('abcdefg').members().get()
+        self.expect('GET', '/orgs/abcdefg/members')
+
+        self.service.org('abcdefg').member('myuser').get()
+        self.expect('GET', '/orgs/abcdefg/members/myuser')
+
+        self.service.org('abcdefg').member('myuser').delete()
+        self.expect('DELETE', '/orgs/abcdefg/members/myuser')
+
+        self.service.org('abcdefg').public_members().get()
+        self.expect('GET', '/orgs/abcdefg/public_members')
+
+        self.service.org('abcdefg').public_member('myuser').get()
+        self.expect('GET', '/orgs/abcdefg/public_members/myuser')
+
+        self.service.org('abcdefg').public_member('myuser').publicize()
+        self.expect('PUT', '/orgs/abcdefg/public_members/myuser')
+
+        self.service.org('abcdefg').public_member('myuser').delete()
+        self.expect('DELETE', '/orgs/abcdefg/public_members/myuser')
+
+    def test_teams(self):
+        self.service.team('abcdefg').get()
+        self.expect('GET', '/teams/abcdefg')
+
+        self.service.team('abcdefg').update({'x': 'x'})
+        self.expect('PATCH', '/teams/abcdefg', json.dumps({'x': 'x'}))
+
+        self.service.team('abcdefg').delete()
+        self.expect('DELETE', '/teams/abcdefg')
+
+        self.service.team('abcdefg').members().get()
+        self.expect('GET', '/teams/abcdefg/members')
+
+        self.service.team('abcdefg').member('myuser').get()
+        self.expect('GET', '/teams/abcdefg/memberships/myuser')
+
+        self.service.team('abcdefg').member('myuser').add()
+        self.expect('PUT', '/teams/abcdefg/memberships/myuser')
+
+        self.service.team('abcdefg').member('myuser').delete()
+        self.expect('DELETE', '/teams/abcdefg/memberships/myuser')
+
+        self.service.team('abcdefg').repos().get()
+        self.expect('GET', '/teams/abcdefg/repos')
+
+        self.service.team('abcdefg').repo('myuser', 'myrepo').get()
+        self.expect('GET', '/teams/abcdefg/repos/myuser/myrepo')
+
+        self.service.team('abcdefg').repo('myorg', 'myrepo').add()
+        self.expect('PUT', '/teams/abcdefg/repos/myorg/myrepo')
+
+        self.service.team('abcdefg').repo('myuser', 'myrepo').delete()
+        self.expect('DELETE', '/teams/abcdefg/repos/myuser/myrepo')
+
+        # Test user teams
+        self.service.user().teams().get()
+        self.expect('GET', '/user/teams')
 
     def test_authorizations(self):
         self.service.authorizations().get()

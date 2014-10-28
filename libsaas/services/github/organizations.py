@@ -1,5 +1,7 @@
 from libsaas.services import base
 
+from .members import Members, Member, PublicMembers, PublicMember
+from .teams import Teams
 from . import resource
 from . import repos
 
@@ -36,3 +38,38 @@ class Organizations(resource.GitHubResource):
         Return a resource corresponding to single repo for this org.
         """
         return OrganizationRepo(self.parent, self.object_id, repo)
+
+    @base.resource(Members)
+    def members(self):
+        """
+        Return a resource corresponding to members of this org.
+        """
+        return Members(self)
+
+    @base.resource(Member)
+    def member(self, user):
+        """
+        Return a resource corresponding to a member of this org.
+        """
+        return Member(self, user)
+
+    @base.resource(PublicMembers)
+    def public_members(self):
+        """
+        Return a resource corresponding to public members of this org.
+        """
+        return PublicMembers(self)
+
+    @base.resource(PublicMember)
+    def public_member(self, user):
+        """
+        Return a resource corresponding to a public member of this org.
+        """
+        return PublicMember(self, user)
+
+    @base.resource(Teams)
+    def teams(self):
+        """
+        Return a resource corresponding to this org's teams.
+        """
+        return Teams(self)
