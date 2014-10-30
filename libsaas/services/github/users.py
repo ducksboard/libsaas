@@ -2,7 +2,7 @@ from libsaas import http, parsers
 from libsaas.services import base
 
 from . import resource
-from . import organizations
+from . import members, organizations, teams
 
 
 class UserRepos(resource.GitHubResource):
@@ -120,6 +120,22 @@ class CurrentUser(UsersBase):
         user.
         """
         return UserEmails(self)
+
+    @base.resource(members.UserMemberships)
+    def memberships(self):
+        """
+        Return the resource corresponding to the org memberships of the
+        authenticated user.
+        """
+        return members.UserMemberships(self)
+
+    @base.resource(teams.Teams)
+    def teams(self):
+        """
+        Return the resource corresponding to the teams that the current
+        user belongs to.
+        """
+        return teams.Teams(self)
 
     @base.apimethod
     def follow(self, name):
