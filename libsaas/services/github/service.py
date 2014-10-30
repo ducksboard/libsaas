@@ -10,7 +10,7 @@ from . import authorizations, gists, issues, organizations, repos, teams, users
 class GitHub(base.Resource):
     """
     """
-    def __init__(self, token_or_username, password=None):
+    def __init__(self, token_or_username, password=None, apiroot='https://api.github.com'):
         """
         Create a GitHub service.
 
@@ -21,8 +21,11 @@ class GitHub(base.Resource):
         :var password: Only used with the Basic authentication, leave this as
             `None` when using OAuth.
         :vartype password: str
+
+        :var apiroot: Only used for GitHub Enterprise, defaults to GitHub api url
+        :vartype apiroot: str
         """
-        self.apiroot = 'https://api.github.com'
+        self.apiroot = apiroot
 
         self.add_filter(self.use_json)
 
