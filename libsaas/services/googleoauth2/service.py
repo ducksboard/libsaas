@@ -40,7 +40,7 @@ class GoogleOAuth2(base.Resource):
 
     def get_auth_url(self, response_type, redirect_uri, scope, state=None,
                      access_type=None, approval_prompt=None, login_hint=None,
-                     openid_realm=None):
+                     openid_realm=None, hd=None):
         """
         This endpoint is the target of the initial request for an access token.
         It handles active session lookup, authenticating the user, and user
@@ -99,6 +99,12 @@ class GoogleOAuth2(base.Resource):
         :var openid_realm: Parameter from the OpenID 2.0 protocol, not from
             OAuth 2.0. It is used in OpenID 2.0 requests to signify the
             URL-space for which an authentication request is valid.
+        :vartype openid_realm: str
+
+        :var hd: The hd (hosted domain) parameter streamlines the login
+            process for Google Apps hosted accounts. By including the domain
+            (for example, mycollege.edu), you restrict sign-in to accounts at
+            that domain
         :vartype openid_realm: str
         """
         params = {'client_id': self.client_id}
