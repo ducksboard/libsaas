@@ -120,7 +120,8 @@ class Customers(CustomersBaseResource):
         raise base.MethodNotSupported()
 
     @base.apimethod
-    def get(self, total_count=False, count=None, offset=None):
+    def get(self, total_count=False, count=None, offset=None,
+            ending_before=None, starting_after=None):
         """
         Fetch all of the objects.
 
@@ -134,6 +135,14 @@ class Customers(CustomersBaseResource):
         :var offset: An offset into your object array. The API will return
             the requested number of objects starting at that offset.
         :vartype offset: int
+
+        :var ending_before: A cursor (object ID) for use in pagination. Fetched
+            objetcs will be newer than the given object.
+        :vartype ending_before: str
+
+        :var starting_after: A cursor (object ID) for use in pagination.
+            Fetched objetcs will be older than the given object.
+        :vartype starting_after: str
         """
         params = {'count': count, 'offset': offset}
         if total_count:
