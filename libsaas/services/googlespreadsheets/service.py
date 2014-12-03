@@ -17,8 +17,13 @@ class GoogleSpreadsheets(base.Resource):
         """
         self.access_token = access_token
 
+        self.add_filter(self.set_version)
         self.add_filter(self.add_auth)
         self.add_filter(self.set_format)
+
+    def set_version(self, request):
+        request.headers['GData-Version'] = '3.0'
+
 
     def add_auth(self, request):
         header = 'Bearer {0}'.format(self.access_token)
