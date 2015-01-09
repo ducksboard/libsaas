@@ -77,3 +77,10 @@ class Intercom(base.Resource):
         Return the resource corresponding to all counts.
         """
         return resource.Counts(self)
+
+    @base.resource(resource.Events)
+    def events(self):
+        """
+        Return the resource corresponding to all events.
+        """
+        return resource.Events(self)

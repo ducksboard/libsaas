@@ -111,3 +111,22 @@ class IntercomTestCase(unittest.TestCase):
         self.service.counts().get(type='company', count='user')
         self.expect('GET', '/counts', {'type': 'company', 'count': 'user'})
         self.service.counts().get()
+
+    def test_events(self):
+        with port.assertRaises(MethodNotSupported):
+            self.service.counts().get()
+            self.service.counts().update()
+            self.service.counts().delete()
+
+        kwargs = {
+            'event_name': 'test',
+            'created_at': 9999999999,
+            'email': 'name@domain.com',
+            'metadata': {
+                'service_kind': 'custom',
+                'data_source_kind': 'custom_float'
+            }
+        }
+
+        self.service.events().create(**kwargs)
+        self.expect('POST', '/events', json.dumps(kwargs))
