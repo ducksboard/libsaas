@@ -201,3 +201,49 @@ class Counts(IntercomResource):
 
     def delete(self, *args, **kwargs):
         raise base.MethodNotSupported()
+
+
+class Events(IntercomResource):
+
+    path = 'events'
+
+    @base.apimethod
+    def create(self, event_name, created_at, user_id=None, email=None,
+               metadata=None):
+        """
+        Create a new Event object.
+
+        :var event_name: The name of the event that occurred.
+        :vartype event_name: str
+
+        :var created_at: The time the event occurred as a UTC Unix timestamp.
+        :vartype created_at: int
+
+        :var user_id: The user_id of the user which messages should be
+            returned. Required if no email.
+        :vartype user_id: int
+
+        :var email: The email of the user which messages that should be
+            returned. Required if no user_id.
+        :vartype email: str
+
+        :var metadata: Optional metadata about the event.
+        :vartype metadata: dict
+        """
+        if not user_id and not email:
+            raise TypeError(
+                'create() must be passed at least one of user_id, email')
+
+        params = base.get_params(None, locals())
+        request = http.Request('POST', self.get_url(), params)
+
+        return request, parsers.parse_json
+
+    def get(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
+    def update(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
+    def delete(self, *args, **kwargs):
+        raise base.MethodNotSupported()
