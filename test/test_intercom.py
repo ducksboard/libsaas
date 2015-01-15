@@ -130,3 +130,31 @@ class IntercomTestCase(unittest.TestCase):
 
         self.service.events().create(**kwargs)
         self.expect('POST', '/events', json.dumps(kwargs))
+
+    def test_companies(self):
+        with port.assertRaises(MethodNotSupported):
+            self.service.companies().update()
+            self.service.companies().delete()
+
+        self.service.companies().get()
+        self.expect('GET', '/companies')
+        self.service.companies().get(per_page=3)
+        self.expect('GET', '/companies', {'per_page': 3})
+        self.service.companies().get(page=3)
+        self.expect('GET', '/companies', {'page': 3})
+
+        company = {'company_id': 'foo', 'name': 'bar'}
+        self.service.companies().create(company)
+        self.expect('POST', '/companies', json.dumps(company))
+
+        with port.assertRaises(TypeError):
+            self.service.company().create()
+            self.service.company().update()
+            self.service.company().delete()
+
+        company_id = 'test-id'
+        self.service.company(company_id).get()
+        self.expect('GET', '/companies', {'company_id': company_id})
+        self.service.company(company_id).users()
+        self.expect(
+            'GET', '/companies/{0}/users'.format(company_id))
