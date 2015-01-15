@@ -105,7 +105,7 @@ class GoogleOAuth2(base.Resource):
             process for Google Apps hosted accounts. By including the domain
             (for example, mycollege.edu), you restrict sign-in to accounts at
             that domain
-        :vartype openid_realm: str
+        :vartype hd: str
         """
         params = {'client_id': self.client_id}
         params.update(base.get_params(None, locals(),
