@@ -24,7 +24,7 @@ class Intercom(base.Resource):
 
         self.add_filter(auth.BasicAuth(app_id, api_key))
         self.add_filter(self.use_json)
-        self.add_filter(self.add_accept_header)
+        self.add_filter(self.add_json_headers)
 
     def get_url(self):
         return self.apiroot
@@ -33,8 +33,9 @@ class Intercom(base.Resource):
         if request.method.upper() not in http.URLENCODE_METHODS:
             request.params = json.dumps(request.params)
 
-    def add_accept_header(self, request):
+    def add_json_headers(self, request):
         request.headers['Accept'] = 'application/json'
+        request.headers['Content-Type'] = 'application/json'
 
     @base.resource(resource.Users)
     def users(self):
@@ -84,3 +85,17 @@ class Intercom(base.Resource):
         Return the resource corresponding to all events.
         """
         return resource.Events(self)
+
+    @base.resource(resource.Companies)
+    def companies(self):
+        """
+        Return the resource corresponding to all companies.
+        """
+        return resource.Companies(self)
+
+    @base.resource(resource.Company)
+    def company(self, id):
+        """
+        Return the resource corresponding to a single company.
+        """
+        return resource.Company(self, id)

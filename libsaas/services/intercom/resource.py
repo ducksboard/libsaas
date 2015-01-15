@@ -7,17 +7,6 @@ class IntercomResource(base.RESTResource):
     def get_url(self):
         return '{0}/{1}'.format(self.parent.get_url(), self.path)
 
-
-class UserBase(IntercomResource):
-
-    path = 'users'
-
-    def delete(self, *args, **kwargs):
-        raise base.MethodNotSupported()
-
-
-class Users(UserBase):
-
     @base.apimethod
     def get(self, page=None, per_page=None):
         """
@@ -35,6 +24,17 @@ class Users(UserBase):
         request = http.Request('GET', self.get_url(), params)
 
         return request, parsers.parse_json
+
+
+class UserBase(IntercomResource):
+
+    path = 'users'
+
+    def delete(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
+
+class Users(UserBase):
 
     @base.apimethod
     def update(self, obj):
@@ -246,4 +246,42 @@ class Events(IntercomResource):
         raise base.MethodNotSupported()
 
     def delete(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
+
+class Companies(IntercomResource):
+
+    path = 'companies'
+
+    def update(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
+    def delete(self, *args, **kwargs):
+        raise base.MethodNotSupported()
+
+
+class Company(Companies):
+
+    @base.apimethod
+    def get(self):
+        """
+        Fetch the company's data.
+        """
+        params = {'company_id': self.object_id}
+        request = http.Request('GET', self.get_url(), params)
+
+        return request, parsers.parse_json
+
+    @base.apimethod
+    def users(self):
+        """
+        Fetch the company's users.
+        """
+        params = base.get_params(None, locals())
+        url = '{0}/{1}/{2}'.format(self.get_url(), self.object_id, 'users')
+        request = http.Request('GET', url, params)
+
+        return request, parsers.parse_json
+
+    def create(self, *args, **kwargs):
         raise base.MethodNotSupported()
