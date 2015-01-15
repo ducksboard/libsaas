@@ -237,7 +237,7 @@ class Events(IntercomResource):
         params = base.get_params(None, locals())
         request = http.Request('POST', self.get_url(), params)
 
-        return request, parsers.parse_json
+        return request, parsers.parse_empty
 
     def get(self, *args, **kwargs):
         raise base.MethodNotSupported()
