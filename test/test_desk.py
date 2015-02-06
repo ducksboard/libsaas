@@ -51,6 +51,28 @@ class DeskTestCase(unittest.TestCase):
             self.service.cases().delete()
             self.service.case(10).delete()
 
+    def test_companies(self):
+        obj = {'name': 'test'}
+        paging = {'page': 1, 'per_page': 5}
+
+        self.service.companies().get(per_page=5, page=1)
+        self.expect('GET', '/companies', paging)
+
+        self.service.company(4).get()
+        self.expect('GET', '/companies/4')
+
+        self.service.company(4).update(obj)
+        self.expect('PATCH', '/companies/4', obj)
+
+        self.service.companies().create(obj)
+        self.expect('POST', '/companies', obj)
+
+        self.service.companies().search('foo')
+        self.expect('GET', '/companies/search', {'q': 'foo'})
+
+        self.assertRaises(base.MethodNotSupported,
+                          self.service.customer(4).delete)
+
     def test_customers(self):
         obj = {'email': 'test@test.com'}
         paging = {'page': 1, 'per_page': 5}

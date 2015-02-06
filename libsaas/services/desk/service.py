@@ -5,7 +5,7 @@ from libsaas import http, port
 from libsaas.services import base
 from libsaas.filters import auth
 
-from . import cases, customers, users, contents, macros, insights
+from . import cases, customers, companies, users, contents, macros, insights
 
 
 class Desk(base.Resource):
@@ -84,6 +84,20 @@ class Desk(base.Resource):
         Return the resource corresponding to all the cases.
         """
         return cases.Cases(self)
+
+    @base.resource(companies.Company)
+    def company(self, company_id):
+        """
+        Return the resource corresponding to a single company.
+        """
+        return companies.Company(self, company_id)
+
+    @base.resource(companies.Companies)
+    def companies(self):
+        """
+        Return the resource corresponding to all companies.
+        """
+        return companies.Companies(self)
 
     @base.resource(customers.Customer)
     def customer(self, customer_id=None):
