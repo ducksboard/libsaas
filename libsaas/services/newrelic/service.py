@@ -183,8 +183,6 @@ class NewRelic(base.Resource):
 class Insights(base.Resource):
     """
     """
-    version = 'beta_api'
-
     def __init__(self, account_id, query_key=None, insert_key=None):
         """
         Create a New Relic Insights service.
@@ -198,8 +196,7 @@ class Insights(base.Resource):
         :var insert_key: The insert key.
         :vartype insert_key: str
         """
-        tmpl = 'https://insights.newrelic.com/{0}/accounts/{1}'
-        self.apiroot = tmpl.format(self.version, account_id)
+        self.account_id = account_id
 
         self.query_key = query_key
         self.insert_key = insert_key
@@ -220,8 +217,10 @@ class Insights(base.Resource):
         else:
             request.headers['X-Query-Key'] = self.query_key
 
-    def get_url(self):
-        return self.apiroot
+    def get_url(self, insert=False):
+        tmpl = 'https://insights-{0}.newrelic.com/v1/accounts/{1}'
+        return tmpl.format(
+            'collector' if insert else 'api', self.account_id)
 
     @base.apimethod
     def query(self, nrql):
@@ -248,6 +247,6 @@ class Insights(base.Resource):
 
         Upstream documentation: http://docs.newrelic.com/docs/rubicon/inserting-events
         """
-        url = '{0}/{1}'.format(self.get_url(), 'events')
+        url = '{0}/{1}'.format(self.get_url(insert=True), 'events')
 
         return http.Request('POST', url, events), parsers.parse_json
