@@ -300,8 +300,9 @@ class InsightsTestCase(unittest.TestCase):
 
         self.insert_key = 'insert_key'
         self.query_key = 'query_key'
-        self.service = newrelic.Insights('account_id', self.query_key,
-                                        self.insert_key)
+        self.account_id = 'account_id'
+        self.service = newrelic.Insights(self.account_id, self.query_key,
+                                         self.insert_key)
 
     def serialize(self, data):
         return json.dumps(data)
@@ -318,9 +319,10 @@ class InsightsTestCase(unittest.TestCase):
                              self.query_key)
 
         if uri:
-            self.assertEqual(self.executor.request.uri,
-                             'https://insights.newrelic.com/beta_api/' +
-                             'accounts/account_id/' + uri)
+            tmpl = 'https://insights-{0}.newrelic.com/v1/accounts/{1}/{2}'
+            sufix = 'api' if uri == 'query' else 'collector'
+            url = tmpl.format(sufix, self.account_id, uri)
+            self.assertEqual(self.executor.request.uri, url)
         if params:
             self.assertEqual(self.executor.request.params, params)
 
