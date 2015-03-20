@@ -1,6 +1,7 @@
 import json
 import unittest
 
+from libsaas import http
 from libsaas.executors import test_executor
 from libsaas.services import trello
 
@@ -17,15 +18,17 @@ class TrelloTestCase(unittest.TestCase):
         if method:
             self.assertEqual(method, self.executor.request.method)
 
+        auth_params = {'key': 'my-key', 'token': 'my-token'}
+
         if method != 'GET':
-            uri += '?token=my-token&key=my-key'
+            uri += '?' + http.urlencode_any(auth_params)
 
         self.assertEqual(
             self.executor.request.uri,
             'https://api.trello.com/1' + uri)
 
         if method == 'GET':
-            params.update({'token': 'my-token', 'key': 'my-key'})
+            params.update(auth_params)
 
         if params:
             self.assertEqual(self.executor.request.params, params)

@@ -50,11 +50,11 @@ class MixpanelTestCase(unittest.TestCase):
         ret = self.service.track('login', {'user': 'foo', 'important': True,
                                            'widgets': ['foo', 'bar']}, ip=True)
         data = self.serialize({'event': 'login',
-                               'properties': {'token': 'my-token',
-                                              'user': 'foo',
+                               'properties': {'user': 'foo',
                                               'important': True,
-                                              'widgets': ['foo', 'bar']}})
-        self.expect('track/', {'data': data, 'ip': '1', 'test': '0'}, 'api')
+                                              'widgets': ['foo', 'bar'],
+                                              'token': 'my-token'}})
+        self.expect('track/', {'ip': '1', 'test': '0', 'data': data}, 'api')
         self.assertTrue(ret)
 
         ret = self.service.track('logout', test=True)

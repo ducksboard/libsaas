@@ -72,10 +72,10 @@ class XMLParserTestCase(unittest.TestCase):
         self.assertEqual(resp['team']['name'], b'Bar\xc3\xa7a'.decode('utf-8'))
 
         resp = xml.dict_to_xml({'team': {
-            'name': b'Bar\xc3\xa7a'.decode('utf-8'),
             'boolean': True,
-            'number': 1234,
-            'nil': None
+            'name': b'Bar\xc3\xa7a'.decode('utf-8'),
+            'nil': None,
+            'number': 1234
         }})
 
         # accept both <nil /> and <nil></nil>; can't use assertIn, as it only

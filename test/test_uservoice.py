@@ -311,7 +311,7 @@ class UserVoiceTestCase(unittest.TestCase):
         self.expect('PUT', '/tickets/upsert.json', {'ticket[foo]': 'bar'})
 
         self.service.tickets().search(query='foo', page=2)
-        self.expect('GET', '/tickets/search.json', {'query': 'foo', 'page': '2'})
+        self.expect('GET', '/tickets/search.json', {'page': '2', 'query': 'foo'})
 
     def test_topics(self):
         self.service.topics().get()
@@ -325,7 +325,7 @@ class UserVoiceTestCase(unittest.TestCase):
 
         self.service.topic(4).articles(sort='newest', page=3)
         self.expect('GET', '/topics/4/articles.json',
-                    {'sort': 'newest', 'page': '3'})
+                    {'page': '3', 'sort': 'newest'})
 
     def test_users(self):
         self.service.users().get()
@@ -347,4 +347,4 @@ class UserVoiceTestCase(unittest.TestCase):
         self.expect('DELETE', '/users/2.json')
 
         self.service.users().search(query='foo', page=2)
-        self.expect('GET', '/users/search.json', {'query': 'foo', 'page': '2'})
+        self.expect('GET', '/users/search.json', {'page': '2', 'query': 'foo'})
