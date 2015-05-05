@@ -56,7 +56,12 @@ class RecurlyTestCase(unittest.TestCase):
         self.expect('GET', '/accounts/3/subscriptions')
 
         self.service.account(3).subscriptions().get(per_page=23)
-        self.expect('GET', '/accounts/3/subscriptions', {'per_page': 23})
+        self.expect(
+            'GET', '/accounts/3/subscriptions',
+            {'per_page': 23, 'state': 'live'})
+
+        self.service.account(3).subscriptions().get(state='active')
+        self.expect('GET', '/accounts/3/subscriptions', {'state': 'active'})
 
         self.service.account(3).billing_info().get()
         self.expect('GET', '/accounts/3/billing_info')

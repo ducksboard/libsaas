@@ -24,8 +24,7 @@ class Subscriptions(SubscriptionsBase):
             or "past_due". A subscription will belong to more than one state.
         :vartype state: str
         """
-        params = base.get_params(('cursor', 'per_page'), locals())
-        params['state'] = state
+        params = base.get_params(None, locals())
         request = http.Request('GET', self.get_url(), params)
 
         return request, parsers.parse_xml
@@ -104,7 +103,7 @@ class Subscription(SubscriptionsBase):
         return request, parsers.parse_empty
 
 
-class AccountSubscriptions(SubscriptionsBase):
+class AccountSubscriptions(Subscriptions):
 
     def create(self, *args, **kwargs):
         raise base.MethodNotSupported()
