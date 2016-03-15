@@ -25,7 +25,7 @@ class Event(EventsBaseResource):
 class Events(EventsBaseResource):
 
     @base.apimethod
-    def get(self, type=None, count=None, offset=None, ending_before=None,
+    def get(self, type=None, limit=None, ending_before=None,
             starting_after=None):
         """
         Fetch all of the objects.
@@ -34,13 +34,10 @@ class Events(EventsBaseResource):
             events using * as a wildcard. The list will be filtered to
             include only events with a matching event property.
         :vartype type: str
-        :var count: A limit on the number of objects to be returned.
+
+        :var limit: A limit on the number of objects to be returned.
             Count can range between 1 and 100 objects.
         :vartype count: int
-
-        :var offset: An offset into your object array. The API will return
-            the requested number of objects starting at that offset.
-        :vartype offset: int
 
         :var ending_before: A cursor (object ID) for use in pagination. Fetched
             objetcs will be newer than the given object.
