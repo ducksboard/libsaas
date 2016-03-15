@@ -55,7 +55,7 @@ class Charge(ChargesBaseResource):
 class Charges(ChargesBaseResource):
 
     @base.apimethod
-    def get(self, customer=None, count=None, offset=None, ending_before=None,
+    def get(self, customer=None, limit=None, ending_before=None,
             starting_after=None):
         """
         Fetch all of the objects.
@@ -64,13 +64,9 @@ class Charges(ChargesBaseResource):
             this customer ID.
         :vartype customer: str
 
-        :var count: A limit on the number of objects to be returned.
+        :var limit: A limit on the number of objects to be returned.
             Count can range between 1 and 100 objects.
         :vartype count: int
-
-        :var offset: An offset into your object array. The API will return
-            the requested number of objects starting at that offset.
-        :vartype offset: int
 
         :var ending_before: A cursor (object ID) for use in pagination. Fetched
             objetcs will be newer than the given object.

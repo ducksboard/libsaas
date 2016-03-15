@@ -120,7 +120,7 @@ class Customers(CustomersBaseResource):
         raise base.MethodNotSupported()
 
     @base.apimethod
-    def get(self, total_count=False, count=None, offset=None,
+    def get(self, total_count=False, limit=None,
             ending_before=None, starting_after=None):
         """
         Fetch all of the objects.
@@ -128,13 +128,9 @@ class Customers(CustomersBaseResource):
         :var total_count: Include the total count of all customers.
         :vartype total_count: bool
 
-        :var count: A limit on the number of objects to be returned.
+        :var limit: A limit on the number of objects to be returned.
             Count can range between 1 and 100 objects.
         :vartype count: int
-
-        :var offset: An offset into your object array. The API will return
-            the requested number of objects starting at that offset.
-        :vartype offset: int
 
         :var ending_before: A cursor (object ID) for use in pagination. Fetched
             objetcs will be newer than the given object.
@@ -144,10 +140,10 @@ class Customers(CustomersBaseResource):
             Fetched objetcs will be older than the given object.
         :vartype starting_after: str
         """
-        params = {'count': count, 'offset': offset}
+        params = base.get_params(None, locals())
+        params.pop('total_count', None)
         if total_count:
             params.update({'include[]': 'total_count'})
-        params = base.get_params(None, params)
         request = http.Request('GET', self.get_url(), params)
 
         return request, parsers.parse_json

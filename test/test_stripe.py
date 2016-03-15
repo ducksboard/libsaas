@@ -68,8 +68,8 @@ class StripeTestCase(unittest.TestCase):
 
         self.service.charges().get()
         self.expect('GET', '/charges', {})
-        self.service.charges().get(customer='123', count=23)
-        self.expect('GET', '/charges', {'count': 23, 'customer': '123'})
+        self.service.charges().get(customer='123', limit=23)
+        self.expect('GET', '/charges', {'limit': 23, 'customer': '123'})
 
         self.service.charges().create({'key':'value'})
         self.expect('POST', '/charges', {'key': 'value'})
@@ -97,8 +97,9 @@ class StripeTestCase(unittest.TestCase):
 
         self.service.customers().get()
         self.expect('GET', '/customers', {})
-        self.service.customers().get(count=23, offset=1)
-        self.expect('GET', '/customers', {'count': 23, 'offset': 1})
+        self.service.customers().get(limit=23, ending_before='foo_bar')
+        self.expect('GET', '/customers', {'limit': 23,
+                                          'ending_before': 'foo_bar'})
 
         self.service.customers().create({'key':'value'})
         self.expect('POST', '/customers', {'key': 'value'})
@@ -190,8 +191,8 @@ class StripeTestCase(unittest.TestCase):
 
         self.service.invoice('123').lines().get()
         self.expect('GET', '/invoices/123/lines', {})
-        self.service.invoice('123').lines().get(offset=1)
-        self.expect('GET', '/invoices/123/lines', {'offset': 1})
+        self.service.invoice('123').lines().get(limit=1)
+        self.expect('GET', '/invoices/123/lines', {'limit': 1})
 
     def test_events(self):
         with port.assertRaises(MethodNotSupported):
@@ -219,8 +220,8 @@ class StripeTestCase(unittest.TestCase):
 
         self.service.coupons().get()
         self.expect('GET', '/coupons', {})
-        self.service.coupons().get(count=23)
-        self.expect('GET', '/coupons', {'count': 23})
+        self.service.coupons().get(limit=23)
+        self.expect('GET', '/coupons', {'limit': 23})
 
         self.service.coupons().create({'key':'value'})
         self.expect('POST', '/coupons', {'key': 'value'})
@@ -242,8 +243,8 @@ class StripeTestCase(unittest.TestCase):
 
         self.service.invoiceitems().get()
         self.expect('GET', '/invoiceitems', {})
-        self.service.invoiceitems().get(count=23)
-        self.expect('GET', '/invoiceitems', {'count': 23})
+        self.service.invoiceitems().get(limit=23)
+        self.expect('GET', '/invoiceitems', {'limit': 23})
 
         self.service.invoiceitems().create({'key':'value'})
         self.expect('POST', '/invoiceitems', {'key': 'value'})
