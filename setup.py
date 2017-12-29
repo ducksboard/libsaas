@@ -17,7 +17,7 @@ contributing support for new services.
 
 .. _Ducksboard: http://ducksboard.com/
 .. _issue tracker: https://github.com/ducksboard/libsaas/issues
-.. _documentation: http://docs.libsaas.net/
+.. _documentation: http://libsaas.readthedocs.io/en/latest/
 """
 import os
 from distutils.core import setup, Command
