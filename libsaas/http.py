@@ -67,7 +67,7 @@ def quote_any(val):
     """
     Percent quote any value, be it binary, text or integer.
     """
-    return port.quote(port.to_b(val), safe='')
+    return port.quote(port.to_b(val))
 
 
 def urlencode_any(d):
