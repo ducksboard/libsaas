@@ -20,9 +20,9 @@ matrix:
 # force an older version of python-requests, as 0.14.2 doesn't work on Python 3.2
 install:
   - test "$LIBSAAS_XML_LIBRARY" == "lxml" && sudo apt-get install libxml2-dev libxslt1-dev || true
-  - test "$LIBSAAS_XML_LIBRARY" == "lxml" && pip install lxml --use-mirrors || true
-  - pip install requests==0.14.1 --use-mirrors
-  - pip install requests-oauth==0.4.1 --use-mirrors
+  - test "$LIBSAAS_XML_LIBRARY" == "lxml" && pip install lxml || true
+  - pip install requests==0.14.1
+  - pip install requests-oauth==0.4.1
 
 script: python setup.py test
 
